@@ -1,4 +1,4 @@
-import { type AppRole, type AuthProvider, type EventType, type UserPayload, type User } from "./type";
+import { type AppRole, type AuthProvider, type UserPayload, type User } from "./type";
 
 export function splitFullName(name: string) {
     const nameParts = name.split(' ');
