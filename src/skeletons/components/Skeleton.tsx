@@ -1,4 +1,4 @@
-import styles from "../../modules/Skeleton.module.css";
+import styles from "../../module/Skeleton.module.css";
 
 interface Props {
     width?: string;

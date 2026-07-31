@@ -1,7 +1,7 @@
 export const HomeSkeleton = () => {
     return(
         <div>
-            Skelton for now
+            HomeSkeleton for now
         </div>
     )
 }
