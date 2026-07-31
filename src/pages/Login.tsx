@@ -5,7 +5,6 @@ import { API } from '../utils/API';
 import { CustomPopup } from '../popups/CustomPopup';
 import { useUser } from '../contexts/UserContext';
 import type { LoginPayload, ToastResponse } from '../utils/type';
-import { OAuthLogin } from '../components/OAuthLogin';
 import { removeAll } from '../utils/Utils';
 
 export const Login = () => {
@@ -120,16 +119,10 @@ export const Login = () => {
                     <Link className={styles.linkText} to='/reset-email'>Forgot Password?</Link>
 
                     <button type="submit" className={styles.submitBtn}>Sign In</button>
-
                     
                     <Link className={styles.linkText} to='/register'>Don't have an account? Register here</Link>
-                
 
-                </form>
-
-                
-               <OAuthLogin/>
-                
+                </form>                
             </div>
         </div>
 

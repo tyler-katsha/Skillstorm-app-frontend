@@ -7,8 +7,6 @@ import { FileUpload } from '../components/FileUpload';
 import { acceptArray, type RegisterPayload, type ToastResponse } from '../utils/type';
 import imageCompression from 'browser-image-compression';
 import { PasswordRequirements } from '../components/PasswordRequirements';
-import { OAuthLogin } from '../components/OAuthLogin';
-
 
 export const Register = () => {
     const [loading, setLoading] = useState(false);
@@ -16,8 +14,7 @@ export const Register = () => {
     const [_previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [data, setData] = useState<RegisterPayload>({
-        firstName: '',
-        lastName: '',
+        fullName: '',
         email: '',
         dateOfBirth: '',
         password: '',
@@ -66,7 +63,7 @@ export const Register = () => {
 
         const formData = new FormData();
 
-        formData.append('name', `${data.firstName.trim()} ${data.lastName.trim()}`);
+        formData.append('fullName', data.fullName.trim());
         formData.append('email', data.email.trim());
         formData.append('dateOfBirth', data.dateOfBirth);
         formData.append('password', data.password);
@@ -151,13 +148,8 @@ export const Register = () => {
                     <h1>Register</h1>
 
                     <div className={styles.inputGroup}>
-                        <label>First Name:</label>
-                        <input type='text' className={styles.inputField} placeholder='John' name='firstName' value={data.firstName} onChange={handleChange} required />
-                    </div>
-
-                    <div className={styles.inputGroup}>
-                        <label>Last Name:</label>
-                        <input type='text' className={styles.inputField} name='lastName' placeholder='Doe' value={data.lastName} onChange={handleChange} required />
+                        <label>Full Name:</label>
+                        <input type='text' className={styles.inputField} placeholder='John Doe' name='fullName' value={data.fullName} onChange={handleChange} required />
                     </div>
 
                     <div className={styles.inputGroup}>
@@ -166,7 +158,7 @@ export const Register = () => {
                     </div>
 
                     <div className={styles.inputGroup}>
-                        <label>Date Of Birth:</label>
+                        <label>Date of Birth: </label>
                         <input type='date' className={styles.inputField} name='dateOfBirth' value={data.dateOfBirth} onChange={handleChange} required />
                     </div>
 
@@ -193,8 +185,6 @@ export const Register = () => {
                     <Link className={styles.linkText} to='/login'>Already have an account? Log in</Link>
                     
                 </form>
-
-                <OAuthLogin/>
 
             </div>
         </div>
