@@ -32,6 +32,28 @@ export interface User{
 export interface GuestPayloadResponse{
     token:string;
 }
+
+export interface LeaderBoardProps{
+    rank: string;
+    username:string;
+    points: number;
+    level:number;
+}
+export interface CardProps{
+    width?:string | number;
+    height?:string | number;
+    title:string;
+    text:string;
+}
+export interface CardData{
+    title:string;
+    text:string;
+}
+export interface CardGridProps{
+    width?:string | number;
+    height?: string | number;
+    cardData:CardData[]
+}
 export interface PasswordRequirementsProps{
     passwordValue: string;
 }

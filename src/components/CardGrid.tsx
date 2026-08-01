@@ -1,11 +1,12 @@
+import type { CardGridProps } from "../utils/type"
 import { Card } from "./Card"
-
-export const CardGrid = () => {
+import styles from '../module/CardGrid.module.css'
+export const CardGrid: React.FC<CardGridProps> = ({width = '100%',height='auto',cardData = []}) => {
     return(
-        <div>
-            {[1,2,3,4].map((ele,index) => (
+        <div className={styles.gridContainer}>
+            {cardData.map((item,index) => (
                 <div key={index}>
-                    <Card i={ele}/>
+                    <Card width={width} height={height} title={item.title} text={item.text}/>
                 </div>
             ))}
         </div>
