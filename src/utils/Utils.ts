@@ -48,9 +48,7 @@ export function ColorUtil() {
 export function mapPayloadToProfile(payload: UserPayload): User {
     return {
         name: payload.name,
-        age: getAge(payload.dateOfBirth),
         roles: payload.roles.length > 0 ? payload.roles : ["GUEST"],
-        dateOfBirth: payload.dateOfBirth,
         authProvider: payload.authProvider,
         bio: payload.bio,
         profileImageUrl: payload.profileImageUrl,

@@ -16,7 +16,7 @@ export const Register = () => {
     const [data, setData] = useState<RegisterPayload>({
         fullName: '',
         email: '',
-        dateOfBirth: '',
+        username: '',
         password: '',
         confirmPassword: '',
         profileImageUrl: null
@@ -65,7 +65,7 @@ export const Register = () => {
 
         formData.append('fullName', data.fullName.trim());
         formData.append('email', data.email.trim());
-        formData.append('dateOfBirth', data.dateOfBirth);
+        formData.append('username', data.username);
         formData.append('password', data.password);
 
         if (data.profileImageUrl) {
@@ -158,8 +158,8 @@ export const Register = () => {
                     </div>
 
                     <div className={styles.inputGroup}>
-                        <label>Date of Birth: </label>
-                        <input type='date' className={styles.inputField} name='dateOfBirth' value={data.dateOfBirth} onChange={handleChange} required />
+                        <label>Username:</label>
+                        <input type='text' className={styles.inputField} name='username' value={data.username} onChange={handleChange} required />
                     </div>
 
                     <div className={styles.inputGroup}>

@@ -1,7 +1,7 @@
 export interface RegisterPayload {
     fullName: string;
     email: string;
-    dateOfBirth: string;
+    username: string;
     password: string;
     confirmPassword: string;
     profileImageUrl: File | null;
@@ -11,7 +11,6 @@ export interface UserPayload extends User {
 }
 export interface ProfileProps{
     name:string;
-    dateOfBirth:string;
     roles:AppRole[],
     bio?:string;
 }
@@ -20,9 +19,7 @@ export interface MemberListProps {
 }
 export interface User{
     name: string;
-    age:number | null;
     roles: AppRole[];
-    dateOfBirth:string;
     authProvider: AuthProvider;
     bio?: string;
     profileImageUrl?: string | undefined;
