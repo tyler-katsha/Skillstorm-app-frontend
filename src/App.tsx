@@ -14,6 +14,7 @@ function App() {
   return (
     <UserProvider>
       <BrowserRouter>
+      {/* For better UX wrap every route in a ErrorBoundary component with a more specific message */}
       <ErrorBoundary title="Application error" message="Something unexpected went wrong. Please reload the app.">
         <Routes>
           {/* This your guide for your other pages*/}
