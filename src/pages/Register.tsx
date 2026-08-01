@@ -159,7 +159,7 @@ export const Register = () => {
 
                     <div className={styles.inputGroup}>
                         <label>Username:</label>
-                        <input type='text' className={styles.inputField} name='username' value={data.username} onChange={handleChange} required />
+                        <input type='text' className={styles.inputField} placeholder='CoolKid123' name='username' value={data.username} onChange={handleChange} required />
                     </div>
 
                     <div className={styles.inputGroup}>
@@ -168,13 +168,14 @@ export const Register = () => {
                         <button type="button" className={styles.toggleBtn} onClick={togglePasswordVisibility}>{showPassword ? 'Hide' : 'Show'}</button>
                     </div>
 
+                    <PasswordRequirements passwordValue={data.password}/>
                     <div className={styles.inputGroup}>
                         <label>Confirm Password:</label>
                         <input type={showConfirmPassword ? 'text' : 'password'} className={styles.inputField} placeholder='••••••••' name='confirmPassword' value={data.confirmPassword} onChange={handleChange} required />
                         <button type="button" className={styles.toggleBtn} onClick={toggleConfirmPasswordVisibility}>{showConfirmPassword ? 'Hide' : 'Show'}</button>
                     </div>
 
-                    <PasswordRequirements passwordValue={data.password}/>
+                    
 
                     <div className={styles.inputGroup}>
                         <label>Profile Image (Optional):</label>

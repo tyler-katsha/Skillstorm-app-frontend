@@ -5,12 +5,15 @@ import { Login } from './pages/Login'
 import { Register } from './pages/Register'
 import { Home } from './pages/Home'
 import { ResetEmail } from './pages/ResetEmail'
+import { ErrorBoundary } from './components/ErrorBoundary'
+import { UserProvider } from './contexts/UserContext'
 
 function App() {
 
   return (
-    <>
+    <UserProvider>
       <BrowserRouter>
+      <ErrorBoundary title="Application error" message="Something unexpected went wrong. Please reload the app.">
         <Routes>
           {/* This your guide for your other pages*/}
           <Route path="/login" element={<Login/>}/>
@@ -18,8 +21,9 @@ function App() {
           <Route path="/" element={<Home/>}/>
           <Route path="/reset-email" element={<ResetEmail />} />
         </Routes>
+        </ErrorBoundary>
       </BrowserRouter>
-    </>
+    </UserProvider>
   )
 }
 

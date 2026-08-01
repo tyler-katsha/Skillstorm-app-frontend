@@ -122,7 +122,7 @@ export const Login = () => {
                     
                     <Link className={styles.linkText} to='/register'>Don't have an account? Register here</Link>
 
-                </form>                
+                </form>  
             </div>
         </div>
 

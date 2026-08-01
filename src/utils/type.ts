@@ -1,3 +1,5 @@
+import type { ReactNode } from "react";
+
 export interface RegisterPayload {
     fullName: string;
     email: string;
@@ -25,6 +27,16 @@ export interface User{
     profileImageUrl?: string | undefined;
     email:string;
     enabled:boolean;
+}
+export interface Props{
+    children: ReactNode;
+    title?:string;
+    message?:string;
+}
+
+export interface State{
+    hasError:boolean;
+    error?:Error;
 }
 export interface GuestPayloadResponse{
     token:string;

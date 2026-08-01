@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import styles from '../modules/Auth.module.css'
+import styles from '../module/Auth.module.css'
 import type { ToastResponse } from '../utils/type';
 import { CustomPopup } from '../popups/CustomPopup';
 import { API } from '../utils/API';

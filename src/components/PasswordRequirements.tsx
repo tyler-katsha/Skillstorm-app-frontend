@@ -6,7 +6,7 @@ export const PasswordRequirements: React.FC<PasswordRequirementsProps> = ({passw
         {label:'At least 8 characters',met:passwordValue.length >= 8},
         {label:'At least one uppercase letter',met:/[A-Z]/.test(passwordValue)},
         {label:'At least one lowercase letter',met:/[a-z]/.test(passwordValue)},
-        {label:'At least one number',met:/[0-9]/.test(passwordValue)},
+        {label:'At least one number',met:/[0-9]/.test(passwordValue) },
         {label:'At least one special character',met:/[^A-Za-z0-9]/.test(passwordValue)}
     ];
 
