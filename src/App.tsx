@@ -7,6 +7,7 @@ import { Home } from './pages/Home'
 import { ResetEmail } from './pages/ResetEmail'
 import { ErrorBoundary } from './components/ErrorBoundary'
 import { UserProvider } from './contexts/UserContext'
+import { Leaderboard } from './pages/Leaderboard'
 
 function App() {
 
@@ -20,6 +21,7 @@ function App() {
           <Route path="/register" element={<Register/>}/>
           <Route path="/" element={<Home/>}/>
           <Route path="/reset-email" element={<ResetEmail />} />
+          <Route path="/leaderboard" element={<Leaderboard />} />
         </Routes>
         </ErrorBoundary>
       </BrowserRouter>

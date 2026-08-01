@@ -1,6 +1,7 @@
 import { Component, type ErrorInfo } from "react";
 import styles from '../module/ErrorBoundary.module.css'
 import type { Props, State } from "../utils/type";
+import { useNavigate } from "react-router-dom";
 
 
 export class ErrorBoundary extends Component<Props,State>{
@@ -8,7 +9,7 @@ export class ErrorBoundary extends Component<Props,State>{
     public state:State = {hasError:false};
 
     static getDerivedStateFromError(error:Error): State{
-        return {hasError:false,error};
+        return {hasError:true,error};
     }
 
     componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
@@ -35,7 +36,7 @@ export class ErrorBoundary extends Component<Props,State>{
                     <p className={styles.errorMessage}>
                         {this.props.message ?? "We encountered an unexpected error. Please try again."}
                     </p>
-                    <button className={styles.reloadButton} onClick={() => window.location.reload()}>Reload Application</button>
+                    <button className={styles.reloadButton} onClick={this.handleRetry}>Reload Application</button>
                 </div>
             )
         }

@@ -8,6 +8,7 @@ export const Navigation = () => {
     )
 
     return (
+        <>
         <nav className={styles.navBar}>
             <div className={styles.navBarLeft}>
                 SkillStorm
@@ -17,7 +18,7 @@ export const Navigation = () => {
                 <ul className={styles.navLinks}>
                     {/* Add the Route's for the leaderboard, quizzes, badges and profile page in App.tsx with the pages */}
                     {navigationLink("/", "home")}
-                    {navigationLink("/learderboard", "Leaderboard")}
+                    {navigationLink("/leaderboard", "Leaderboard")}
                     {navigationLink("/quizzes", "Quizzes")}
                     {navigationLink("/badges", "Badges")}
                     {navigationLink("/profile", "Profile")}
@@ -27,5 +28,7 @@ export const Navigation = () => {
                 </ul>
             </div>
         </nav>
+        <hr className={styles.divider}/>
+        </>
     )
 }
