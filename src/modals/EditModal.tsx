@@ -3,7 +3,7 @@ import { Modal } from "./Modal";
 import styles from "../module/EditModal.module.css";
 import { acceptArray, type User } from "../utils/type";
 import { FileUpload, type FileUploadRef } from "../components/FileUpload";
-import { formatDate, formatRoles } from "../utils/Utils";
+import { formatRoles } from "../utils/Utils";
 // import { API } from "../utils/API";
 import { CustomPopup } from "../popups/CustomPopup";
 
@@ -175,10 +175,6 @@ export const EditProfileModal = ({ isOpen, onClose, user, onSave }: EditProfileM
                 <div className={styles.formGroup}>
                     <label htmlFor="name">Email</label>
                     <div className={styles.readOnlyBox}>{user.email}</div>
-                </div>
-                <div className={styles.formGroup}>
-                    <label htmlFor="name">Date of Birth</label>
-                    <div className={styles.readOnlyBox}>{formatDate(user.dateOfBirth)}</div>
                 </div>
                 <div className={styles.formGroup}>
                     <label htmlFor="name">Roles</label>

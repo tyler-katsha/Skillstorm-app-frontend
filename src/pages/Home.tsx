@@ -1,6 +1,6 @@
 import { CardGrid } from "../components/CardGrid"
 import { Navigation } from "../components/Navigation"
-import styles from '../module/Home.module.css'
+// import styles from '../module/Home.module.css'
 import { cardData } from "../utils/MockData"
 export const Home = () => {
 

@@ -1,9 +1,6 @@
 import { Component, type ErrorInfo } from "react";
 import styles from '../module/ErrorBoundary.module.css'
 import type { Props, State } from "../utils/type";
-import { useNavigate } from "react-router-dom";
-
-
 export class ErrorBoundary extends Component<Props,State>{
     
     public state:State = {hasError:false};

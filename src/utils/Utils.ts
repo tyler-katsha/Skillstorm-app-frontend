@@ -76,9 +76,7 @@ export function formatRole(role: string): string {
         .map(word => word.charAt(0).toUpperCase() + word.slice(1))
         .join(" ");
 }
-export function formatDate(date: string): string {
-    return date ? new Date(date).toLocaleDateString("en-US", { day: "numeric", month: "long", year: "numeric" }) : "N/A"
-}
+
 
 export function extractName(alt: string): string {
     if (!alt) return "";
@@ -112,14 +110,6 @@ export function validGuest(isGuest:string | null,route:string): string{
     return isGuest ? '/login' : route
 }
 
-export function invalidDate(date:string): boolean {
-    const parsedDate = new Date(date).getTime();
-
-    if(isNaN(parsedDate)){
-        return true;
-    }
-    return parsedDate < Date.now();
-}
 export function removeAll(){
     localStorage.removeItem('isGuest')
     localStorage.removeItem('email')
