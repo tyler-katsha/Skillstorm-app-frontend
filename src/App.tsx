@@ -8,6 +8,7 @@ import { ResetEmail } from './pages/ResetEmail'
 import { ErrorBoundary } from './components/ErrorBoundary'
 import { UserProvider } from './contexts/UserContext'
 import { Leaderboard } from './pages/Leaderboard'
+import { Quiz } from './pages/Quiz'
 
 function App() {
 
@@ -21,6 +22,7 @@ function App() {
           <Route path="/login" element={<Login/>}/>
           <Route path="/register" element={<Register/>}/>
           <Route path="/" element={<Home/>}/>
+          <Route path="/quiz" element={<Quiz/>}/>
           <Route path="/reset-email" element={<ResetEmail />} />
           <Route path="/leaderboard" element={<Leaderboard />} />
         </Routes>

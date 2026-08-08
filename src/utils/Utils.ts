@@ -117,3 +117,58 @@ export function removeAll(){
 export function isLocal(authProvider:AuthProvider): boolean{
     return authProvider === 'LOCAL';
 }
+
+/** 
+ * Returns the empty string if n is equal to 1, else "s".
+ * Useful for adding a plural "s" ending to English words.  
+ * @example
+ * const f = (n) => `${n} bottle${pluralS(n)} of beer on the wall`;
+ * console.log(f(99)); // 99 bottles of beer on the wall
+ * console.log(f(1));  // 1 bottle of beer on the wall
+ * @returns either "s" or ""
+ */
+export const pluralS = (n: number) => (n != 1 ? "s" : "");
+
+/** 
+ * Rounds a number to a specified number of decimal places.
+ * @param x - The number to round.
+ * @param p - The number of decimal places to round to.
+ * @returns The rounded number.
+ * @example
+ * roundN(3.14159, 2); // 3.14
+ */
+export const roundN = (x: number, p: number) => (Math.round(x * 10**p) / 10**p);
+
+/**
+ * This is an enum representing the possible states a QuestionOption button
+ * can be in.
+ * 
+ * - An option should be given the POSSIBLE state 
+ *   if the user has not made any selection yet.
+ *   If one option has the POSSIBLE state, all options must have 
+ *   the POSSIBLE state.
+ *   POSSIBLE options are displayed in a neutral colour.
+ *   POSSIBLE options are the only options that are not disabled.
+ * - An option should be given the CORRECT state 
+ *   if it is the correct answer. 
+ *   CORRECT options are displayed with a green highlight. 
+ * - An option should be given the INCORRECT state 
+ *   if the user selects it, but it is not the correct answer.
+ *   INCORRECT options are displayed with a red highlight. 
+ * - An option should be given the UNSELECTED state 
+ *   if the user did not select it, and it is not the correct answer.
+ *   UNSELECTED options are displayed in a greyed-out colour.
+ */
+export const OptionState = {
+    "POSSIBLE": Symbol("POSSIBLE"),
+    "CORRECT": Symbol("CORRECT"),
+    "INCORRECT": Symbol("INCORRECT"),
+    "UNSELECTED": Symbol("UNSELECTED"),
+}
+
+/**
+ * The type of the values of the OptionState object.
+ * This custom type is preferred over `symbol` because the type of OptionState
+ * may change in the future.
+*/
+export type OptionStateT = (typeof OptionState)[keyof typeof OptionState];
