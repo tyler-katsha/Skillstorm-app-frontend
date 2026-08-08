@@ -2,7 +2,7 @@ import { useState } from 'react';
 import styles from '../module/Auth.module.css';
 import { Link, useNavigate } from 'react-router-dom';
 import { API } from '../utils/API';
-import { CustomPopup } from '../popups/CustomPopup';
+import { CustomPopup } from '../modals/CustomPopup';
 import { useUser } from '../contexts/UserContext';
 import type { LoginPayload, ToastResponse } from '../utils/type';
 import { removeAll } from '../utils/Utils';

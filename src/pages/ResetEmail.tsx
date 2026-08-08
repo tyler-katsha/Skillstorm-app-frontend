@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import styles from '../module/Auth.module.css'
 import type { ToastResponse } from '../utils/type';
-import { CustomPopup } from '../popups/CustomPopup';
+import { CustomPopup } from '../modals/CustomPopup';
 import { API } from '../utils/API';
 import { useNavigate } from 'react-router-dom';
 

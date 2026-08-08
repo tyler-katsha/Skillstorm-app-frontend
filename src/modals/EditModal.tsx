@@ -5,7 +5,7 @@ import { acceptArray, type User } from "../utils/type";
 import { FileUpload, type FileUploadRef } from "../components/FileUpload";
 import { formatRoles } from "../utils/Utils";
 // import { API } from "../utils/API";
-import { CustomPopup } from "../popups/CustomPopup";
+import { CustomPopup } from "./CustomPopup";
 
 export interface EditProfileFormData {
     name: string;

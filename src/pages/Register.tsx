@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import styles from '../module/Auth.module.css';
 import { useCallback, useEffect, useState, type ChangeEvent } from 'react';
 import { API } from '../utils/API';
-import { CustomPopup } from '../popups/CustomPopup';
+import { CustomPopup } from '../modals/CustomPopup';
 import { FileUpload } from '../components/FileUpload';
 import { acceptArray, type RegisterPayload, type ToastResponse } from '../utils/type';
 import imageCompression from 'browser-image-compression';
