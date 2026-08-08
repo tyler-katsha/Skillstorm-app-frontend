@@ -5,7 +5,7 @@ import { sampleQuiz, sampleUser } from '../utils/MockData.ts';
 import { roundN, pluralS, OptionState, type OptionStateT } from '../utils/Utils.ts';
 import styles from '../module/Quiz.module.css';
 
-// § Constants & variables §
+// ======================== Constants & variables =========================
 /**
  * The value of the user configuration option "Quick Select",
  * which determines whether the "Check answer" button is shown, or if
@@ -14,7 +14,7 @@ import styles from '../module/Quiz.module.css';
 const QUICK_SELECT = sampleUser.options.quick_select;
 
 
-// § Components §
+// ============================== Components ==============================
 type ProgressbarsProps = {
     answered: number
     total: number
@@ -168,20 +168,10 @@ export function Congrats(props: CongratsProps) {
 }
 
 // TODO: Finish styling `Congratulations`
-// TODO: Add a background to `QuizPageBG`
+// TODO: Implement `QuizPageBG`
 
 export function QuizPageBG () {
-    const tableWidth = 10;
-    const numCells = tableWidth * tableWidth;
-    const result = <div id='quiz-page-bg' style={{
-        display: "grid",
-        gridTemplate: `repeat(${tableWidth}, 1fr) / repeat(${tableWidth}, 1fr)`
-    }}>
-        {Array(numCells).fill(0).map((_, i) => (<div key={i} className='quiz-page-bg-cell'>
-            ?
-        </div>))}
-    </div>
-    return result;
+    throw new (class NotImplementedError {})();
 }
 
 export function Quiz() {
@@ -245,37 +235,32 @@ export function Quiz() {
         }}
     />);
 
-    const quizContentComp = (<>
-        <div id={styles["quiz-content"]}>
-            <Progressbars
-                answered={questionIdx + 1}
-                total={sampleQuiz.questions.length}
-                currentLevel={sampleUser.level}
-                currentXp={sampleUser.xp}
-                nextLevelXp={sampleUser.xpGoal}
-            ></Progressbars>
-            <QuestionTextbox
-                content={sampleQuiz.questions[questionIdx].text}
-            ></QuestionTextbox>
-            <div>
-                {sampleQuiz.questions[questionIdx].options.map((v, i) =>
-                    <QuestionOption
-                        key={i}
-                        label={v}
-                        selected={selectedIdx == i}
-                        state={getBtnState(i)}
-                        myOnClick={() => doSelect(i)}
-                    ></QuestionOption>
-                )}
-            </div>
-            {(QUICK_SELECT ? null : submitButton)}
+    const quizContentComp = (
+    <div className={styles["page-root"]}>
+        <Progressbars
+            answered={questionIdx + 1}
+            total={sampleQuiz.questions.length}
+            currentLevel={sampleUser.level}
+            currentXp={sampleUser.xp}
+            nextLevelXp={sampleUser.xpGoal}
+        ></Progressbars>
+        <QuestionTextbox
+            content={sampleQuiz.questions[questionIdx].text}
+        ></QuestionTextbox>
+        <div>
+            {sampleQuiz.questions[questionIdx].options.map((v, i) =>
+                <QuestionOption
+                    key={i}
+                    label={v}
+                    selected={selectedIdx == i}
+                    state={getBtnState(i)}
+                    myOnClick={() => doSelect(i)}
+                ></QuestionOption>
+            )}
         </div>
-    </>);
+        {(QUICK_SELECT ? null : submitButton)}
+    </div>);
 
-    return (
-        <StrictMode>
-            {quizContentComp}
-        </StrictMode>
-    );
+    return quizContentComp;
 
 }

@@ -16,38 +16,25 @@
     --guardsman-red: #BA0000;
 }
 
-/* ============================ Generic styles ============================ */
-.bigger { font-size: 150%; }
-
-.smaller { font-size: 75%; }
-
-/* =============================== Viewport =============================== */
-:root {
-    width: 100vw;
-    height: 100vh;
-}
-
-body, #root, #root > *:first-child {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-}
-
-#root > *:first-child {
-    padding: 1%;
-}
-
-body {
-    overflow: hidden;
-}
-
-body > * {
-    box-sizing: border-box;
+/* ============================ Global styles ============================= */
+.my-font {
     font-family: Questrial, Poppins, Arial, sans-serif; 
 }
 
+/* =============================== Viewport =============================== */
+.page-root {
+    composes: my-font;
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
 /* ============================== Background ============================== */
-#quiz-page-bg {
+.quiz-page-bg {
     position: absolute;
     top: -25vw;
     left: -25vw;
@@ -61,7 +48,8 @@ body > * {
 .question-textbox {
     display: block;
     font-size: 200%;
-    width: 100%;
+    /* TODO: What is the pure CSS equivalent of -webkit-fill-available? */
+    width: -webkit-fill-available;
     padding: 1em 5%;
     margin: 6px 0;
     text-align: center;
@@ -71,7 +59,8 @@ body > * {
 }
 
 /* =============================== Buttons ================================ */
-.quiz-option-button, .submit-button {
+.button {
+    composes: my-font;
     display: block;
     width: 100%;
     padding: 10px 14px;
@@ -80,7 +69,12 @@ body > * {
     border-radius: 6px;
 }
 
+.quiz-option-button {
+    composes: button;
+} 
+
 .submit-button {
+    composes: button;
     cursor: pointer;
     position: relative;
     border: 1px solid grey;
