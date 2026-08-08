@@ -39,31 +39,31 @@ export function Progressbars(props: ProgressbarsProps) {
     }
 
     return (
-        <div className={styles["progressbars"]}>
+        <div className={styles["pbars"]}>
             <div
-                className={styles["xp-progressbar"]}
+                className={styles["xp-pbar"]}
                 style={{
                     backgroundImage: `linear-gradient(90deg, var(--ink) ${levelProgress}%, var(--guardsman-red) ${levelProgress}%)`
                 }}
             >
-                <span className="pbar-text left-text">
+                <span className={styles["pbar-left-text"]}>
                     {currentXp} / {nextLevelXp}
                 </span>
-                <span className="pbar-text right-text">
+                <span className={styles["pbar-right-text"]}>
                     Level {currentLevel}
                 </span>
             </div>
             <div
-                className="progressbar quiz-progressbar"
+                className={styles["quiz-pbar"]}
                 style={{
                     backgroundImage: `linear-gradient(90deg, var(--ink) ${quizProgress}%, var(--guardsman-red) ${quizProgress}%)`
                 }}
             >
-                <span className="pbar-text left-text">
+                <span className={styles["pbar-left-text"]}>
                     <span className={styles["smaller"]}>Question </span>
                     <span className={styles["bigger"]}>{answered}</span>
                 </span>
-                <span className="pbar-text right-text">
+                <span className={styles["pbar-right-text"]}>
                     {questionsToGo}
                 </span>
             </div>

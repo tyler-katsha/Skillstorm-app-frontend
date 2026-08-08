@@ -21,10 +21,6 @@
 
 .smaller { font-size: 75%; }
 
-.left-text { text-align: left; }
-
-.right-text { text-align: right; }
-
 /* =============================== Viewport =============================== */
 :root {
     width: 100vw;
@@ -91,13 +87,13 @@ body > * {
 }
 
 /* ============================ Progress bars ============================= */
-.progressbars {
+.pbars {
     display: flex;
     flex-direction: column;
     color: var(--corn-silk);
 }
 
-.progressbar {
+.pbar {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -109,22 +105,29 @@ body > * {
     padding-right: 1%;
 }
 
-.xp-progressbar { 
-    composes: progressbar;
+.xp-pbar { 
+    composes: pbar;
     font-size: 75%; 
     padding-top: 0.25em;
     padding-bottom: 0.25em;
     border-bottom: 1px solid hsl(from var(--ink) h s 20%);
 }
 
-.quiz-progressbar { 
+.quiz-pbar { 
+    composes: pbar;
     margin-bottom: 6px; 
     padding-top: 0.5em;
     padding-bottom: 0.5em;
     border-bottom: 3px solid hsl(from var(--ink) h s 20%);
 }
 
-.progressbars > .progressbar > .pbar-text { color: var(--corn-silk); }
+.pbar-left-text {
+    text-align: left;
+}
+
+.pbar-right-text {
+    text-align: left;
+}
 
 /* =========================== Congratulations ============================ */
 .congrats-block {
