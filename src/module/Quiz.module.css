@@ -57,7 +57,7 @@
 .radgrad-center {
     width: 150vmax;
     height: 150vmax;
-    top: -25vmax;
+    top: -50vmax;
     left: -25vmax;
     position: absolute;
     pointer-events:none;
@@ -75,6 +75,25 @@
     z-index: -10;
 }
 
+/* 
+    TODO: Find a better way to do this.
+    This @keyframes essentially combines two animations over two different durations.
+    ( rotate(0°) -> rotate(360°) over 30s , and opacity(1.0) -> opacity(0.5) over 1s )
+    If CSS allowed me to use two animations on one element, I would have done that, like this:
+    ```
+    @keyframes rotation {
+        0%   { transform: rotate(  0deg); }
+      100%   { transform: rotate(360deg); }
+    }
+    @keyframes opacity {
+        0%   { opacity: 1.0; }
+      100%   { opacity: 0.5; }
+    }
+    element.style {
+        animation: rotation 30s infinite normal, opacity 1s infinite alternate;
+    }
+    ```
+*/
 @keyframes radgrad-rotation {
     0%   { transform: rotate(  0deg); opacity: 1.0; }
     4%   { opacity: 0.5; }
