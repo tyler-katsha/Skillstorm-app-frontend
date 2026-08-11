@@ -1,5 +1,5 @@
-// § Imports §
-import { StrictMode, useState } from 'react';
+// =============================== Imports ================================
+import { useContext, useState } from 'react';
 // TODO: Replace SampleData with API calls
 import { sampleQuiz, sampleUser } from '../utils/MockData.ts';
 import { roundN, pluralS, OptionState, type OptionStateT } from '../utils/Utils.ts';
@@ -12,7 +12,7 @@ import styles from '../module/Quiz.module.css';
  * clicking on an option causes the question to submit immediately.
  */
 const QUICK_SELECT = sampleUser.options.quick_select;
-
+const QuizContext = useContext(null);
 
 // ============================== Components ==============================
 type ProgressbarsProps = {
@@ -161,8 +161,11 @@ type CongratsProps = {
 export function Congrats(props: CongratsProps) {
     const { correct, total } = props;
     const percentage = roundN(100 * correct / total, 2);
-    return <div className="congrats-block larger">
-        <span>Congratulations!</span>
+    return <div className={styles["congrats-block"]}>
+        <div className={styles["congrats-bg"]}>
+            <div className={styles["radgrad-center"]}></div>
+        </div>
+        <span>Congratulations on completing <strong></strong>!</span>
         <span>You answered <span className={styles["congrats-fraction"]}>{correct} / {total}</span> (<span className={styles["congrats-percentage"]}>{percentage}%</span>) questions correctly.</span>
     </div>
 }
@@ -171,7 +174,7 @@ export function Congrats(props: CongratsProps) {
 // TODO: Implement `QuizPageBG`
 
 export function QuizPageBG () {
-    throw new (class NotImplementedError {})();
+    return <div></div>;
 }
 
 export function Quiz() {
@@ -179,16 +182,6 @@ export function Quiz() {
     const [score, setScore] = useState(0);
     const [selectedIdx, setSelectedIdx] = useState(-1);
     const [isAnswering, setAnswering] = useState(true);
-
-    // Do not proceed with the function body if
-    // index `questionIdx` is out of range
-    // (this means that the user has already answered the last question.)
-    if (questionIdx >= sampleQuiz.questions.length) {
-        return <Congrats
-            correct={score}
-            total={sampleQuiz.questions.length}
-        />
-    }
 
     function getBtnState(index: number) {
         if (isAnswering) {
@@ -235,32 +228,41 @@ export function Quiz() {
         }}
     />);
 
-    const quizContentComp = (
-    <div className={styles["page-root"]}>
-        <Progressbars
-            answered={questionIdx + 1}
-            total={sampleQuiz.questions.length}
-            currentLevel={sampleUser.level}
-            currentXp={sampleUser.xp}
-            nextLevelXp={sampleUser.xpGoal}
-        ></Progressbars>
-        <QuestionTextbox
-            content={sampleQuiz.questions[questionIdx].text}
-        ></QuestionTextbox>
-        <div>
-            {sampleQuiz.questions[questionIdx].options.map((v, i) =>
-                <QuestionOption
-                    key={i}
-                    label={v}
-                    selected={selectedIdx == i}
-                    state={getBtnState(i)}
-                    myOnClick={() => doSelect(i)}
-                ></QuestionOption>
-            )}
-        </div>
-        {(QUICK_SELECT ? null : submitButton)}
-    </div>);
+    if (questionIdx >= sampleQuiz.questions.length) {
+        return (<div className={styles["page-root"]}>
+            <Congrats
+                correct={score}
+                total={sampleQuiz.questions.length}
+            />
+        </div>);
+    }
 
-    return quizContentComp;
+    else {
+        return (<div className={styles["page-root"]}>
+            <QuizPageBG></QuizPageBG>
+            <Progressbars
+                answered={questionIdx + 1}
+                total={sampleQuiz.questions.length}
+                currentLevel={sampleUser.level}
+                currentXp={sampleUser.xp}
+                nextLevelXp={sampleUser.xpGoal}
+            ></Progressbars>
+            <QuestionTextbox
+                content={sampleQuiz.questions[questionIdx].text}
+            ></QuestionTextbox>
+            <div>
+                {sampleQuiz.questions[questionIdx].options.map((v, i) =>
+                    <QuestionOption
+                        key={i}
+                        label={v}
+                        selected={selectedIdx == i}
+                        state={getBtnState(i)}
+                        myOnClick={() => doSelect(i)}
+                    ></QuestionOption>
+                )}
+            </div>
+            {(QUICK_SELECT ? null : submitButton)}
+        </div>);
+    }
 
 }
