@@ -1,7 +1,7 @@
 // =============================== Imports ================================
-import { useContext, useState } from 'react';
+import { createContext, useContext, useState } from 'react';
 // TODO: Replace SampleData with API calls
-import { sampleQuiz, sampleUser } from '../utils/MockData.ts';
+import { type QuizData, sampleQuiz, sampleUser } from '../utils/MockData.ts';
 import { roundN, pluralS, OptionState, type OptionStateT } from '../utils/Utils.ts';
 import styles from '../module/Quiz.module.css';
 
@@ -12,7 +12,6 @@ import styles from '../module/Quiz.module.css';
  * clicking on an option causes the question to submit immediately.
  */
 const QUICK_SELECT = sampleUser.options.quick_select;
-const QuizContext = useContext(null);
 
 // ============================== Components ==============================
 type ProgressbarsProps = {
@@ -161,11 +160,13 @@ type CongratsProps = {
 export function Congrats(props: CongratsProps) {
     const { correct, total } = props;
     const percentage = roundN(100 * correct / total, 2);
+    // TODO: Get the name of this quiz using useContext
+    // and put it in the congratulations message
     return <div className={styles["congrats-block"]}>
         <div className={styles["congrats-bg"]}>
             <div className={styles["radgrad-center"]}></div>
         </div>
-        <span>Congratulations on completing <strong></strong>!</span>
+        <span>Congratulations on completing <strong>this quiz</strong>!</span>
         <span>You answered <span className={styles["congrats-fraction"]}>{correct} / {total}</span> (<span className={styles["congrats-percentage"]}>{percentage}%</span>) questions correctly.</span>
     </div>
 }
@@ -187,7 +188,7 @@ export function Quiz() {
         if (isAnswering) {
             return OptionState.POSSIBLE;
         }
-        else if (index == sampleQuiz.questions[questionIdx].correctOption) {
+        else if (sampleQuiz.questions[questionIdx].answers[index].is_correct) {
             return OptionState.CORRECT;
         }
         else if (index == selectedIdx) {
@@ -248,13 +249,13 @@ export function Quiz() {
                 nextLevelXp={sampleUser.xpGoal}
             ></Progressbars>
             <QuestionTextbox
-                content={sampleQuiz.questions[questionIdx].text}
+                content={sampleQuiz.questions[questionIdx].question_text}
             ></QuestionTextbox>
             <div>
-                {sampleQuiz.questions[questionIdx].options.map((v, i) =>
+                {sampleQuiz.questions[questionIdx].answers.map((v, i) =>
                     <QuestionOption
                         key={i}
-                        label={v}
+                        label={v.answer_text}
                         selected={selectedIdx == i}
                         state={getBtnState(i)}
                         myOnClick={() => doSelect(i)}
