@@ -66,69 +66,25 @@
         rgb(from var(--corn-silk) r g 150 ) 20deg 30deg
     );
     background-clip: content-box;
-    animation-name: radgrad-rotation;
-    animation-duration: 30s;
-    animation-timing-function: linear;
-    animation-delay: 0s;
-    animation-iteration-count: infinite;
-    animation-direction: normal;
+    animation: rotation 30s infinite normal, opacity 1s infinite alternate;
     z-index: -10;
 }
 
-/* 
-    TODO: Find a better way to do this.
-    This @keyframes essentially combines two animations over two different durations.
-    ( rotate(0°) -> rotate(360°) over 30s , and opacity(1.0) -> opacity(0.5) over 1s )
-    If CSS allowed me to use two animations on one element, I would have done that, like this:
-    ```
-    @keyframes rotation {
-        0%   { transform: rotate(  0deg); }
-      100%   { transform: rotate(360deg); }
-    }
-    @keyframes opacity {
-        0%   { opacity: 1.0; }
-      100%   { opacity: 0.5; }
-    }
-    element.style {
-        animation: rotation 30s infinite normal, opacity 1s infinite alternate;
-    }
-    ```
-*/
-@keyframes radgrad-rotation {
-    0%   { transform: rotate(  0deg); opacity: 1.0; }
-    4%   { opacity: 0.5; }
-    8%   { opacity: 1.0; }
-    12%  { opacity: 0.5; }
-    16%  { opacity: 1.0; }
-    20%  { opacity: 0.5; }
-    24%  { opacity: 1.0; }
-    28%  { opacity: 0.5; }
-    32%  { opacity: 1.0; }
-    36%  { opacity: 0.5; }
-    40%  { opacity: 1.0; }
-    44%  { opacity: 0.5; }
-    48%  { opacity: 1.0; }
-    52%  { opacity: 0.5; }
-    56%  { opacity: 1.0; }
-    60%  { opacity: 0.5; }
-    64%  { opacity: 1.0; }
-    68%  { opacity: 0.5; }
-    72%  { opacity: 1.0; }
-    76%  { opacity: 0.5; }
-    80%  { opacity: 1.0; }
-    84%  { opacity: 0.5; }
-    88%  { opacity: 1.0; }
-    92%  { opacity: 0.5; }
-    96%  { opacity: 1.0; }
-    100% { transform: rotate(360deg); opacity: 0.5; }
+@keyframes rotation {
+    0%   { transform: rotate(  0deg); }
+    100%   { transform: rotate(360deg); }
+}
+@keyframes opacity {
+    0%   { opacity: 1.0; }
+    100%   { opacity: 0.5; }
 }
 
 /* =========================== Question textbox =========================== */
 .question-textbox {
     display: block;
     font-size: 200%;
-    /* TODO: What is the pure CSS equivalent of -webkit-fill-available? */
-    width: -webkit-fill-available;
+    width: 100%; 
+    box-sizing: border-box;
     padding: 1em 5%;
     margin: 6px 0;
     text-align: center;
