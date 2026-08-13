@@ -1,5 +1,8 @@
 import type { ReactNode } from "react";
 
+// These types are not useful in the context of the current project.
+// They must be edited or removed.
+
 export interface RegisterPayload {
     fullName: string;
     email: string;
@@ -87,3 +90,19 @@ export type ToastResponse = "success" | "error"
 export const appRoleArray = ['MEMBER','YOUTH_LEADER','GUEST','ADMIN']
 export const providersArray = ['Google', 'Facebook', 'Instagram'];
 export const acceptArray = ['image/png, image/jpeg, image/jpg']
+
+// not these ones though, they're freshly made.
+
+export type QuizData = {
+    quiz_id: number,
+    title: string,
+    difficulty: "Easy" | "Medium" | "Hard",
+    questions: {
+        question_text: string,
+        score: number,
+        answers: {
+            answer_text: string,
+            is_correct: boolean,
+        }[]
+    }[]
+}

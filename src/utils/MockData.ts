@@ -23,20 +23,6 @@ export const cardData: CardData[] = [
  * Those sample values are being kept in this file so that it will be easier
  * to replace the sample data with results from an actual database.
  */
-export type QuizData = {
-    quiz_id: number,
-    title: string,
-    difficulty: "Easy" | "Medium" | "Hard",
-    questions: {
-        question_text: string,
-        score: number,
-        answers: {
-            answer_text: string,
-            is_correct: boolean,
-        }[]
-    }[]
-}
-
 export const sampleQuiz: QuizData = { "quiz_id": 1, "title": "Java Basics Quiz", "difficulty": "Easy", "questions": [
     { "question_text": "What is Java?", "score": 10, "answers": [
         { "answer_text": "Compiled language", "is_correct": true }, 
