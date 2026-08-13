@@ -14,36 +14,6 @@ export const cardData: CardData[] = [
     { title: 'Badge System', text: 'Earn achievements for milestones and high scores along the way' }
 ]
 
-/*
- * ABOUT SampleData.tsx:
- * This webpage is only an implementation of the UI design. 
- * It does not have any backend interface capabilities. 
- * Therefore, sample values are used to show what the UI may look like
- *  when actual user content is used.
- * Those sample values are being kept in this file so that it will be easier
- * to replace the sample data with results from an actual database.
- */
-export const sampleQuiz: QuizData = { "quiz_id": 1, "title": "Java Basics Quiz", "difficulty": "Easy", "questions": [
-    { "question_text": "What is Java?", "score": 10, "answers": [
-        { "answer_text": "Compiled language", "is_correct": true }, 
-        { "answer_text": "Interpreted language", "is_correct": false }, 
-        { "answer_text": "Scripting language", "is_correct": false }, 
-        { "answer_text": "Markup language", "is_correct": false }
-    ] }, 
-    { "question_text": "What is JVM?", "score": 10, "answers": [
-        { "answer_text": "Java Virtual Machine", "is_correct": true }, 
-        { "answer_text": "Java Visual Model", "is_correct": false }, 
-        { "answer_text": "Java Virtual Module", "is_correct": false }, 
-        { "answer_text": "Java Variable Manager", "is_correct": false }
-    ] }, 
-    { "question_text": "What is Spring Boot?", "score": 10, "answers": [
-        { "answer_text": "Framework", "is_correct": true }, 
-        { "answer_text": "Library", "is_correct": false }, 
-        { "answer_text": "Database", "is_correct": false }, 
-        { "answer_text": "IDE", "is_correct": false }
-    ] }
-] };
-
 
 
 export const sampleUser = {
