@@ -172,3 +172,45 @@ export const OptionState = {
  * may change in the future.
 */
 export type OptionStateT = (typeof OptionState)[keyof typeof OptionState];
+
+/**
+ * These values are used by the functions `getLevel`, `getXpThreshold` and `getXpGoal`.
+ * These values can be adjusted in order to change how quickly or slowly levels are gained.
+ * f(x) = mx + q
+ */
+const xpFunctionParams = {m: 125, q: -25}
+
+/**
+ * Returns the level that corresponds to the given xp value.
+ * This function can get the level a user has reached based on the number of xp points they have accumulated.
+ * @param xp The number of xp points to convert
+ * @returns The maximum level reachable with this number of xp points
+ */
+export function getLevel(xp: number) {
+    return Math.floor((xp/xpFunctionParams.m) - (xpFunctionParams.m/xpFunctionParams.m))
+}
+
+/**
+ * Returns the number of xp points required to reach a given level.
+ * @param level The level for which the xp threshold is to be calculated
+ * @returns The number of xp points which must be accumulated to reach that level
+ */
+export function getXpThreshold(level: number) {
+    return xpFunctionParams.m * level - xpFunctionParams.q;
+}
+
+/**
+ * Returns the number of xp points required to reach the next level, based on a user's current xp.
+ * @param xp The number of xp points already accumulated
+ * @returns The number of xp points which must be accumulated to reach the next level
+ */
+export function getXpGoal(xp: number) {
+    return getXpThreshold(getLevel(xp) + 1)
+}
+
+// The amount of XP required to reach a certain level is given by
+// xp = 125 * level - 25
+// (this essentially means that it takes 250 more points to reach a new level.)
+// Inversely, the level reached by a user with a certain amount of XP is given by
+// level = floor((xp/125) + (25/125))
+// (This progression can be changed by adjusting the values 25 and 100).

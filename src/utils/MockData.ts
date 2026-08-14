@@ -13,19 +13,3 @@ export const cardData: CardData[] = [
     { title: 'Quiz Engine', text: 'Questions with options and diffculty levels to challenge yourself' },
     { title: 'Badge System', text: 'Earn achievements for milestones and high scores along the way' }
 ]
-
-
-
-export const sampleUser = {
-    username: "john_doe",
-    user_id: crypto.randomUUID(),
-    level: 2,
-    xp: 1340,
-    xpGoal: 2000,
-    options: {
-        quick_select: false,
-    }
-}
-// TODO: Extrapolate a function or sequence for `xpGoal`.
-// `xpGoal` should not be stored with the user's details. 
-// Instead, it should be easily calculable as a function of the user's level. 

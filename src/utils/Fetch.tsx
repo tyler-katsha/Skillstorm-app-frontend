@@ -14,7 +14,7 @@ export function useFetch<T>(url: string) {
         fetch(url)
         .then((response) => {
             if (!response.ok) {
-                throw new Error(`HTTP request returned status code ${response.status} (${response.statusText})`);
+                throw new Error(`HTTP request failed (returned status code ${response.status} "${response.statusText}")`);
             }
             return response.json();
         })

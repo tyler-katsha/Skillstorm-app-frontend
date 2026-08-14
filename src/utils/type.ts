@@ -106,3 +106,15 @@ export type QuizData = {
         }[]
     }[]
 }
+
+export type BadgeData = {
+    name: string,
+    description: string
+}
+
+export type UserData = {
+    user_id: number,
+    username: string,
+    xp: number,
+    badges: BadgeData[],
+}

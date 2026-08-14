@@ -1,17 +1,13 @@
 // =============================== Imports ================================
-import { createContext, useContext, useState } from 'react';
-// TODO: Replace SampleData with API calls
-import { type QuizData, sampleQuiz, sampleUser } from '../utils/MockData.ts';
-import { roundN, pluralS, OptionState, type OptionStateT } from '../utils/Utils.ts';
+import { useState } from 'react';
+import { roundN, pluralS, OptionState, type OptionStateT, getLevel, getXpGoal } from '../utils/Utils.ts';
 import styles from '../module/Quiz.module.css';
+import type { QuizData, UserData } from '../utils/type.ts';
+import { useFetch } from '../utils/Fetch.tsx';
+import { API } from '../utils/API.ts';
 
 // ======================== Constants & variables =========================
-/**
- * The value of the user configuration option "Quick Select",
- * which determines whether the "Check answer" button is shown, or if
- * clicking on an option causes the question to submit immediately.
- */
-const QUICK_SELECT = sampleUser.options.quick_select;
+
 
 // ============================== Components ==============================
 type ProgressbarsProps = {
@@ -171,9 +167,6 @@ export function Congrats(props: CongratsProps) {
     </div>
 }
 
-// TODO: Finish styling `Congratulations`
-// TODO: Implement `QuizPageBG`
-
 export function QuizPageBG () {
     return <div></div>;
 }
@@ -184,11 +177,22 @@ export function Quiz() {
     const [selectedIdx, setSelectedIdx] = useState(-1);
     const [isAnswering, setAnswering] = useState(true);
 
+    // TODO: Return hard-coded "1" values with data from some browser source.
+    // For example, the quiz ID could be a URL parameter, and
+    // the user ID parameter could be obtained from a session cookie.
+    const quizRequest = useFetch<QuizData>(`${API}/quizzes/1`);
+    const userRequest = useFetch<UserData>(`${API}/users/1`);
+
+    // TODO: Add error handling for failed requests,
+    // and Suspense for in-progress requests
+    const quizData = quizRequest.data as QuizData;
+    const userData = userRequest.data as UserData;
+
     function getBtnState(index: number) {
         if (isAnswering) {
             return OptionState.POSSIBLE;
         }
-        else if (sampleQuiz.questions[questionIdx].answers[index].is_correct) {
+        else if (quizData.questions[questionIdx].answers[index].is_correct) {
             return OptionState.CORRECT;
         }
         else if (index == selectedIdx) {
@@ -212,13 +216,7 @@ export function Quiz() {
 
     // Triggered when the user selects an option
     function doSelect(index: number) {
-        if (QUICK_SELECT) {
-            doSubmit();
-            setSelectedIdx(-1);
-        }
-        else {
-            setSelectedIdx(selectedIdx != index ? index : -1);
-        }
+        setSelectedIdx(selectedIdx != index ? index : -1);
     }
 
     const submitButton = (<SubmitButton
@@ -229,11 +227,11 @@ export function Quiz() {
         }}
     />);
 
-    if (questionIdx >= sampleQuiz.questions.length) {
+    if (questionIdx >= quizData.questions.length) {
         return (<div className={styles["page-root"]}>
             <Congrats
                 correct={score}
-                total={sampleQuiz.questions.length}
+                total={quizData.questions.length}
             />
         </div>);
     }
@@ -243,16 +241,16 @@ export function Quiz() {
             <QuizPageBG></QuizPageBG>
             <Progressbars
                 answered={questionIdx + 1}
-                total={sampleQuiz.questions.length}
-                currentLevel={sampleUser.level}
-                currentXp={sampleUser.xp}
-                nextLevelXp={sampleUser.xpGoal}
+                total={quizData.questions.length}
+                currentLevel={getLevel(userData.xp)}
+                currentXp={userData.xp}
+                nextLevelXp={getXpGoal(userData.xp)}
             ></Progressbars>
             <QuestionTextbox
-                content={sampleQuiz.questions[questionIdx].question_text}
+                content={quizData.questions[questionIdx].question_text}
             ></QuestionTextbox>
             <div>
-                {sampleQuiz.questions[questionIdx].answers.map((v, i) =>
+                {quizData.questions[questionIdx].answers.map((v, i) =>
                     <QuestionOption
                         key={i}
                         label={v.answer_text}
@@ -262,7 +260,7 @@ export function Quiz() {
                     ></QuestionOption>
                 )}
             </div>
-            {(QUICK_SELECT ? null : submitButton)}
+            {submitButton}
         </div>);
     }
 
