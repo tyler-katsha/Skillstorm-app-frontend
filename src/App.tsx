@@ -13,7 +13,7 @@ import { Quiz } from './pages/Quiz'
 function App() {
 
   return (
-    <UserProvider>
+    // <UserProvider>
       <BrowserRouter>
       {/* For better UX wrap every route in a ErrorBoundary component with a more specific message */}
       <ErrorBoundary title="Application error" message="Something unexpected went wrong. Please reload the app.">
@@ -28,7 +28,7 @@ function App() {
         </Routes>
         </ErrorBoundary>
       </BrowserRouter>
-    </UserProvider>
+    // </UserProvider>
   )
 }
 
