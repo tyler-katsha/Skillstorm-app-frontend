@@ -6,7 +6,7 @@ export const CardGrid: React.FC<CardGridProps> = ({width = '100%',height='auto',
         <div className={styles.gridContainer}>
             {cardData.map((item,index) => (
                 <div key={index}>
-                    <Card width={width} height={height} title={item.title} text={item.text}/>
+                    <Card width={width} height={height} title={item.title} text={item.text} numOfQuestions={item.numOfQuestions}/>
                 </div>
             ))}
         </div>

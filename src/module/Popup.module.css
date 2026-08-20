@@ -1,33 +1,30 @@
 .overlay {
   position: fixed;
-  inset: 0; /* Modern shorthand for top/left/right/bottom: 0 */
-  background-color: rgba(15, 23, 42, 0.4); /* Sleek slate tint instead of pure black */
+  inset: 0;
+  background-color: rgba(15, 23, 42, 0.4);
   backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px); /* Safari support */
-  display: grid; /* Grid with place-items is the cleanest way to center */
+  -webkit-backdrop-filter: blur(6px); 
+  display: grid; 
   place-items: center;
   z-index: 9999;
-  padding: 24px; /* Prevents the modal from touching screen edges on mobile */
+  padding: 24px; 
   animation: fadeIn 0.3s ease-out forwards;
 }
 
 .popupContainer {
   background-color: #ffffff;
-  border-radius: 16px; /* Softer, friendlier corners */
+  border-radius: 16px; 
   padding: 32px;
   width: 100%;
   max-width: 400px;
   text-align: center;
-  /* Premium layered shadow with a subtle 1px inner rim */
   box-shadow: 
     0 20px 25px -5px rgba(0, 0, 0, 0.1),
     0 8px 10px -6px rgba(0, 0, 0, 0.1),
     0 0 0 1px rgba(0, 0, 0, 0.03); 
-  /* Scale/zoom animation feels more native for center modals than a vertical slide */
   animation: modalPop 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Animations */
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
@@ -44,13 +41,12 @@
   }
 }
 
-/* Typography */
 .title {
   margin: 0 0 8px;
   font-family: system-ui, -apple-system, sans-serif;
   font-size: 1.25rem;
   font-weight: 600;
-  color: #0f172a; /* Richer, darker slate */
+  color: #0f172a; 
 }
 
 .message {
@@ -61,7 +57,6 @@
   line-height: 1.6;
 }
 
-/* Redesigned Icon Area */
 .iconContainer {
   display: inline-flex;
   justify-content: center;
@@ -72,7 +67,6 @@
   margin-bottom: 20px;
 }
 
-/* Button */
 .closeBtn {
   border: none;
   color: #ffffff;
@@ -87,7 +81,6 @@
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
-/* Tactile Hover & Active states instead of simple brightness filters */
 .closeBtn:hover {
   transform: translateY(-1px);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
@@ -98,14 +91,10 @@
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
-/* --- Theme Colors --- */
-
-/* Success Theme: Emerald */
-.successIcon { background-color: #d1fae5; color: #059669; } /* Soft green bg behind icon */
+.successIcon { background-color: #d1fae5; color: #059669; } 
 .successBtn { background-color: #10b981; }
-.successBtn:hover { background-color: #059669; } /* Explicit hover color is better than filter */
+.successBtn:hover { background-color: #059669; } 
 
-/* Error Theme: Rose */
-.errorIcon { background-color: #fee2e2; color: #dc2626; } /* Soft red bg behind icon */
+.errorIcon { background-color: #fee2e2; color: #dc2626; } 
 .errorBtn { background-color: #ef4444; }
 .errorBtn:hover { background-color: #dc2626; }

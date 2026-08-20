@@ -1,58 +1,43 @@
-import { createContext, useEffect, useState, useContext } from "react";
+import { createContext, useEffect, useState, useContext, type Dispatch, type SetStateAction } from "react";
 import { API } from "../utils/API";
-import { type ProfileProps, type User } from "../utils/type";
+import { type UserProps } from "../utils/type";
 import { HomeSkeleton } from "../skeletons/pages/HomeSkeleton";
-
-
+import { getToken, removeAll } from "../utils/Utils";
 interface UserContextType {
-    user: User | null;
+    user: UserProps | null;
     isLoading: boolean;
-    updateUser: (newData: User) => void;
-    updatePartialUser: (profileData: ProfileProps) => void;
-    continueAsGuest: () => void;
+    updateUser: (newData: UserProps) => void;
     logout: () => void;
     fetchUser: () => Promise<void>;
     isAuthenticated: boolean;
+    setIsAuthentication: Dispatch<SetStateAction<boolean>>;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [user, setUser] = useState<User | null>(null);
+    const [user, setUser] = useState<UserProps | null>(null);
     const [isLoading, setIsLoading] = useState(true);
-    const isAuthenticated = !!user;
-    const isReady = !isLoading;
-
-    const continueAsGuest = () => {
-        setUser({
-            name: 'Guest',
-            email: '',
-            age: 0,
-            authProvider: 'LOCAL',
-            roles: ['GUEST'],
-            profileImage: '',
-            dateOfBirth: '',
-            bio: '',
-            enabled: true
-        } as User)
-    }
-
+    const [isAuthenticated,setIsAuthentication] = useState(user !== null);
+    const token = getToken();
     const fetchUser = async () => {
 
+        if(localStorage.getItem('login-register-pages') === 'true'){
+            setIsLoading(false);
+            return;
+        }
         if(localStorage.getItem('email') === 'true'){
             setIsLoading(false);
             return;
         }
-        if (localStorage.getItem("isGuest") === 'true') {
-            continueAsGuest();
-            setIsLoading(false);
-            return;
-        }
+        
         try {
-            const response = await fetch(API + '/users/me', {
+            const response = await fetch(`${API}/users/me`, {
                 method: 'GET',
-                credentials: 'include',
-                headers: { 'content-type': 'application/json' }
+                headers: { 
+                    'content-type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
             });
 
             if (!response.ok) {
@@ -62,9 +47,10 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 return;
             }
 
+            
             const data = await response.json();
-
             setUser(data);
+            setIsAuthentication(true);
         } catch (err) {
             setUser(null);
         } finally {
@@ -76,26 +62,19 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
         fetchUser();
     }, [])
 
-    const updateUser = (newData: User) => {
+    const updateUser = (newData: UserProps) => {
         setUser(newData);
-    }
-
-    const updatePartialUser = (newData: ProfileProps) => {
-        setUser(prev => {
-            if (!prev) return null;
-
-            return { ...prev, ...newData }
-        });
     }
 
     const logout = () => {
         setUser(null);
+        removeAll();
     }
 
-    if (!isReady) return <HomeSkeleton />;
+    if (isLoading) return <HomeSkeleton />;
 
     return (
-        <UserContext.Provider value={{ user, isLoading, updateUser, continueAsGuest, logout, fetchUser, updatePartialUser, isAuthenticated }}>
+        <UserContext.Provider value={{ user, isLoading, updateUser, logout, fetchUser, isAuthenticated,setIsAuthentication }}>
             {children}
         </UserContext.Provider>
     )

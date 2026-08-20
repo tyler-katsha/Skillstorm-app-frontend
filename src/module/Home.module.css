@@ -1,0 +1,55 @@
+.bigCardContainer {
+  width: 80%;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color); 
+  padding: 3rem 4rem;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.25rem; 
+  max-width: 1200px;
+  margin: 2rem auto;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05); 
+}
+
+.badge {
+  background-color: var(--primary-blue);
+  color: #FFFFFF;
+  padding: 0.25rem 1rem;
+  border-radius: 9999px; 
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+.bigCardContainer h1 {
+  margin: 0;
+  font-size: 2.5rem;
+  color: var(--text-main);
+  font-weight: 700;
+}
+
+.bigCardParagraph {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.quizBtn {
+  background-color: var(--primary-blue);
+  color: #FFFFFF;
+  border: none;
+  border-radius: 9999px;
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.quizBtn:hover {
+  background-color: var(--primary-blue-hover);
+}

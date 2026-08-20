@@ -1,20 +1,21 @@
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import styles from '../module/Navigation.module.css';
 
 export const Navigation = () => {
 
     const navigationLink = (route: string, name: string) => (
-        (<li><Link to={route}>{name}</Link></li>)
+        (<li key={route}><NavLink to={route} className={({isActive}) => `${styles.navLink} ${isActive ? styles.active : ""}`}>{name}</NavLink></li>)
     )
 
     return (
         <>
         <nav className={styles.navBar}>
-            <div className={styles.navBarLeft}>
-                SkillStorm
-            </div>
+            <div className={styles.navbarContainer}>
 
-            <div className={styles.navBarRight}>
+                <Link to='/' className={styles.logo}>
+                SkillStorm
+                </Link>
+
                 <ul className={styles.navLinks}>
                     {/* Add the Route's for the leaderboard, quizzes, badges and profile page in App.tsx with the pages */}
                     {navigationLink("/", "home")}

@@ -1,15 +1,18 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styles from '../module/Auth.module.css';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { API } from '../utils/API';
 import { CustomPopup } from '../modals/CustomPopup';
 import { useUser } from '../contexts/UserContext';
 import type { LoginPayload, ToastResponse } from '../utils/type';
 import { removeAll } from '../utils/Utils';
+import { OAuthLogin } from '../components/OAuthLogin';
 
 export const Login = () => {
+    localStorage.setItem('login-register-pages','true')
     const navigate = useNavigate();
     const { fetchUser } = useUser();
+    const [searchParams] = useSearchParams();
     const [popupConfig, setPopupConfig] = useState({
         isOpen: false,
         type: 'success' as ToastResponse,
@@ -36,11 +39,11 @@ export const Login = () => {
     const handleFormEvent = async (e: React.SubmitEvent<HTMLFormElement>) => {
 
         e.preventDefault();
-        removeAll();
+
         try {
+            removeAll();
             const response = await fetch(`${API}/auth/login`, {
                 method: "POST",
-                credentials: 'include',
                 headers: {
                     'content-type': 'application/json'
                 },
@@ -49,15 +52,6 @@ export const Login = () => {
                     password: data.password
                 })
             });
-
-            if(response.status === 423){
-                setPopupConfig({
-                    isOpen: true,
-                    type: 'error',
-                    message: 'Account is Locked. Please continue as guest and contact an youth leader or admin or verify account before attempting to login.'
-                });
-                return;
-            }
 
             if (!response.ok) {
                 
@@ -68,6 +62,9 @@ export const Login = () => {
                 });
                 return;
             }
+            
+            const token = await response.text();
+            localStorage.setItem('jwt-token',token);
 
             await fetchUser();
 
@@ -90,11 +87,19 @@ export const Login = () => {
         }
     }
 
+    useEffect(() => {
+        if (searchParams.has('error')) {
+            const timer = setTimeout(() => {
+                navigate('/login', { replace: true })
+            }, 5000)
 
+            return () => clearTimeout(timer)
+        }
+
+    }, [navigate, searchParams])
 
     return (
         <div className={styles.pageWrapper}>
-
             <CustomPopup
                 isOpen={popupConfig.isOpen}
                 type={popupConfig.type}
@@ -122,9 +127,11 @@ export const Login = () => {
                     
                     <Link className={styles.linkText} to='/register'>Don't have an account? Register here</Link>
 
-                </form>  
+                </form>
+
+                <OAuthLogin/>  
             </div>
         </div>
-
+        
     )
 }

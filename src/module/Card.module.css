@@ -8,6 +8,7 @@
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   box-sizing: border-box;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor:pointer;
   overflow: hidden;
 }
 
@@ -16,8 +17,16 @@
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
+.cardHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
 .title {
-  margin: 0 0 0.75rem 0;
+  margin: 0;
   font-size: 1.25rem;
   font-weight: 600;
   color: #1a202c;
@@ -31,4 +40,15 @@
   line-height: 1.5;
   flex-grow: 1;
   overflow-y: auto;
+}
+
+.questionNumberBubble {
+  font-weight: 600;
+  font-size: 0.8125rem;
+  color: #2563EB;
+  background-color: #EFF6FF;
+  padding: 4px 12px;
+  border-radius: 20px;
+  border: 1px solid #DBEAFE;
+  white-space: nowrap;
 }

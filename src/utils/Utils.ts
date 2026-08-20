@@ -1,4 +1,4 @@
-import { type AppRole, type AuthProvider, type UserPayload, type User } from "./type";
+import { type AppRole, type AuthProvider } from "./type";
 
 export function splitFullName(name: string) {
     const nameParts = name.split(' ');
@@ -45,17 +45,6 @@ export function ColorUtil() {
     return randomColor;
 }
 
-export function mapPayloadToProfile(payload: UserPayload): User {
-    return {
-        name: payload.name,
-        roles: payload.roles.length > 0 ? payload.roles : ["GUEST"],
-        authProvider: payload.authProvider,
-        bio: payload.bio,
-        profileImageUrl: payload.profileImageUrl,
-        email: payload.email,
-        enabled: payload.enabled,
-    };
-}
 export function formatTime(timeStr: string): string {
     if (!timeStr) return '';
 
@@ -76,7 +65,6 @@ export function formatRole(role: string): string {
         .map(word => word.charAt(0).toUpperCase() + word.slice(1))
         .join(" ");
 }
-
 
 export function extractName(alt: string): string {
     if (!alt) return "";
@@ -99,7 +87,7 @@ export function getInitials(fullName: string): string {
 export function isPermitted(roles: AppRole[]): boolean {
 
     if (!roles) return false;
-    return roles.includes('ADMIN') || roles.includes('YOUTH_LEADER')
+    return roles.includes('ADMIN') || roles.includes('EMPLOYEE')
 }
 export function validAdmin(roles: AppRole[]): boolean {
     if(!roles) return false;
@@ -111,8 +99,21 @@ export function validGuest(isGuest:string | null,route:string): string{
 }
 
 export function removeAll(){
-    localStorage.removeItem('isGuest')
-    localStorage.removeItem('email')
+    localStorage.removeItem('login-register-pages')
+}
+export function getToken(): string | null {
+    const token = localStorage.getItem('jwt-token');
+    try {
+    
+        if (token === null) {
+            return null;
+        }
+        
+    } catch (err) {
+        console.error(err)
+    }
+   
+    return token;
 }
 export function isLocal(authProvider:AuthProvider): boolean{
     return authProvider === 'LOCAL';

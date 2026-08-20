@@ -1,0 +1,89 @@
+.card {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  background-color: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 16px;
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.03), 0 4px 6px -4px rgb(0 0 0 / 0.03);
+  padding: 24px 32px;
+  font-family: system-ui, -apple-system, sans-serif;
+  color: #0F172A;
+  box-sizing: border-box;
+}
+
+.title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #0F172A;
+  margin: 0 0 20px 0;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #E2E8F0;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background-color: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.item:hover {
+  background-color: #F1F5F9;
+  border-color: #CBD5E1;
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.rank {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #64748B;
+  min-width: 32px;
+}
+
+.item:nth-child(1) .rank {
+  color: #D97706;
+}
+
+.item:nth-child(2) .rank {
+  color: #64748B;
+}
+
+.item:nth-child(3) .rank {
+  color: #B45309;
+}
+
+.item:nth-child(n+4) .rank {
+  color: #64748B; 
+}
+
+.username {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #1E293B;
+}
+
+.badge {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: #2563EB;
+  background-color: #EFF6FF;
+  padding: 6px 12px;
+  border-radius: 20px;
+  border: 1px solid #DBEAFE;
+}
