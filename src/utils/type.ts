@@ -14,8 +14,13 @@ export interface UserProps{
     roles:AppRole[]
     attempts?:Attempt[];
     badges?:Badge[];
+    createdAt: string;
 }
 
+export interface BadgeCardProps{
+    name:string;
+    description:string;
+}
 export interface Attempt{
     attemptId:number;
     score:number;
@@ -44,6 +49,31 @@ export interface Badge{
     name:string;
     description:string;
     // profile url in the future
+}
+
+export interface PlayerSlot {
+  action?: string;
+  id?: string;           
+  username: string;
+  avatarUrl?: string;
+  quizzesTaken: number;
+  quizzesWon: number;
+  streak: number;
+  isHost?: boolean;          
+  isReady?: boolean;  
+  isGuest?: boolean;       
+  score?: number;     
+  ranking?:number;    
+  currentQuestionIndex?: number;
+}
+
+export interface PlayerCardProps{
+    player: PlayerSlot | null;
+    isHost?:boolean;
+    isCurrentUser?:boolean;
+    isReady?:boolean;
+    onToggleReady?: () => void;
+    placeholderText?:string;
 }
 export interface Props{
     children?: ReactNode;
@@ -101,14 +131,28 @@ export interface ProtectedRouteProps{
     children?: React.ReactNode;
 }
 
+export interface RoomResponse {
+  roomId: string | null;
+  player1: number | null;
+  player2: number | null;
+  gameEventType: GameEventType;
+}
+
+export interface ProfileCompProps {
+    name: string;
+    profileImageUrl: string | undefined;
+    link?: boolean;
+}
+
 export type AppRole = 'USER' | 'EMPLOYEE' | 'ADMIN';
 export type Providers = 'Google' | 'Facebook' | 'Instagram';
 export type EventType = 'GENERAL' | 'MEETING' | 'WORSHIP' | 'URGENT' | 'ACTIVITY';
 export type ViewMode = "cards" | "table";
 export type ConnectionType = "CONNECT" | 'ERROR' | 'REQUEST' | 'DISCONNECT' | 'TRAFFIC'
-export type Status = "ACTIVE" | "INACTIVE"
-export type AuthProvider = 'LOCAL' | "OAUTH2"
-export type ToastResponse = "success" | "error"
+export type Status = "ACTIVE" | "INACTIVE";
+export type AuthProvider = 'LOCAL' | "OAUTH2";
+export type ToastResponse = "success" | "error";
+export type GameEventType = "WAITING_FOR_OPPONENT" | "GAME_STARTED";
 
 export const appRoleArray = ['USER','EMPLOYEE','ADMIN']
 export const providersArray = ['Google', 'Facebook', 'Instagram'];

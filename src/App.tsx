@@ -17,6 +17,7 @@ import { ProfilePage } from './pages/Profile'
 import { BadgePage } from './pages/Badges'
 import { QuizPage } from './pages/Quizzes'
 import { useEffect, useState } from 'react'
+import { Room } from './pages/Room'
 
 function App() {
 
@@ -103,6 +104,14 @@ function App() {
             </ProtectedRoute>
           ),
         },
+        {
+          path: "/room",
+          element: (
+            <ProtectedRoute>
+              <Room />
+            </ProtectedRoute>
+          )
+        }
       ],
     }
   ])

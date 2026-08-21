@@ -1,4 +1,4 @@
-import { type AppRole, type AuthProvider } from "./type";
+import { type AppRole, type AuthProvider, type PlayerSlot, type UserProps } from "./type";
 
 export function splitFullName(name: string) {
     const nameParts = name.split(' ');
@@ -7,6 +7,14 @@ export function splitFullName(name: string) {
     const ln = nameParts.length > 1 ? nameParts[nameParts.length - 1] : ''
 
     return { firstName: fn, lastName: ln }
+}
+
+export function getYear(createdAt:string): number | null {
+    if(!createdAt) return null;
+
+    const joined = new Date(createdAt.split('T')[0]);
+
+    return joined.getFullYear();
 }
 
 export function getAge(dateOfBirth: string): number | null {
@@ -55,6 +63,7 @@ export function formatTime(timeStr: string): string {
     return `${formattedHour}:${String(minute).padStart(2, '0')} ${ampm}`;
 };
 
+
 export function formatRoles(roles: AppRole[]): string {
     return roles.map(formatRole).join(", ");
 }
@@ -100,6 +109,7 @@ export function validGuest(isGuest:string | null,route:string): string{
 
 export function removeAll(){
     localStorage.removeItem('login-register-pages')
+    destroyToken();
 }
 export function getToken(): string | null {
     const token = localStorage.getItem('jwt-token');
@@ -118,3 +128,25 @@ export function getToken(): string | null {
 export function isLocal(authProvider:AuthProvider): boolean{
     return authProvider === 'LOCAL';
 }
+
+export function copyUserToPlayer(user: UserProps | null): PlayerSlot | null {
+    if(!user) return null;
+
+    return {
+            username: user.username,
+            avatarUrl: undefined,
+            quizzesTaken: 0,
+            quizzesWon: 0,
+            streak: 0,
+            isHost: true,
+            isReady: false,
+        };
+}
+
+export function destroyToken(): void{
+    if(getToken() !== null){
+        localStorage.removeItem('jwt-token');
+    }
+}
+
+export const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));

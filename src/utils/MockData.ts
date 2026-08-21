@@ -32,3 +32,14 @@ export const quizData: CardData[] = [
     {title: 'ERD and DB Design', text: 'Diffculty: Hard', numOfQuestions: 8},
     {title: 'JavaScript Basics', text: 'Diffculty: Easy', numOfQuestions: 15},
 ]
+
+export const statsData = {quizzesTaken: 147, quizzesWon: 23, streak:12}
+
+export const challengeData = [
+  { topic: 'Data Structures', percent: '78%' },
+  { topic: 'Algorithms', percent: '64%' },
+  { topic: 'Database Design', percent: '82%' },
+  { topic: 'System Architecture', percent: '45%' },
+  { topic: 'API & Integration', percent: '91%' },
+  { topic: 'Security & Auth', percent: '56%' },
+]

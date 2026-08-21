@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../contexts/UserContext";
+import { delay } from "../utils/Utils";
 
 export const OAuth2Redirect = () => {
     const { fetchUser } = useUser();
@@ -11,6 +12,7 @@ export const OAuth2Redirect = () => {
         const token = params.get("token");
 
         if (!token) {
+            console.log(token);
             navigate("/login?error=token_missing", { replace: true });
             return;
         }
@@ -20,7 +22,7 @@ export const OAuth2Redirect = () => {
 
             window.history.replaceState({}, document.title, window.location.pathname);
 
-            await fetchUser();
+            await Promise.all([fetchUser(),delay(1500)]);
             
             navigate("/", { replace: true });
         } catch (err) {

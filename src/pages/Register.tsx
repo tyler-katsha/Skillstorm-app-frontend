@@ -1,13 +1,18 @@
 import { Link } from 'react-router-dom';
 import styles from '../module/Auth.module.css';
-import { useState, type ChangeEvent } from 'react';
+import { useEffect, useState, type ChangeEvent } from 'react';
 import { API } from '../utils/API';
 import { CustomPopup } from '../modals/CustomPopup';
 import { type RegisterPayload, type ToastResponse } from '../utils/type';
 import { PasswordRequirements } from '../components/PasswordRequirements';
 import { OAuthLogin } from '../components/OAuthLogin';
+import { destroyToken } from '../utils/Utils';
 
 export const Register = () => {
+
+    useEffect(() => {
+        destroyToken();
+    }, []);
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -125,22 +130,22 @@ export const Register = () => {
                         <button type="button" className={styles.toggleBtn} onClick={togglePasswordVisibility}>{showPassword ? 'Hide' : 'Show'}</button>
                     </div>
 
-                    <PasswordRequirements passwordValue={data.password}/>
+                    <PasswordRequirements passwordValue={data.password} />
                     <div className={styles.inputGroup}>
                         <label>Confirm Password:</label>
                         <input type={showConfirmPassword ? 'text' : 'password'} className={styles.inputField} placeholder='••••••••' name='confirmPassword' value={data.confirmPassword.trim()} onChange={handleChange} required />
                         <button type="button" className={styles.toggleBtn} onClick={toggleConfirmPasswordVisibility}>{showConfirmPassword ? 'Hide' : 'Show'}</button>
                     </div>
 
-                    
+
 
                     <button type="submit" className={styles.submitBtn} disabled={loading}>{loading ? "Registering..." : "Register"}</button>
 
                     <Link className={styles.linkText} to='/login'>Already have an account? Log in</Link>
-                    
+
                 </form>
-                
-                <OAuthLogin/> 
+
+                <OAuthLogin />
 
             </div>
         </div>

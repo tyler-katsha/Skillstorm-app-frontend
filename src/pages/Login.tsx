@@ -5,7 +5,7 @@ import { API } from '../utils/API';
 import { CustomPopup } from '../modals/CustomPopup';
 import { useUser } from '../contexts/UserContext';
 import type { LoginPayload, ToastResponse } from '../utils/type';
-import { removeAll } from '../utils/Utils';
+import { destroyToken, removeAll } from '../utils/Utils';
 import { OAuthLogin } from '../components/OAuthLogin';
 
 export const Login = () => {
@@ -42,6 +42,7 @@ export const Login = () => {
 
         try {
             removeAll();
+            destroyToken(); // Destroy previous token stored in the browser
             const response = await fetch(`${API}/auth/login`, {
                 method: "POST",
                 headers: {

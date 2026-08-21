@@ -19,7 +19,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [user, setUser] = useState<UserProps | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [isAuthenticated,setIsAuthentication] = useState(user !== null);
-    const token = getToken();
+    
     const fetchUser = async () => {
 
         if(localStorage.getItem('login-register-pages') === 'true'){
@@ -31,7 +31,13 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
             return;
         }
         
+
         try {
+            const token = getToken();
+            
+            if(!token){
+                throw new Error(`No Token Found`);
+            }
             const response = await fetch(`${API}/users/me`, {
                 method: 'GET',
                 headers: { 
@@ -41,10 +47,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
             });
 
             if (!response.ok) {
-
-                setUser(null);
-                setIsLoading(false);
-                return;
+                throw new Error(`Failed to fetch user: ${response.status}`)
             }
 
             
