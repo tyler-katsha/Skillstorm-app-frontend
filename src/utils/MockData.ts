@@ -1,4 +1,4 @@
-import type { CardData, LeaderBoardUser } from "./type";
+import type { CardData, LeaderBoardUser, Quiz } from "./type";
 
 export const topStormers: LeaderBoardUser[] = [
     {rank:'1',username:'StormRacer',points:2987,level:42},
@@ -18,6 +18,78 @@ export const cardData: CardData[] = [
     {title: 'Quiz Engine', text: 'Questions with options and diffculty levels to challenge yourself', numOfQuestions:0},
     {title: 'Badge System', text: 'Earn achievements for milestones and high scores along the way', numOfQuestions:0}
 ]
+
+
+/*
+ * ABOUT SampleData.tsx:
+ * This webpage is only an implementation of the UI design. 
+ * It does not have any backend interface capabilities. 
+ * Therefore, sample values are used to show what the UI may look like
+ *  when actual user content is used.
+ * Those sample values are being kept in this file so that it will be easier
+ * to replace the sample data with results from an actual database.
+ */
+
+type QuestionData = {
+    text: string,
+    options: string[],
+    correctOption: number
+}
+
+type QuizData = {
+    title: string,
+    questions: QuestionData[]
+};
+
+export const sampleQuiz: QuizData = {
+    "title": "Polymorphism in Java",
+    "questions": [
+        {
+            "text": "Which of these cannot be inherited by a subclass?",
+            "options": ["The superclass's public instance methods", "The superclass's private fields", "The superclass's protected fields", "The superclass's final static methods"],
+            "correctOption": 1
+        },
+        {
+            "text": "The method `makeSound` is defined in both `Animal` and a subclass of `Animal`, `Dog`. Which polymorphism technique does this method illustrate?",
+            "options": ["overriding", "overloading", "overflowing", "overwriting"],
+            "correctOption": 0
+        },
+        {
+            "text": "Which of the following statements is true of a class declared `final`?",
+            "options": ["Final classes cannot have instance methods", "Final classes can only have final members", "Final classes cannot have static methods", "Final classes cannot be extended"],
+            "correctOption": 3
+        },
+        {
+            "text": "True or false: Abstract methods must have method bodies.",
+            "options": ["True", "False"],
+            "correctOption": 1
+        },
+        {
+            "text": "Which Java keyword can be used in a class declaration to derive a subclass from an existing class?",
+            "options": ["final", "int", "extends", "class", "implements", "new"],
+            "correctOption": 2
+        },
+        {
+            "text": "Which Java keyword can be used in a method declaration to prevent a method from being overriden in a subclass?",
+            "options": ["public", "static", "final", "abstract"],
+            "correctOption": 2
+        },
+    ]
+}
+
+export const sampleUser = {
+    username: "john_doe",
+    user_id: crypto.randomUUID(),
+    level: 2,
+    xp: 1340,
+    xpGoal: 2000,
+    options: {
+        quick_select: false,
+    }
+}
+// TODO: Extrapolate a function or sequence for `xpGoal`.
+// `xpGoal` should not be stored with the user's details. 
+// Instead, it should be easily calculable as a function of the user's level. 
 
 export const badgeData: CardData[] = [
     {title: 'Rookie Stormer', text: 'Complete your first Quiz', numOfQuestions:0},
@@ -43,3 +115,45 @@ export const challengeData = [
   { topic: 'API & Integration', percent: '91%' },
   { topic: 'Security & Auth', percent: '56%' },
 ]
+
+export const quizzes: Quiz[] = [
+    {
+        id: 1,
+        title: "Java Fundamentals",
+        description: "Test your knowledge of Java's core programming concepts.",
+        category: "Programming",
+        questions: 20,
+        difficulty: "Medium",
+        creator: {
+            name: "Tyler Katsha",
+            username: "@tyler",
+            avatar: "TK",
+        },
+    },
+    {
+        id: 2,
+        title: "Computer Networks",
+        description: "Challenge yourself on OSI, TCP/IP, routing and networking.",
+        category: "Networking",
+        questions: 25,
+        difficulty: "Hard",
+        creator: {
+            name: "John Smith",
+            username: "@johnsmith",
+            avatar: "JS",
+        },
+    },
+    {
+        id: 3,
+        title: "Python Basics",
+        description: "A beginner-friendly quiz covering Python fundamentals.",
+        category: "Programming",
+        questions: 15,
+        difficulty: "Easy",
+        creator: {
+            name: "Sarah Williams",
+            username: "@sarah",
+            avatar: "SW",
+        },
+    },
+];

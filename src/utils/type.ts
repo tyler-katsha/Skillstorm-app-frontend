@@ -28,12 +28,12 @@ export interface Attempt{
     time:string;
 }
 
-export interface Quiz{
-    title: string;
-    difficulty:string;
-    topicNames:string[];
-    questions:Question[];
-}
+// export interface Quiz{
+//     title: string;
+//     difficulty:string;
+//     topicNames:string[];
+//     questions:Question[];
+// }
 
 export interface Question{
     text:string;
@@ -138,6 +138,20 @@ export interface RoomResponse {
   gameEventType: GameEventType;
 }
 
+export interface Quiz {
+    id: number;
+    title: string;
+    description: string;
+    category: string;
+    questions: number;
+    difficulty: Difficulty;
+    creator: {
+        name: string;
+        username: string;
+        avatar: string;
+    };
+}
+
 export interface ProfileCompProps {
     name: string;
     profileImageUrl: string | undefined;
@@ -153,6 +167,7 @@ export type Status = "ACTIVE" | "INACTIVE";
 export type AuthProvider = 'LOCAL' | "OAUTH2";
 export type ToastResponse = "success" | "error";
 export type GameEventType = "WAITING_FOR_OPPONENT" | "GAME_STARTED";
+export type Difficulty = "Easy" | "Medium" | "Hard";
 
 export const appRoleArray = ['USER','EMPLOYEE','ADMIN']
 export const providersArray = ['Google', 'Facebook', 'Instagram'];
