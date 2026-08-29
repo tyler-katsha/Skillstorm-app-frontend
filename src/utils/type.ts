@@ -7,16 +7,19 @@ export interface RegisterPayload {
     confirmPassword: string;
 }
 
-export interface UserProps{
+interface UserOptions{
+    quick_select: boolean;
+}
+export interface UserProps {
     username: string;
-    email:string;
-    xp:number;
-    roles:AppRole[]
-    attempts?:Attempt[];
-    badges?:Badge[];
+    email: string;
+    xp: number;
+    roles: AppRole[];
+    options: UserOptions;
+    attempts?: Attempt[];
+    badges?: Badge[];
     createdAt: string;
 }
-
 export interface BadgeCardProps{
     name:string;
     description:string;
@@ -24,26 +27,8 @@ export interface BadgeCardProps{
 export interface Attempt{
     attemptId:number;
     score:number;
-    quiz:Quiz;
+    quiz:QuizProps;
     time:string;
-}
-
-// export interface Quiz{
-//     title: string;
-//     difficulty:string;
-//     topicNames:string[];
-//     questions:Question[];
-// }
-
-export interface Question{
-    text:string;
-    score:number;
-    answers:Answer[];
-}
-
-export interface Answer{
-    text:string;
-    isCorrect:boolean;
 }
 export interface Badge{
     name:string;
@@ -138,20 +123,23 @@ export interface RoomResponse {
   gameEventType: GameEventType;
 }
 
-export interface Quiz {
-    id: number;
-    title: string;
-    description: string;
-    category: string;
-    questions: number;
-    difficulty: Difficulty;
-    creator: {
-        name: string;
-        username: string;
-        avatar: string;
-    };
+export interface QuizProps{
+   title:string;
+   difficulty:string;
+   topicNames:string[];
+   questions: Question[];
 }
 
+export interface Question{
+   score:number;
+   text:string;
+   answers: Answer[];
+}
+
+export interface Answer{ 
+   text:string;
+   isCorrect:boolean;
+}
 export interface ProfileCompProps {
     name: string;
     profileImageUrl: string | undefined;

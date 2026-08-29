@@ -75,6 +75,9 @@ export function formatRole(role: string): string {
         .join(" ");
 }
 
+export function formatTopicNames(topicNames:string[]): string{
+    return topicNames.join(", ");
+}
 export function extractName(alt: string): string {
     if (!alt) return "";
 
@@ -202,3 +205,19 @@ export const OptionState = {
 export type OptionStateT = (typeof OptionState)[keyof typeof OptionState];
 
 export const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+export function calculateNextLevel(xp:number):number{
+    if(xp < 0){
+        return 0;
+    }
+
+    const currentLevel = calculateLevel(xp);
+    return currentLevel * 50;
+}
+export function calculateLevel(xp:number):number{
+    if(xp < 0){
+        return 0;
+    }
+
+    return Math.floor(xp / 50) + 1;
+}

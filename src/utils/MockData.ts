@@ -1,4 +1,4 @@
-import type { CardData, LeaderBoardUser, Quiz } from "./type";
+import type { CardData, LeaderBoardUser, UserProps } from "./type";
 
 export const topStormers: LeaderBoardUser[] = [
     {rank:'1',username:'StormRacer',points:2987,level:42},
@@ -77,16 +77,18 @@ export const sampleQuiz: QuizData = {
     ]
 }
 
-export const sampleUser = {
+export const sampleUser: UserProps = {
     username: "john_doe",
-    user_id: crypto.randomUUID(),
-    level: 2,
+    email: "john.doe@example.com",
     xp: 1340,
-    xpGoal: 2000,
+    roles: ["USER"],
     options: {
         quick_select: false,
-    }
-}
+    },
+    attempts: [],
+    badges: [],
+    createdAt: new Date().toISOString(),
+};
 // TODO: Extrapolate a function or sequence for `xpGoal`.
 // `xpGoal` should not be stored with the user's details. 
 // Instead, it should be easily calculable as a function of the user's level. 
@@ -115,45 +117,3 @@ export const challengeData = [
   { topic: 'API & Integration', percent: '91%' },
   { topic: 'Security & Auth', percent: '56%' },
 ]
-
-export const quizzes: Quiz[] = [
-    {
-        id: 1,
-        title: "Java Fundamentals",
-        description: "Test your knowledge of Java's core programming concepts.",
-        category: "Programming",
-        questions: 20,
-        difficulty: "Medium",
-        creator: {
-            name: "Tyler Katsha",
-            username: "@tyler",
-            avatar: "TK",
-        },
-    },
-    {
-        id: 2,
-        title: "Computer Networks",
-        description: "Challenge yourself on OSI, TCP/IP, routing and networking.",
-        category: "Networking",
-        questions: 25,
-        difficulty: "Hard",
-        creator: {
-            name: "John Smith",
-            username: "@johnsmith",
-            avatar: "JS",
-        },
-    },
-    {
-        id: 3,
-        title: "Python Basics",
-        description: "A beginner-friendly quiz covering Python fundamentals.",
-        category: "Programming",
-        questions: 15,
-        difficulty: "Easy",
-        creator: {
-            name: "Sarah Williams",
-            username: "@sarah",
-            avatar: "SW",
-        },
-    },
-];

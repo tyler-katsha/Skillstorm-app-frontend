@@ -12,7 +12,6 @@ export const OAuth2Redirect = () => {
         const token = params.get("token");
 
         if (!token) {
-            console.log(token);
             navigate("/login?error=token_missing", { replace: true });
             return;
         }
