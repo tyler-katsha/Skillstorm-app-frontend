@@ -1,9 +1,8 @@
 // =============================== Imports ================================
-import { useState } from 'react';
+import { Suspense, use, useState } from 'react';
 import { roundN, pluralS, OptionState, type OptionStateT, getLevel, getXpGoal } from '../utils/Utils.ts';
 import styles from '../module/Quiz.module.css';
 import type { QuizData, UserData } from '../utils/type.ts';
-import { useFetch } from '../utils/Fetch.tsx';
 import { API } from '../utils/API.ts';
 
 // ======================== Constants & variables =========================
@@ -171,7 +170,11 @@ export function QuizPageBG () {
     return <div></div>;
 }
 
-export function Quiz() {
+export function QuizLoading() {
+    return <div>Loading...</div>;
+}
+
+export function QuizPage() {
     const [questionIdx, setQuestionIdx] = useState(0);
     const [score, setScore] = useState(0);
     const [selectedIdx, setSelectedIdx] = useState(-1);
@@ -180,13 +183,18 @@ export function Quiz() {
     // TODO: Return hard-coded "1" values with data from some browser source.
     // For example, the quiz ID could be a URL parameter, and
     // the user ID parameter could be obtained from a session cookie.
-    const quizRequest = useFetch<QuizData>(`${API}/quizzes/1`);
-    const userRequest = useFetch<UserData>(`${API}/users/1`);
-
     // TODO: Add error handling for failed requests,
     // and Suspense for in-progress requests
-    const quizData = quizRequest.data as QuizData;
-    const userData = userRequest.data as UserData;
+    const quizData = use(
+        fetch(`${API}/quizzes/1`)
+        .then(r => r.json())
+        .then(obj => obj as QuizData)
+    );
+    const userData = use(
+        fetch(`${API}/users/1`)
+        .then(r => r.json())
+        .then(obj => obj as UserData)
+    );
 
     function getBtnState(index: number) {
         if (isAnswering) {
@@ -264,4 +272,10 @@ export function Quiz() {
         </div>);
     }
 
+}
+
+export function Quiz() {
+    return (<Suspense fallback={<QuizLoading/>}>
+        <QuizPage></QuizPage>
+    </Suspense>);
 }

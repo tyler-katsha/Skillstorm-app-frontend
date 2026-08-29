@@ -6,7 +6,6 @@ import { Register } from './pages/Register'
 import { Home } from './pages/Home'
 import { ResetEmail } from './pages/ResetEmail'
 import { ErrorBoundary } from './components/ErrorBoundary'
-import { UserProvider } from './contexts/UserContext'
 import { Leaderboard } from './pages/Leaderboard'
 import { Quiz } from './pages/Quiz'
 
