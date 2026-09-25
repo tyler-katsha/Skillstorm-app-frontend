@@ -1,4 +1,6 @@
-import { type AppRole, type AuthProvider, type PlayerSlot, type UserProps } from "./type";
+import type { PlayerSlot } from "../types/player";
+import { type AppRole, type AuthProvider } from "../types/type";
+import type { UserProps } from "../types/user";
 
 export function splitFullName(name: string) {
     const nameParts = name.split(' ');
@@ -9,8 +11,8 @@ export function splitFullName(name: string) {
     return { firstName: fn, lastName: ln }
 }
 
-export function getYear(createdAt:string): number | null {
-    if(!createdAt) return null;
+export function getYear(createdAt: string): number | null {
+    if (!createdAt) return null;
 
     const joined = new Date(createdAt.split('T')[0]);
 
@@ -75,7 +77,7 @@ export function formatRole(role: string): string {
         .join(" ");
 }
 
-export function formatTopicNames(topicNames:string[]): string{
+export function formatTopicNames(topicNames: string[]): string {
     return topicNames.join(", ");
 }
 export function extractName(alt: string): string {
@@ -102,48 +104,48 @@ export function isPermitted(roles: AppRole[]): boolean {
     return roles.includes('ADMIN') || roles.includes('EMPLOYEE')
 }
 export function validAdmin(roles: AppRole[]): boolean {
-    if(!roles) return false;
+    if (!roles) return false;
     return roles.includes('ADMIN');
 }
 
-export function removeAll(){
+export function removeAll() {
     localStorage.removeItem('login-register-pages')
     destroyToken();
 }
 export function getToken(): string | null {
     const token = localStorage.getItem('jwt-token');
     try {
-    
+
         if (token === null) {
             return null;
         }
-        
+
     } catch (err) {
         console.error(err)
     }
-   
+
     return token;
 }
-export function isLocal(authProvider:AuthProvider): boolean{
+export function isLocal(authProvider: AuthProvider): boolean {
     return authProvider === 'LOCAL';
 }
 
 export function copyUserToPlayer(user: UserProps | null): PlayerSlot | null {
-    if(!user) return null;
+    if (!user) return null;
 
     return {
-            username: user.username,
-            avatarUrl: undefined,
-            quizzesTaken: 0,
-            quizzesWon: 0,
-            streak: 0,
-            isHost: true,
-            isReady: false,
-        };
+        username: user.username,
+        avatarUrl: undefined,
+        quizzesTaken: 0,
+        quizzesWon: 0,
+        streak: 0,
+        isHost: true,
+        isReady: false,
+    };
 }
 
-export function destroyToken(): void{
-    if(getToken() !== null){
+export function destroyToken(): void {
+    if (getToken() !== null) {
         localStorage.removeItem('jwt-token');
     }
 }
@@ -168,7 +170,7 @@ export const pluralS = (n: number) => (n != 1 ? "s" : "");
  * @example
  * roundN(3.14159, 2); // 3.14
  */
-export const roundN = (x: number, p: number) => (Math.round(x * 10**p) / 10**p);
+export const roundN = (x: number, p: number) => (Math.round(x * 10 ** p) / 10 ** p);
 
 /**
  * This is an enum representing the possible states a QuestionOption button
@@ -206,16 +208,16 @@ export type OptionStateT = (typeof OptionState)[keyof typeof OptionState];
 
 export const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-export function calculateNextLevel(xp:number):number{
-    if(xp < 0){
+export function calculateNextLevel(xp: number): number {
+    if (xp < 0) {
         return 0;
     }
 
     const currentLevel = calculateLevel(xp);
     return currentLevel * 50;
 }
-export function calculateLevel(xp:number):number{
-    if(xp < 0){
+export function calculateLevel(xp: number): number {
+    if (xp < 0) {
         return 0;
     }
 

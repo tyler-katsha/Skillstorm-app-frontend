@@ -6,6 +6,28 @@
   --primary-blue: #2563EB;
   --primary-blue-hover: #1D4ED8;
   --border-color: #E2E8F0;
+  --bg: #f8fafc;
+  --surface: #ffffff;
+  --surface-hover: #f1f5f9;
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --border: #e2e8f0;
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --secondary: #10B981;
+  --secondary-hover: #48be97;
+  --danger: #dc2626;
+  --danger-hover: #b91c1c;
+  --status-active: #22c55e;
+  --status-inactive: #ef4444;
+
+  --radius-sm: 12px;
+  --radius-md: 18px;
+  --radius-lg: 24px;
+  --shadow-sm: 0 4px 15px rgba(0, 0, 0, 0.03);
+  --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.06);
+  --shadow-float: 0 15px 35px color-mix(in srgb, var(--primary) 20%, transparent);
+  --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 body {

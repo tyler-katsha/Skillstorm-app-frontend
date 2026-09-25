@@ -1,8 +1,10 @@
 import { useNavigate } from "react-router-dom"
 import { CardGrid } from "../components/CardGrid"
 import styles from '../module/Home.module.css'
-import { cardData, badgeData, quizData } from "../utils/MockData"
 import { LeaderboardPage } from "./LeaderboardPage"
+import { cardData } from "../data/cardData"
+import { badgeData } from "../data/badgeData"
+import { quizData } from "../data/quizData"
 export const Home = () => {
 
     const navigate = useNavigate();

@@ -1,18 +1,11 @@
-import React, { useState, Fragment, useMemo } from 'react';
+import React, { Fragment, useMemo, useState } from 'react';
 import styles from '../module/Quiz.module.css';
-import { calculateLevel, calculateNextLevel, OptionState, pluralS, type OptionStateT } from '../utils/Utils';
-import type { QuizProps, UserProps } from '../utils/type';
+import type { CongratsProps, ProgressbarsProps, QuestionOptionProps, QuizProps, SubmitButtonProps, UserProps } from '../types/type';
+import { calculateLevel, calculateNextLevel, OptionState, pluralS } from '../utils/Utils';
 import { RedirectUser } from './RedirectUser';
 
-interface ProgressbarsProps {
-  answered: number;
-  total: number;
-  currentLevel: number;
-  currentXp: number;
-  nextLevelXp: number;
-}
 
-const Progressbars: React.FC<ProgressbarsProps> = ({answered, total, currentLevel, currentXp, nextLevelXp}) => {
+const Progressbars: React.FC<ProgressbarsProps> = ({ answered, total, currentLevel, currentXp, nextLevelXp }) => {
   const quizProgress = total > 0 ? Math.min(100, Math.max(0, Math.round((answered / total) * 100))) : 0;
   const levelProgress = nextLevelXp > 0 ? Math.min(100, Math.max(0, Math.round((currentXp / nextLevelXp) * 100))) : 0;
   const unanswered = Math.max(0, total - answered);
@@ -81,14 +74,8 @@ const QuestionTextbox: React.FC<{ content: string }> = ({ content }) => {
   return <div className={styles.questionTextbox}>{content}</div>;
 };
 
-interface QuestionOptionProps {
-  label: string;
-  selected: boolean;
-  state: OptionStateT;
-  myOnClick: () => void;
-}
 
-const QuestionOption: React.FC<QuestionOptionProps> = ({label, selected, state, myOnClick}) => {
+const QuestionOption: React.FC<QuestionOptionProps> = ({ label, selected, state, myOnClick }) => {
   const getStateClass = () => {
     switch (state) {
       case OptionState.CORRECT:
@@ -129,13 +116,7 @@ const QuestionOption: React.FC<QuestionOptionProps> = ({label, selected, state, 
   );
 };
 
-interface SubmitButtonProps {
-  label: string;
-  disabled?: boolean;
-  myOnClick: () => void;
-}
-
-const SubmitButton: React.FC<SubmitButtonProps> = ({label, disabled = false, myOnClick,}) => {
+const SubmitButton: React.FC<SubmitButtonProps> = ({ label, disabled = false, myOnClick, }) => {
   return (
     <button
       type="button"
@@ -148,13 +129,7 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({label, disabled = false, myO
   );
 };
 
-interface CongratsProps {
-  correct: number;
-  total: number;
-  xpGained:number;
-}
-
-const Congrats: React.FC<CongratsProps> = ({ correct, total,xpGained }) => {
+const Congrats: React.FC<CongratsProps> = ({ correct, total, xpGained }) => {
   const percentage = total > 0 ? Math.round((correct / total) * 100) : 0;
 
   return (
@@ -167,7 +142,7 @@ const Congrats: React.FC<CongratsProps> = ({ correct, total,xpGained }) => {
         </span>{' '}
         (<span className={styles.congratsPercentage}>{percentage}%</span>)
         <span className={styles.xpGainedCongrats}>
-            {xpGained}
+          {xpGained}
         </span>
       </p>
     </div>
@@ -182,7 +157,7 @@ interface QuizCompProps {
 export const Quiz: React.FC<QuizCompProps> = ({ sampleQuiz, sampleUser }) => {
   const [questionIdx, setQuestionIdx] = useState(0);
   const [score, setScore] = useState(0);
-  const [questionsCorrect,setQuestionsCorrect] = useState(0);
+  const [questionsCorrect, setQuestionsCorrect] = useState(0);
   const [selectedIdx, setSelectedIdx] = useState<number>(-1);
   const [isAnswering, setIsAnswering] = useState(true);
 
@@ -198,7 +173,7 @@ export const Quiz: React.FC<QuizCompProps> = ({ sampleQuiz, sampleUser }) => {
       <div className={styles.pageRoot}>
         <div className={styles.quizPageBg} aria-hidden="true" />
         <div className={styles.quizContainer}>
-          <Congrats correct={questionsCorrect} total={sampleQuiz?.questions?.length || 0} xpGained={score}/>
+          <Congrats correct={questionsCorrect} total={sampleQuiz?.questions?.length || 0} xpGained={score} />
         </div>
       </div>
     );

@@ -1,15 +1,15 @@
 import { useEffect, useState } from 'react';
-import styles from '../module/Auth.module.css';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { API } from '../utils/API';
-import { CustomPopup } from '../modals/CustomPopup';
-import { useUser } from '../contexts/UserContext';
-import type { LoginPayload, ToastResponse } from '../utils/type';
-import { destroyToken, removeAll } from '../utils/Utils';
 import { OAuthLogin } from '../components/OAuthLogin';
+import { useUser } from '../contexts/UserContext';
+import { CustomPopup } from '../modals/CustomPopup';
+import styles from '../module/Auth.module.css';
+import type { LoginPayload, ToastResponse } from '../types/type';
+import { API } from '../utils/API';
+import { destroyToken, removeAll } from '../utils/Utils';
 
 export const Login = () => {
-    localStorage.setItem('login-register-pages','true')
+    localStorage.setItem('login-register-pages', 'true')
     const navigate = useNavigate();
     const { fetchUser } = useUser();
     const [searchParams] = useSearchParams();
@@ -55,7 +55,7 @@ export const Login = () => {
             });
 
             if (!response.ok) {
-                
+
                 setPopupConfig({
                     isOpen: true,
                     type: 'error',
@@ -63,9 +63,9 @@ export const Login = () => {
                 });
                 return;
             }
-            
+
             const token = await response.text();
-            localStorage.setItem('jwt-token',token);
+            localStorage.setItem('jwt-token', token);
 
             await fetchUser();
 
@@ -77,7 +77,7 @@ export const Login = () => {
 
             navigate('/')
 
-        } catch (error) {            
+        } catch (error) {
             setPopupConfig({
                 isOpen: true,
                 type: 'error',
@@ -125,14 +125,14 @@ export const Login = () => {
                     <Link className={styles.linkText} to='/reset-email'>Forgot Password?</Link>
 
                     <button type="submit" className={styles.submitBtn}>Sign In</button>
-                    
+
                     <Link className={styles.linkText} to='/register'>Don't have an account? Register here</Link>
 
                 </form>
 
-                <OAuthLogin/>  
+                <OAuthLogin />
             </div>
         </div>
-        
+
     )
 }

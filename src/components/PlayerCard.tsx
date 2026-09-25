@@ -1,9 +1,9 @@
 
 import styles from '../module/PlayerCard.module.css';
-import type { PlayerCardProps } from '../utils/type';
+import type { PlayerCardProps } from '../types/type';
 import { Profile } from './ProfileImageHolder';
 
-export const PlayerCard:React.FC<PlayerCardProps> = ({ player, isHost = false, isCurrentUser = false, isReady = false, onToggleReady, placeholderText }) => {
+export const PlayerCard: React.FC<PlayerCardProps> = ({ player, isHost = false, isCurrentUser = false, isReady = false, onToggleReady, placeholderText }) => {
   if (!player) {
     return (
       <div className={styles.emptySlotCard}>

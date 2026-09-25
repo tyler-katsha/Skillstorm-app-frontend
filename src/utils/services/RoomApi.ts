@@ -1,6 +1,6 @@
+import { type RoomResponse } from "../../types/type";
 import { API } from "../API";
-import { type RoomResponse } from "../type";
-import { getToken } from "../Utils"
+import { getToken } from "../Utils";
 
 const authFetch = async <T>(endpoint: string, options: RequestInit = {}): Promise<T> => {
     const token = getToken();

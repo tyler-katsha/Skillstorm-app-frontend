@@ -1,7 +1,7 @@
-import { createContext, useEffect, useState, useContext, type Dispatch, type SetStateAction } from "react";
-import { API } from "../utils/API";
-import { type UserProps } from "../utils/type";
+import { createContext, useContext, useEffect, useState, type Dispatch, type SetStateAction } from "react";
 import { HomeSkeleton } from "../skeletons/pages/HomeSkeleton";
+import { type UserProps } from "../types/type";
+import { API } from "../utils/API";
 import { getToken, removeAll } from "../utils/Utils";
 interface UserContextType {
     user: UserProps | null;
@@ -18,29 +18,29 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [user, setUser] = useState<UserProps | null>(null);
     const [isLoading, setIsLoading] = useState(true);
-    const [isAuthenticated,setIsAuthentication] = useState(user !== null);
-    
+    const [isAuthenticated, setIsAuthentication] = useState(user !== null);
+
     const fetchUser = async () => {
 
-        if(localStorage.getItem('login-register-pages') === 'true'){
+        if (localStorage.getItem('login-register-pages') === 'true') {
             setIsLoading(false);
             return;
         }
-        if(localStorage.getItem('email') === 'true'){
+        if (localStorage.getItem('email') === 'true') {
             setIsLoading(false);
             return;
         }
-        
+
 
         try {
             const token = getToken();
-            
-            if(!token){
+
+            if (!token) {
                 throw new Error(`No Token Found`);
             }
             const response = await fetch(`${API}/users/me`, {
                 method: 'GET',
-                headers: { 
+                headers: {
                     'content-type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 }
@@ -50,7 +50,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 throw new Error(`Failed to fetch user: ${response.status}`)
             }
 
-            
+
             const data = await response.json();
             setUser(data);
             setIsAuthentication(true);
@@ -77,7 +77,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (isLoading) return <HomeSkeleton />;
 
     return (
-        <UserContext.Provider value={{ user, isLoading, updateUser, logout, fetchUser, isAuthenticated,setIsAuthentication }}>
+        <UserContext.Provider value={{ user, isLoading, updateUser, logout, fetchUser, isAuthenticated, setIsAuthentication }}>
             {children}
         </UserContext.Provider>
     )

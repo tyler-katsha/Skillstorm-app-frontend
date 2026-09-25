@@ -1,0 +1,1 @@
+export const statsData = { quizzesTaken: 147, quizzesWon: 23, streak: 12 }

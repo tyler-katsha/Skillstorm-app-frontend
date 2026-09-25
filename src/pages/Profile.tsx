@@ -4,10 +4,11 @@ import { BadgeCard } from '../components/BadgeCard';
 import { Profile } from '../components/ProfileImageHolder';
 import { useUser } from '../contexts/UserContext';
 import styles from '../module/ProfilePage.module.css';
-import { challengeData, statsData } from '../utils/MockData';
 import { getYear } from '../utils/Utils';
 import { createRoom, friendJoinRoom, quickJoinRoom } from '../utils/services/RoomApi';
 import { useState } from 'react';
+import { challengeData } from '../data/challengeData';
+import { statsData } from '../data/statsData';
 
 export const ProfilePage = () => {
     const navigate = useNavigate();
@@ -112,7 +113,7 @@ export const ProfilePage = () => {
                         <hr className={styles.divider} />
 
                         {user.badges !== undefined && user.badges.length > 0 ?
-                            (user.badges.map((item, index) => (
+                            (user.badges.map((item:any, index:number) => (
                                 <BadgeCard key={index} name={item.name} description={item.description} />
                             ))) : (
                                 <div style={{ display: 'flex', justifyContent: 'center', fontSize: '1.2rem', color: '#64748B', alignItems: 'center' }}>No Badges Obtained</div>

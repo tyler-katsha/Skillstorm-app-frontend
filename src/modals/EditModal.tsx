@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import { Modal } from "./Modal";
-import styles from "../module/EditModal.module.css";
-import { acceptArray, type User } from "../utils/type";
 import { FileUpload, type FileUploadRef } from "../components/FileUpload";
+import styles from "../module/EditModal.module.css";
+import { acceptArray, type User } from "../types/type";
 import { formatRoles } from "../utils/Utils";
+import { Modal } from "./Modal";
 // import { API } from "../utils/API";
 import { CustomPopup } from "./CustomPopup";
 
@@ -193,10 +193,10 @@ export const EditProfileModal = ({ isOpen, onClose, user, onSave }: EditProfileM
                     />
                     <div className={styles.bioFooter}>
                         <div className={styles.progressTrack}>
-                            <div className={`${styles.progressFill} ${formData.bio.length === 250 ? styles.danger : formData.bio.length >= 225 ? styles.warning : ""}`} style={{width : `${(formData.bio.length / 250) * 100}%`}}/>
+                            <div className={`${styles.progressFill} ${formData.bio.length === 250 ? styles.danger : formData.bio.length >= 225 ? styles.warning : ""}`} style={{ width: `${(formData.bio.length / 250) * 100}%` }} />
                         </div>
 
-                         <span className={`${styles.charCount} ${formData.bio.length >= 225 ? styles.warningText : ""} ${formData.bio.length === 250 ? styles.dangerText : ""}`}>{formData.bio.length}/250</span>
+                        <span className={`${styles.charCount} ${formData.bio.length >= 225 ? styles.warningText : ""} ${formData.bio.length === 250 ? styles.dangerText : ""}`}>{formData.bio.length}/250</span>
                     </div>
                 </div>
 

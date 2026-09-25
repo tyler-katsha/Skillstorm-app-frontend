@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import styles from "../module/Toast.module.css";
-import type { ToastResponse } from "../utils/type";
+import type { ToastResponse } from "../types/type";
 
 export interface ToastProps {
   message: string;
@@ -9,8 +9,8 @@ export interface ToastProps {
   duration?: number;
 }
 
-export interface PartialToast{
-  message:string;
+export interface PartialToast {
+  message: string;
   type: ToastResponse;
 }
 

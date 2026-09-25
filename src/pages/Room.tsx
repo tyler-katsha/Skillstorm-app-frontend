@@ -1,12 +1,12 @@
+import type { Client } from '@stomp/stompjs';
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import styles from '../module/Room.module.css';
-import { useUser } from '../contexts/UserContext';
 import { PlayerCard } from '../components/PlayerCard';
-import type { PlayerSlot } from '../utils/type';
-import type { Client } from '@stomp/stompjs';
-import { createStompClient } from '../utils/websocket';
+import { useUser } from '../contexts/UserContext';
+import styles from '../module/Room.module.css';
+import type { PlayerSlot } from '../types/type';
 import { getToken } from '../utils/Utils';
+import { createStompClient } from '../utils/websocket';
 
 export const Room = () => {
     const location = useLocation();
@@ -164,10 +164,10 @@ export const Room = () => {
         const nextReady = !isReady;
         setIsReady(nextReady);
 
-        if(isRoomHost){
-            setHostPlayer((prev) => prev ? {...prev, isReady: nextReady} : null);
-        } else{ 
-            setHostPlayer((prev) => prev ? {...prev, isReady: nextReady} : null);
+        if (isRoomHost) {
+            setHostPlayer((prev) => prev ? { ...prev, isReady: nextReady } : null);
+        } else {
+            setHostPlayer((prev) => prev ? { ...prev, isReady: nextReady } : null);
         }
 
         stompClient.current.publish({

@@ -1,7 +1,7 @@
-import styles from '../module/Auth.module.css'
-import googleIcon from '../assets/google-icon.png';
 import { useState } from 'react';
-import type { ToastResponse } from '../utils/type';
+import googleIcon from '../assets/google-icon.png';
+import styles from '../module/Auth.module.css';
+import type { ToastResponse } from '../types/type';
 import { OAUTH_API } from '../utils/API';
 import { removeAll } from '../utils/Utils';
 
@@ -14,7 +14,7 @@ export const OAuthLogin = () => {
 
     const handleOAuth2Login = (provider: string) => {
         removeAll();
-        
+
         try {
             window.location.href = `${OAUTH_API}/${provider}`
         } catch (err) {

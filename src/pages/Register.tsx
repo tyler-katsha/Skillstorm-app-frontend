@@ -1,11 +1,11 @@
-import { Link } from 'react-router-dom';
-import styles from '../module/Auth.module.css';
 import { useEffect, useState, type ChangeEvent } from 'react';
-import { API } from '../utils/API';
-import { CustomPopup } from '../modals/CustomPopup';
-import { type RegisterPayload, type ToastResponse } from '../utils/type';
-import { PasswordRequirements } from '../components/PasswordRequirements';
+import { Link } from 'react-router-dom';
 import { OAuthLogin } from '../components/OAuthLogin';
+import { PasswordRequirements } from '../components/PasswordRequirements';
+import { CustomPopup } from '../modals/CustomPopup';
+import styles from '../module/Auth.module.css';
+import { type RegisterPayload, type ToastResponse } from '../types/type';
+import { API } from '../utils/API';
 import { destroyToken } from '../utils/Utils';
 
 export const Register = () => {

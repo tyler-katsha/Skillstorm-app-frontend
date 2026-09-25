@@ -1,11 +1,11 @@
-import type { BadgeCardProps } from "../utils/type"
-import { Profile } from "./ProfileImageHolder"
 import styles from '../module/BadgeCard.module.css'
-export const BadgeCard: React.FC<BadgeCardProps> = ({name,description}) => {
+import type { BadgeCardProps } from "../types/type"
+import { Profile } from "./ProfileImageHolder"
+export const BadgeCard: React.FC<BadgeCardProps> = ({ name, description }) => {
 
-    return(
+    return (
         <div className={styles.cardContainer}>
-            
+
             <Profile name={name} profileImageUrl={undefined} />
 
             <p className={styles.badgeName}>{name}</p>

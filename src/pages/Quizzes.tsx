@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
-import styles from "../module/QuizPage.module.css";
-import { API } from "../utils/API";
-import { type QuizProps } from "../utils/type";
-import { formatTopicNames, getToken } from "../utils/Utils";
 import { Quiz } from "../components/Quiz";
-import { useUser } from "../contexts/UserContext";
 import { RedirectUser } from "../components/RedirectUser";
+import { useUser } from "../contexts/UserContext";
+import styles from "../module/QuizPage.module.css";
+import { type QuizProps } from "../types/type";
+import { API } from "../utils/API";
+import { formatTopicNames, getToken } from "../utils/Utils";
 
 export const QuizPage = () => {
     const [search, setSearch] = useState("");
