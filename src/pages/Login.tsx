@@ -4,9 +4,10 @@ import { OAuthLogin } from '../components/OAuthLogin';
 import { useUser } from '../contexts/UserContext';
 import { CustomPopup } from '../modals/CustomPopup';
 import styles from '../module/Auth.module.css';
-import type { LoginPayload, ToastResponse } from '../types/type';
+import type { ToastResponse } from '../types/type';
 import { API } from '../utils/API';
 import { destroyToken, removeAll } from '../utils/Utils';
+import type { LoginPayload } from '../types/auth';
 
 export const Login = () => {
     localStorage.setItem('login-register-pages', 'true')

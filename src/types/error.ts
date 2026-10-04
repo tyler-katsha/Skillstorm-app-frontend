@@ -11,6 +11,12 @@ export interface State {
     error?: Error;
 }
 
+export interface ErrorPageProps {
+  code?: string | number;
+  title?: string;
+  message?: string;
+}
+
 export const errorMessages: Record<string, string> = {
     account_disabled: "Your account has been disabled. Check email for verification link.",
     invalid_credentials: "Incorrect email or password.",

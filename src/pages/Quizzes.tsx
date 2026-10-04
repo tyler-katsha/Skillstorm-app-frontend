@@ -3,9 +3,9 @@ import { Quiz } from "../components/Quiz";
 import { RedirectUser } from "../components/RedirectUser";
 import { useUser } from "../contexts/UserContext";
 import styles from "../module/QuizPage.module.css";
-import { type QuizProps } from "../types/type";
 import { API } from "../utils/API";
 import { formatTopicNames, getToken } from "../utils/Utils";
+import type { QuizProps } from "../types/quiz";
 
 export const QuizPage = () => {
     const [search, setSearch] = useState("");
@@ -62,6 +62,7 @@ export const QuizPage = () => {
             const data: QuizProps[] = await response.json();
 
             setQuizzes(data);
+
         } catch (err) {
             console.error(err);
         } finally {
