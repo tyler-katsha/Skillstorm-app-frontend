@@ -1,10 +1,10 @@
-import type { Question, QuestionData } from "./question";
+import type { QuestionData } from "./question";
 
 export interface QuizProps {
     title: string;
     difficulty: string;
     topicNames: string[];
-    questions: Question[];
+    questions: QuestionData[];
 }
 export interface SubmitButtonProps {
     label: string;
@@ -26,9 +26,14 @@ export interface CongratsProps {
     xpGained: number;
 }
 
-
-
 export interface QuizData{
     title: string,
-    questions: QuestionData[]
+    difficulty: string;
+    topicNames: string[];
+    questions: QuestionData[];
 };
+
+export interface CreateQuizProps{
+    onSubmit: (quiz:QuizData) => void;
+    initialData?: QuizProps;
+}

@@ -1,8 +1,8 @@
-import { type RoomResponse } from "../../types/type";
+import type { RoomResponse } from "../../types/room";
 import { API } from "../API";
 import { getToken } from "../Utils";
 
-const authFetch = async <T>(endpoint: string, options: RequestInit = {}): Promise<T> => {
+export const authFetch = async <T>(endpoint: string, options: RequestInit = {}): Promise<T> => {
     const token = getToken();
     if (!token) {
         throw new Error('No Token Found');

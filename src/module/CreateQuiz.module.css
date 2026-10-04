@@ -1,0 +1,159 @@
+.container {
+    width: 100%;
+    max-width: 900px;
+
+    margin: 0 auto;
+
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.header {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.header h2 {
+    margin: 0;
+
+    color: #0f172a;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.header p {
+    margin: 0;
+
+    color: #64748b;
+    font-size: 15px;
+}
+
+.details {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+
+    padding: 24px;
+
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.field label {
+    color: #334155;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.field input,
+.field select {
+    width: 100%;
+    box-sizing: border-box;
+
+    padding: 12px 14px;
+
+    color: #0f172a;
+    background: #ffffff;
+
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.field input:focus,
+.field select:focus {
+    border-color: #2563eb;
+
+    box-shadow:
+        0 0 0 3px rgb(37 99 235 / 10%);
+}
+
+.helpText {
+    color: #64748b;
+    font-size: 12px;
+}
+
+.questions {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.questionsHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.questionsHeader h3 {
+    margin: 0;
+
+    color: #0f172a;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.questionsHeader span {
+    color: #64748b;
+    font-size: 14px;
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+
+    padding-top: 4px;
+}
+
+.submitButton {
+    padding: 12px 20px;
+
+    color: #ffffff;
+    background: #2563eb;
+
+    border: none;
+    border-radius: 8px;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.2s ease,
+        transform 0.1s ease;
+}
+
+.submitButton:hover {
+    background: #1d4ed8;
+}
+
+.submitButton:active {
+    transform: translateY(1px);
+}
+
+@media (max-width: 700px) {
+
+    .details {
+        grid-template-columns: 1fr;
+    }
+
+    .container {
+        gap: 24px;
+    }
+
+}

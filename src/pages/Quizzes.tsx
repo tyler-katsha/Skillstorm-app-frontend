@@ -5,7 +5,8 @@ import { useUser } from "../contexts/UserContext";
 import styles from "../module/QuizPage.module.css";
 import { API } from "../utils/API";
 import { formatTopicNames, getToken } from "../utils/Utils";
-import type { QuizProps } from "../types/quiz";
+import type { QuizData, QuizProps } from "../types/quiz";
+import { CreateQuiz } from "../components/CreateQuiz";
 
 export const QuizPage = () => {
     const [search, setSearch] = useState("");
@@ -13,11 +14,12 @@ export const QuizPage = () => {
     const [quizzes, setQuizzes] = useState<QuizProps[]>([]);
     const [loading, setLoading] = useState(true);
     const [activeQuiz, setActiveQuiz] = useState<QuizProps | null>(null);
+    const [creatingQuiz, setCreatingQuiz] = useState(false);
 
     const { user } = useUser();
 
     if (!user) {
-        <RedirectUser />
+        return <RedirectUser />
     }
 
     // Dynamically derive unique categories from the fetched quizzes
@@ -74,6 +76,65 @@ export const QuizPage = () => {
         fetchQuizzes();
     }, []);
 
+    const createQuiz = async (quiz: QuizData) => {
+
+        console.log(quiz)
+        try {
+
+            const token = getToken();
+            console.log(token)
+
+            if(!token){
+                throw new Error('No Token provided');
+            }
+            const response = await fetch(`${API}/quizzes`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify(quiz)
+            }
+            );
+
+            if (!response.ok) {
+                throw new Error("Failed to create quiz");
+            }
+
+            const createdQuiz: QuizData = await response.json();
+
+            console.log(createdQuiz);
+
+            setQuizzes(currentQuizzes => [...currentQuizzes, createdQuiz]);
+
+            setCreatingQuiz(false);
+
+        } catch (error) {
+
+            console.error(error);
+
+        }
+    };
+
+    if (creatingQuiz) {
+        return (
+            <main className={styles.page}>
+
+                <button
+                    type="button"
+                    onClick={() => setCreatingQuiz(false)}
+                    className={styles.startButton}>
+                    ← Back to Quizzes
+                </button>
+
+                <CreateQuiz
+                    onSubmit={createQuiz}
+                />
+
+            </main>
+        );
+    }
+
     if (activeQuiz) {
         return (
             <div>
@@ -93,7 +154,7 @@ export const QuizPage = () => {
                     <p>Explore quizzes, test your knowledge, and challenge yourself.</p>
                 </div>
 
-                <button className={styles.createButton}>
+                <button className={styles.createButton} onClick={() => setCreatingQuiz(true)}>
                     + Create Quiz
                 </button>
             </div>
