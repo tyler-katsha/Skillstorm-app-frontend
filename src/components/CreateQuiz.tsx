@@ -6,7 +6,6 @@ import { CreateQuestion } from './CreateQuestion';
 
 export const CreateQuiz: React.FC<CreateQuizProps> = ({ onSubmit, initialData }) => {
 
-
     const [title, setTitle] = useState(initialData?.title ?? "");
 
     const [difficulty, setDifficulty] = useState(initialData?.difficulty ?? "EASY");
@@ -17,11 +16,7 @@ export const CreateQuiz: React.FC<CreateQuizProps> = ({ onSubmit, initialData })
 
     const [questions, setQuestions] = useState<QuestionData[]>(initialData?.questions ?? [DEFAULT_QUESTION]);
 
-    const createEmptyQuestion = (): QuestionData => ({
-        text: "",
-        options: ["", "", "", ""],
-        correctOption: 0
-    });
+    const createEmptyQuestion = (): QuestionData => (DEFAULT_QUESTION);
 
     const handleQuestionCountChange = (e: ChangeEvent<HTMLSelectElement>) => {
 
@@ -131,23 +126,10 @@ export const CreateQuiz: React.FC<CreateQuizProps> = ({ onSubmit, initialData })
                         Difficulty
                     </label>
 
-                    <select
-                        value={difficulty}
-                        onChange={(event) =>
-                            setDifficulty(event.target.value)
-                        }
-                    >
-                        <option value="EASY">
-                            Easy
-                        </option>
-
-                        <option value="MEDIUM">
-                            Medium
-                        </option>
-
-                        <option value="HARD">
-                            Hard
-                        </option>
+                    <select value={difficulty} onChange={(event) =>setDifficulty(event.target.value)}>
+                        <option value="EASY">Easy</option>
+                        <option value="MEDIUM">Medium</option>
+                        <option value="HARD">Hard</option>
                     </select>
 
                 </div>
@@ -155,9 +137,7 @@ export const CreateQuiz: React.FC<CreateQuizProps> = ({ onSubmit, initialData })
 
                 <div className={styles.field}>
 
-                    <label>
-                        Topics
-                    </label>
+                    <label>Topics</label>
 
                     <input
                         type="text"
@@ -166,18 +146,14 @@ export const CreateQuiz: React.FC<CreateQuizProps> = ({ onSubmit, initialData })
                         placeholder="Java, Networking, Security"
                     />
 
-                    <span className={styles.helpText}>
-                        Separate topics with commas.
-                    </span>
+                    <span className={styles.helpText}>Separate topics with commas.</span>
 
                 </div>
 
 
                 <div className={styles.field}>
 
-                    <label>
-                        Number of Questions
-                    </label>
+                    <label>Number of Questions</label>
 
                     <select
                         value={questionCount}
@@ -212,8 +188,8 @@ export const CreateQuiz: React.FC<CreateQuizProps> = ({ onSubmit, initialData })
                     </h3>
 
                     <span>
-                        {questions.length} question
-                        {questions.length !== 1 && "s"}
+                        {questions.length} question {questions.length !== 1 && "s"}
+                        {' '}(Total Points: {questions.reduce((sum,q) => sum + (q.score || 0),0)})
                     </span>
 
                 </div>

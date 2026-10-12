@@ -4,9 +4,9 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { PlayerCard } from '../components/PlayerCard';
 import { useUser } from '../contexts/UserContext';
 import styles from '../module/Room.module.css';
-import type { PlayerSlot } from '../types/type';
 import { getToken } from '../utils/Utils';
 import { createStompClient } from '../utils/websocket';
+import type { PlayerSlot } from '../types/player';
 
 export const Room = () => {
     const location = useLocation();

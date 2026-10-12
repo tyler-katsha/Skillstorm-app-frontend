@@ -6,9 +6,10 @@ export interface Question {
     answers: Answer[];
 }
 export interface QuestionData {
-    text: string,
-    options: string[],
-    correctOption: number
+    text: string;
+    options: string[];
+    correctOption: number;
+    score: number;
 }
 
 export interface CreateQuestionProps {
@@ -21,5 +22,6 @@ export interface CreateQuestionProps {
 export const DEFAULT_QUESTION: QuestionData = {
     text: "",
     options: ["", "", "", ""],
-    correctOption: 0
+    correctOption: 0,
+    score: 10
 }
