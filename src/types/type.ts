@@ -9,10 +9,7 @@ export type AuthProvider = 'LOCAL' | "OAUTH2";
 export type ToastResponse = "success" | "error";
 export type GameEventType = "WAITING_FOR_OPPONENT" | "GAME_STARTED";
 export type Difficulty = "Easy" | "Medium" | "Hard";
+export type DifficultyLevel = "EASY" | "MEDIUM" | "HARD";
 export type Filter = 'All' | 'Earned' | 'Locked';
 export type Bloom = 'USERNAME' | 'EMAIL';
-
-export const appRoleArray = ['USER', 'EMPLOYEE', 'ADMIN']
-export const providersArray = ['Google', 'Facebook', 'Instagram'];
-export const filterArray = ['All', 'Earned', 'Locked'];
 

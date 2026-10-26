@@ -35,7 +35,7 @@ export const Navigation = () => {
                         {navigationLink("/", "Home")}
                         {navigationLink("/leaderboard", "Leaderboard")}
                         {navigationLink("/quizzes", "Quizzes")}
-                        {navigationLink("/badges", "Badges")}
+                        {/* {navigationLink("/badges", "Badges")} */}
                         {navigationLink("/profile", "Profile")}
                     </ul>
 

@@ -1,5 +1,5 @@
 import styles from '../module/Card.module.css'
-import type { CardProps } from '../types/type'
+import type { CardProps } from '../types/card'
 
 export const Card: React.FC<CardProps> = ({ width = '100%', height = 'auto', title, text, numOfQuestions = 0 }) => {
     return (

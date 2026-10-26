@@ -1,92 +1,52 @@
-import { createContext, useContext, useEffect, useState, type Dispatch, type SetStateAction } from "react";
-import { HomeSkeleton } from "../skeletons/pages/HomeSkeleton";
-import { type UserProps } from "../types/type";
-import { API } from "../utils/API";
-import { getToken, removeAll } from "../utils/Utils";
-interface UserContextType {
-    user: UserProps | null;
-    isLoading: boolean;
-    updateUser: (newData: UserProps) => void;
-    logout: () => void;
-    fetchUser: () => Promise<void>;
-    isAuthenticated: boolean;
-    setIsAuthentication: Dispatch<SetStateAction<boolean>>;
-}
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import type { UserContextType, UserProps } from '../types/user'; // Adjust import to your user type
+
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [user, setUser] = useState<UserProps | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
-    const [isAuthenticated, setIsAuthentication] = useState(user !== null);
+  const [user, setUser] = useState<UserProps | null>(() => {
+    const savedUser = localStorage.getItem('user');
+    return savedUser ? JSON.parse(savedUser) : null;
+  });
 
-    const fetchUser = async () => {
-
-        if (localStorage.getItem('login-register-pages') === 'true') {
-            setIsLoading(false);
-            return;
-        }
-        if (localStorage.getItem('email') === 'true') {
-            setIsLoading(false);
-            return;
-        }
-
-
-        try {
-            const token = getToken();
-
-            if (!token) {
-                throw new Error(`No Token Found`);
-            }
-            const response = await fetch(`${API}/users/me`, {
-                method: 'GET',
-                headers: {
-                    'content-type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-
-            if (!response.ok) {
-                throw new Error(`Failed to fetch user: ${response.status}`)
-            }
-
-
-            const data = await response.json();
-            setUser(data);
-            setIsAuthentication(true);
-        } catch (err) {
-            setUser(null);
-        } finally {
-            setIsLoading(false)
-        }
+  useEffect(() => {
+    if (user) {
+      localStorage.setItem('user', JSON.stringify(user));
+    } else {
+      localStorage.removeItem('user');
     }
+  }, [user]);
 
-    useEffect(() => {
-        fetchUser();
-    }, [])
+  // Helper to cleanly update XP and Level
+  const updateUserStats = (newXp: number, newLevel?: number) => {
+    setUser((prevUser) => {
+      if (!prevUser) return null;
+      return {
+        ...prevUser,
+        xp: newXp,
+        ...(newLevel !== undefined && { level: newLevel }),
+      };
+    });
+  };
 
-    const updateUser = (newData: UserProps) => {
-        setUser(newData);
-    }
+  const logout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    setUser(null);
+  };
 
-    const logout = () => {
-        setUser(null);
-        removeAll();
-    }
-
-    if (isLoading) return <HomeSkeleton />;
-
-    return (
-        <UserContext.Provider value={{ user, isLoading, updateUser, logout, fetchUser, isAuthenticated, setIsAuthentication }}>
-            {children}
-        </UserContext.Provider>
-    )
-}
+  return (
+    <UserContext.Provider value={{ user, setUser, updateUserStats, logout }}>
+      {children}
+    </UserContext.Provider>
+  );
+};
 
 export const useUser = () => {
-    const context = useContext(UserContext);
-    if (context === undefined) {
-        throw new Error('useUser must be used within UserProvider')
-    }
-    return context;
-}
+  const context = useContext(UserContext);
+  if (!context) {
+    throw new Error('useUser must be used within a UserProvider');
+  }
+  return context;
+};

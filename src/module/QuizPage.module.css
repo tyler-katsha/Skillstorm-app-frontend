@@ -318,6 +318,49 @@
     color: #1d4ed8;
 }
 
+.adminActions {
+    display: flex;
+    gap: 8px;
+    margin-top: 15px;
+    padding: 0 18px 15px;
+}
+
+.updateButton {
+    flex: 1;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 8px 12px;
+    background: white;
+    color: #475569;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.updateButton:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+    color: #0f172a;
+}
+
+.deleteButton {
+    flex: 1;
+    border: 1px solid #fee2e2;
+    border-radius: 6px;
+    padding: 8px 12px;
+    background: #fef2f2;
+    color: #dc2626;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.deleteButton:hover {
+    background: #fee2e2;
+    border-color: #fca5a5;
+}
 /* Empty */
 
 .empty {

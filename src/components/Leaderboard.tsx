@@ -1,5 +1,5 @@
 import styles from '../module/Leaderboard.module.css';
-import type { LeaderboardProps } from "../types/type";
+import type { LeaderboardProps } from '../types/leaderboard';
 
 export const Leaderboard: React.FC<LeaderboardProps> = ({ title, users, isLoading, limit = 10, isBackground }) => {
 

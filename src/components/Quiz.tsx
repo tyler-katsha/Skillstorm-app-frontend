@@ -1,189 +1,58 @@
-import React, { Fragment, useMemo, useState } from 'react';
+import React, { Fragment, useRef, useState } from 'react';
 import styles from '../module/Quiz.module.css';
-import type { CongratsProps, ProgressbarsProps, QuestionOptionProps, QuizProps, SubmitButtonProps, UserProps } from '../types/type';
-import { calculateLevel, calculateNextLevel, OptionState, pluralS } from '../utils/Utils';
+import { calculateLevel, calculateNextLevel, getToken, OptionState } from '../utils/Utils';
 import { RedirectUser } from './RedirectUser';
+import type { QuizCompProps, QuizSubmissionPayload, SubmissionResult, UserAnswerSubmission } from '../types/quiz';
+import { API } from '../utils/API';
+import { Progressbars } from './Progressbars';
+import { QuestionTextbox } from './QuestionTextbox';
+import { QuestionOption } from './QuestionOption';
+import { SubmitButton } from './SubmitButton';
+import { QuizResults } from './QuizResults';
+import { useUser } from '../contexts/UserContext';
+import { saveUncompletedQuizProgress } from '../services/trackerService';
 
+export const Quiz: React.FC<QuizCompProps> = ({ sampleQuiz, sampleUser, onQuizDeleted, onBack }) => {
 
-const Progressbars: React.FC<ProgressbarsProps> = ({ answered, total, currentLevel, currentXp, nextLevelXp }) => {
-  const quizProgress = total > 0 ? Math.min(100, Math.max(0, Math.round((answered / total) * 100))) : 0;
-  const levelProgress = nextLevelXp > 0 ? Math.min(100, Math.max(0, Math.round((currentXp / nextLevelXp) * 100))) : 0;
-  const unanswered = Math.max(0, total - answered);
+  const { updateUserStats } = useUser();
+  const startTimerRef = useRef<number>(Date.now());
+  const initialXpRef = useRef<number>(sampleUser?.xp ?? 0);
 
-  const questionsToGo = useMemo(() => {
-    if (unanswered > 1) {
-      return (
-        <>
-          <span className={styles.bigger}>{unanswered} </span>
-          <span>question{pluralS ? pluralS(unanswered) : 's'} to go</span>
-        </>
-      );
-    }
-    if (unanswered === 1) {
-      return (
-        <>
-          <span className={styles.bigger}>1 </span>
-          <span>question to go</span>
-        </>
-      );
-    }
-    return <span>Last question!</span>;
-  }, [unanswered]);
-
-  return (
-    <div className={styles.pbars}>
-      <div
-        className={styles.xpPbar}
-        role="progressbar"
-        aria-valuenow={currentXp}
-        aria-valuemin={0}
-        aria-valuemax={nextLevelXp}
-        aria-label="XP progress"
-        style={{
-          background: `linear-gradient(90deg, var(--ink) ${levelProgress}%, var(--guardsman-red) ${levelProgress}%)`,
-        }}
-      >
-        <span className={styles.pbarLeftText}>
-          {currentXp} / {nextLevelXp} XP
-        </span>
-        <span className={styles.pbarRightText}>Level {currentLevel}</span>
-      </div>
-
-      <div
-        className={styles.quizPbar}
-        role="progressbar"
-        aria-valuenow={answered}
-        aria-valuemin={1}
-        aria-valuemax={total}
-        aria-label="Quiz progress"
-        style={{
-          background: `linear-gradient(90deg, var(--primary-blue) ${quizProgress}%, var(--guardsman-red) ${quizProgress}%)`,
-        }}
-      >
-        <span className={styles.pbarLeftText}>
-          <span className={styles.smaller}>Question&nbsp;</span>
-          <strong className={styles.bigger}>{answered}</strong>
-        </span>
-        <span className={styles.pbarRightText}>{questionsToGo}</span>
-      </div>
-    </div>
-  );
-};
-
-const QuestionTextbox: React.FC<{ content: string }> = ({ content }) => {
-  return <div className={styles.questionTextbox}>{content}</div>;
-};
-
-
-const QuestionOption: React.FC<QuestionOptionProps> = ({ label, selected, state, myOnClick }) => {
-  const getStateClass = () => {
-    switch (state) {
-      case OptionState.CORRECT:
-        return styles.correct;
-      case OptionState.INCORRECT:
-        return styles.incorrect;
-      case OptionState.UNSELECTED:
-        return styles.unselected;
-      case OptionState.POSSIBLE:
-      default:
-        return selected ? styles.selected : '';
-    }
-  };
-
-  const renderIndicator = () => {
-    if (state === OptionState.CORRECT) return '✓';
-    if (state === OptionState.INCORRECT) return '✕';
-    return null;
-  };
-
-  const isAnswerChecked =
-    state === OptionState.CORRECT ||
-    state === OptionState.INCORRECT ||
-    state === OptionState.UNSELECTED;
-
-  return (
-    <button
-      type="button"
-      className={`${styles.quizOptionButton} ${getStateClass()}`}
-      onClick={myOnClick}
-      disabled={isAnswerChecked}
-    >
-      <span>{label}</span>
-      {renderIndicator() && (
-        <span className={styles.optionIndicator}>{renderIndicator()}</span>
-      )}
-    </button>
-  );
-};
-
-const SubmitButton: React.FC<SubmitButtonProps> = ({ label, disabled = false, myOnClick, }) => {
-  return (
-    <button
-      type="button"
-      className={styles.submitButton}
-      disabled={disabled}
-      onClick={myOnClick}
-    >
-      {label}
-    </button>
-  );
-};
-
-const Congrats: React.FC<CongratsProps> = ({ correct, total, xpGained }) => {
-  const percentage = total > 0 ? Math.round((correct / total) * 100) : 0;
-
-  return (
-    <div className={styles.congratsBlock}>
-      <h2>Quiz Completed!</h2>
-      <p>
-        You scored{' '}
-        <span className={styles.congratsFraction}>
-          {correct} / {total}
-        </span>{' '}
-        (<span className={styles.congratsPercentage}>{percentage}%</span>)
-        <span className={styles.xpGainedCongrats}>
-          {xpGained}
-        </span>
-      </p>
-    </div>
-  );
-};
-
-interface QuizCompProps {
-  sampleQuiz: QuizProps;
-  sampleUser: UserProps | null;
-}
-
-export const Quiz: React.FC<QuizCompProps> = ({ sampleQuiz, sampleUser }) => {
   const [questionIdx, setQuestionIdx] = useState(0);
   const [score, setScore] = useState(0);
   const [questionsCorrect, setQuestionsCorrect] = useState(0);
   const [selectedIdx, setSelectedIdx] = useState<number>(-1);
   const [isAnswering, setIsAnswering] = useState(true);
+  const [isDeleting, setIsDeleting] = useState(false);
 
+  const [userSubmissions, setUserSubmissions] = useState<UserAnswerSubmission[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submissionResult, setSubmissionResult] = useState<SubmissionResult | null>(null);
+  const [finalTimeSeconds, setFinalTimeSeconds] = useState<number>(0);
+
+
+ 
   if (!sampleUser) {
     return <RedirectUser />;
   }
 
   const quickSelect = Boolean(sampleUser.options?.quick_select);
   const currentQuestion = sampleQuiz?.questions?.[questionIdx];
+  const answers = currentQuestion?.answers ?? [];
 
-  if (!sampleQuiz?.questions?.length || questionIdx >= sampleQuiz.questions.length) {
-    return (
-      <div className={styles.pageRoot}>
-        <div className={styles.quizPageBg} aria-hidden="true" />
-        <div className={styles.quizContainer}>
-          <Congrats correct={questionsCorrect} total={sampleQuiz?.questions?.length || 0} xpGained={score} />
-        </div>
-      </div>
-    );
-  }
+  const isChoiceCorrect = (index: number) => {
+    const ans = answers[index] as any;
+    if (ans) {
+      return Boolean(ans.isCorrect ?? ans.correct);
+    }
+    return index === currentQuestion.correctOption;
+  };
 
   const getBtnState = (index: number) => {
     if (isAnswering) {
       return OptionState.POSSIBLE;
     }
-    if (currentQuestion.answers[index]?.isCorrect) {
+    if (isChoiceCorrect(index)) {
       return OptionState.CORRECT;
     }
     if (index === selectedIdx) {
@@ -195,18 +64,106 @@ export const Quiz: React.FC<QuizCompProps> = ({ sampleQuiz, sampleUser }) => {
   const handleCheckAnswer = (indexToCheck = selectedIdx) => {
     if (indexToCheck === -1) return;
 
-    const selectedAnswer = currentQuestion.answers[indexToCheck];
-    if (selectedAnswer?.isCorrect) {
-      setScore((prev) => prev + (currentQuestion.score || 1));
+    if (isChoiceCorrect(indexToCheck)) {
+      setScore((prev) => prev + (currentQuestion.score || 10));
       setQuestionsCorrect((prev) => prev + 1);
     }
     setIsAnswering(false);
   };
 
+  const handleBackToQuizzes = async () => {
+    const quizId = sampleQuiz.id;
+    const completedCount = questionIdx;
+    const totalCount = sampleQuiz.questions.length || 1;
+
+    if (quizId) {
+      try {
+        await saveUncompletedQuizProgress(quizId, completedCount, totalCount);
+      } catch (err) {
+        console.error('Could not save uncompleted quiz progress:', err);
+      }
+    }
+
+    if (onBack) {
+      onBack();
+    }
+  };
+
+  const submitQuiz = async (finalAnswers: UserAnswerSubmission[]) => {
+    setIsSubmitting(true);
+    const token = getToken();
+
+    const endTime = Date.now();
+    const timeSpentSeconds = Math.max(1, Math.round((endTime - startTimerRef.current) / 1000));
+    setFinalTimeSeconds(timeSpentSeconds);
+
+    const payload: QuizSubmissionPayload = {
+      timeSpentSeconds,
+      answers: finalAnswers,
+    };
+
+    try {
+      const response = await fetch(`${API}/quizzes/${sampleQuiz.id}/submit`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to submit quiz results.');
+      }
+
+      const result: SubmissionResult = await response.json();
+      setSubmissionResult(result);
+
+      if (result.currentXp !== undefined) {
+        updateUserStats(result.currentXp, result.currentLevel);
+      } else {
+        const earned = result.scoreEarned ?? score;
+        const newTotalXp = initialXpRef.current + earned;
+        updateUserStats(newTotalXp, calculateLevel(newTotalXp));
+      }
+    } catch (error) {
+      console.error('Error submitting quiz payload:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const handleNextQuestion = () => {
+    const selectedAnswerObj = answers[selectedIdx] as any;
+    const newSubmission: UserAnswerSubmission = {
+      questionId: currentQuestion.questionId ?? 0,
+      selectedAnswerId: selectedAnswerObj?.answerId ?? 0,
+    };
+
+    const updatedSubmissions = [...userSubmissions, newSubmission];
+    setUserSubmissions(updatedSubmissions);
+
     setSelectedIdx(-1);
     setIsAnswering(true);
+
+    const isLastQuestion = questionIdx + 1 >= sampleQuiz.questions.length;
     setQuestionIdx((prev) => prev + 1);
+
+    if (isLastQuestion) {
+      submitQuiz(updatedSubmissions);
+    }
+  };
+
+  const handleRetryQuiz = () => {
+    startTimerRef.current = Date.now();
+    setQuestionIdx(0);
+    setScore(0);
+    setQuestionsCorrect(0);
+    setSelectedIdx(-1);
+    setIsAnswering(true);
+    setUserSubmissions([]);
+    setSubmissionResult(null);
+    setFinalTimeSeconds(0);
   };
 
   const handleSelectOption = (index: number) => {
@@ -219,11 +176,96 @@ export const Quiz: React.FC<QuizCompProps> = ({ sampleQuiz, sampleUser }) => {
     }
   };
 
+  const handleDeleteQuiz = async () => {
+    if (!sampleQuiz?.id) {
+      alert("Cannot delete: Quiz ID is missing.");
+      return;
+    }
+
+    const confirmDelete = window.confirm("Are you sure you want to delete this quiz?");
+    if (!confirmDelete) return;
+
+    try {
+      setIsDeleting(true);
+      const token = getToken();
+      const response = await fetch(`${API}/quizzes/${sampleQuiz.id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete quiz');
+      }
+
+      if (onQuizDeleted) {
+        onQuizDeleted(sampleQuiz.id);
+      } else {
+        window.location.href = '/';
+      }
+    } catch (error) {
+      console.error('Error deleting quiz:', error);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  if (!sampleQuiz?.questions?.length || questionIdx >= sampleQuiz.questions.length) {
+    return (
+      <div className={styles.pageRoot}>
+        <div className={styles.quizPageBg} aria-hidden="true" />
+        {isSubmitting ? (
+          <div className={styles.quizContainer} style={{ textAlign: 'center', padding: '4rem 1rem' }}>
+            <h2>Calculating your results...</h2>
+            <p>Updating your XP and saving your quiz history.</p>
+          </div>
+        ) : (
+          <QuizResults
+            quiz={sampleQuiz}
+            result={submissionResult}
+            fallbackCorrect={questionsCorrect}
+            fallbackScore={score}
+            timeSpentSeconds={finalTimeSeconds}
+            userSubmissions={userSubmissions}
+            initialUserXp={sampleUser.xp}
+            initialUserLevel={calculateLevel(sampleUser.xp)}
+            onRetry={handleRetryQuiz}
+            onDelete={handleDeleteQuiz}
+            isDeleting={isDeleting}
+          />
+        )}
+      </div>
+    );
+  }
+
+  const isFinalQuestion = questionIdx === sampleQuiz.questions.length - 1;
+
   return (
     <div className={styles.pageRoot}>
       <div className={styles.quizPageBg} aria-hidden="true" />
 
       <div className={styles.quizContainer}>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '10px' }}>
+
+          <button
+            onClick={handleBackToQuizzes}
+            className={styles.startButton}
+            style={{ marginBottom: "1rem", cursor: "pointer", alignSelf: "flex-start" }}
+          >
+            ← Back to Quizzes
+          </button>
+          {sampleQuiz.id && (
+            <button
+              onClick={handleDeleteQuiz}
+              disabled={isDeleting}
+              style={{ backgroundColor: 'transparent', color: 'var(--guardsman-red)', border: '1px solid var(--guardsman-red)', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer' }}
+            >
+              {isDeleting ? 'Deleting...' : '🗑️ Delete Quiz'}
+            </button>
+          )}
+        </div>
+
         <Progressbars
           answered={questionIdx + 1}
           total={sampleQuiz.questions.length}
@@ -235,34 +277,37 @@ export const Quiz: React.FC<QuizCompProps> = ({ sampleQuiz, sampleUser }) => {
         <QuestionTextbox content={currentQuestion.text} />
 
         <div className={styles.optionsList}>
-          {currentQuestion.answers.map((answer, i) => (
-            <Fragment key={i}>
-              <QuestionOption
-                label={answer.text}
-                selected={selectedIdx === i}
-                state={getBtnState(i)}
-                myOnClick={() => handleSelectOption(i)}
-              />
-              {i < currentQuestion.answers.length - 1 && (
-                <hr className={styles.divider} />
-              )}
-            </Fragment>
-          ))}
+          {answers.map((answer: any, i: number) => {
+            const labelText = typeof answer === 'string' ? answer : (answer.answerText ?? answer.text ?? "");
+            return (
+              <Fragment key={answer.answerId ?? i}>
+                <QuestionOption
+                  label={labelText}
+                  selected={selectedIdx === i}
+                  state={getBtnState(i)}
+                  myOnClick={() => handleSelectOption(i)}
+                />
+                {i < answers.length - 1 && (
+                  <hr className={styles.divider} />
+                )}
+              </Fragment>
+            );
+          })}
         </div>
 
         {quickSelect ? (
           !isAnswering && (
             <SubmitButton
-              label="Next question"
+              label={isFinalQuestion ? "Finish quiz" : "Next question"}
               disabled={false}
               myOnClick={handleNextQuestion}
             />
           )
         ) : (
           <SubmitButton
-            label={isAnswering ? "Check answer" : "Next question"}
+            label={isAnswering ? "Check answer" : (isFinalQuestion ? "Finish quiz" : "Next question")}
             disabled={selectedIdx === -1}
-            myOnClick={isAnswering ? handleCheckAnswer : handleNextQuestion}
+            myOnClick={isAnswering ? () => handleCheckAnswer(selectedIdx) : handleNextQuestion}
           />
         )}
       </div>

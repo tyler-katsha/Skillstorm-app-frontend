@@ -1,5 +1,5 @@
 import styles from '../module/CardGrid.module.css'
-import type { CardGridProps } from "../types/type"
+import type { CardGridProps } from '../types/card'
 import { Card } from "./Card"
 export const CardGrid: React.FC<CardGridProps> = ({ width = '100%', height = 'auto', cardData = [] }) => {
     return (

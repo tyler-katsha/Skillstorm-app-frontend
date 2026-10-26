@@ -1,4 +1,3 @@
-
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import './App.css'
 import { Login } from './pages/Login'
@@ -16,8 +15,9 @@ import { MainLayout } from './components/MainLayout'
 import { ProfilePage } from './pages/Profile'
 import { BadgePage } from './pages/BadgePage'
 import { QuizPage } from './pages/Quizzes'
-import { useEffect, useState } from 'react'
 import { Room } from './pages/Room'
+import { CreateQuiz } from './components/CreateQuiz' // Adjust this import path based on your folder structure
+import { useEffect, useState } from 'react'
 
 function App() {
 
@@ -87,7 +87,24 @@ function App() {
             </ProtectedRoute>
           ),
         },
-
+        // --- NEW ROUTES ADDED HERE ---
+        {
+          path: "/create-quiz",
+          element: (
+            <ProtectedRoute>
+              <CreateQuiz />
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "/edit-quiz/:id",
+          element: (
+            <ProtectedRoute>
+              <CreateQuiz />
+            </ProtectedRoute>
+          ),
+        },
+        // -----------------------------
         {
           path: "/badges",
           element: (

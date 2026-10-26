@@ -1,6 +1,6 @@
 import { Component, type ErrorInfo } from "react";
 import styles from '../module/ErrorBoundary.module.css';
-import type { Props, State } from "../types/type";
+import type { State, Props } from "../types/error";
 export class ErrorBoundary extends Component<Props, State> {
 
     public state: State = { hasError: false };

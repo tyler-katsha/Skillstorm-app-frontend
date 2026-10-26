@@ -1,7 +1,8 @@
 import { useMemo, useState } from "react"
 import { definitions, preview } from "../data/badgeData"
-import { filterArray, type Filter } from "../types/type"
+import { type Filter } from "../types/type"
 import styles from '../module/BadgePage.module.css'
+import { filterArray } from "../types/array"
 
 export const BadgePage: React.FC = () => {
     // Directly uses preview mock data self-contained

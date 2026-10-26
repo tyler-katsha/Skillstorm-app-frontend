@@ -1,27 +1,32 @@
 import type { Answer } from "./answer";
 
-export interface Question {
-    score: number;
-    text: string;
-    answers: Answer[];
+export interface QuestionPayload {
+  questionId?: number | null;
+  score: number;
+  text: string;
+  answers: Answer[];
 }
+
 export interface QuestionData {
-    text: string;
-    options: string[];
-    correctOption: number;
-    score: number;
+  questionId?: number;
+  text: string;
+  score: number;
+  correctOption: number;
+  options: string[]; // Used by CreateQuestion form inputs
+  answers?: Answer[]; // Received from API
+  answerIds?: number[];
 }
 
 export interface CreateQuestionProps {
-    questionNumber: number;
-    initialData?: QuestionData;
-    onChange: (question: QuestionData) => void;
-    onRemove?: () => void;
+  questionNumber: number;
+  initialData?: QuestionData;
+  onChange: (question: QuestionData) => void;
+  onRemove?: () => void;
 }
 
 export const DEFAULT_QUESTION: QuestionData = {
-    text: "",
-    options: ["", "", "", ""],
-    correctOption: 0,
-    score: 10
-}
+  text: "",
+  correctOption: 0,
+  score: 10,
+  options: ["", "", "", ""],
+};

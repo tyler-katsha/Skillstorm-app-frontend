@@ -30,3 +30,10 @@ export interface QuestionOptionProps {
 export interface UserOptions {
     quick_select: boolean;
 }
+
+export interface UserContextType {
+  user: UserProps | null;
+  setUser: React.Dispatch<React.SetStateAction<UserProps | null>>;
+  updateUserStats: (newXp: number, newLevel?: number) => void;
+  logout: () => void;
+}

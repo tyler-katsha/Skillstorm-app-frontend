@@ -5,10 +5,12 @@ import { useUser } from "../contexts/UserContext";
 import styles from "../module/QuizPage.module.css";
 import { API } from "../utils/API";
 import { formatTopicNames, getToken } from "../utils/Utils";
-import type { QuizData, QuizProps } from "../types/quiz";
+import type { QuizProps } from "../types/quiz";
 import { CreateQuiz } from "../components/CreateQuiz";
+import { useNavigate } from "react-router-dom";
 
 export const QuizPage = () => {
+    const navigate = useNavigate();
     const [search, setSearch] = useState("");
     const [category, setCategory] = useState("All");
     const [quizzes, setQuizzes] = useState<QuizProps[]>([]);
@@ -22,7 +24,6 @@ export const QuizPage = () => {
         return <RedirectUser />
     }
 
-    // Dynamically derive unique categories from the fetched quizzes
     const categories = useMemo(() => {
         const uniqueTopics = new Set<string>();
         quizzes.forEach((item) => {
@@ -47,8 +48,8 @@ export const QuizPage = () => {
     const fetchQuizzes = async () => {
         try {
             setLoading(true);
+            
             const token = getToken();
-
             const response = await fetch(`${API}/quizzes`, {
                 method: "GET",
                 headers: {
@@ -76,45 +77,31 @@ export const QuizPage = () => {
         fetchQuizzes();
     }, []);
 
-    const createQuiz = async (quiz: QuizData) => {
+    
 
-        console.log(quiz)
+    const updateQuiz = async (id:number) => {
+        navigate(`/edit-quiz/${id}`)
+    }
+
+    const deleteQuiz = async (id: number) => {
+        setQuizzes(prevQuizzes => prevQuizzes.filter(quiz => quiz.id !== id));
+        const token = getToken();
         try {
-
-            const token = getToken();
-            console.log(token)
-
-            if(!token){
-                throw new Error('No Token provided');
-            }
-            const response = await fetch(`${API}/quizzes`, {
-                method: "POST",
+            const response = await fetch(`http://localhost:8080/api/quizzes/${id}`, {
+                method: 'DELETE',
                 headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`
-                },
-                body: JSON.stringify(quiz)
-            }
-            );
+                    'Authorization': `Bearer ${token}`
+                }
+            });
 
             if (!response.ok) {
-                throw new Error("Failed to create quiz");
+                throw new Error("Failed to delete the quiz.");
             }
 
-            const createdQuiz: QuizData = await response.json();
-
-            console.log(createdQuiz);
-
-            setQuizzes(currentQuizzes => [...currentQuizzes, createdQuiz]);
-
-            setCreatingQuiz(false);
-
         } catch (error) {
-
-            console.error(error);
-
+            console.error("Error executing delete command:", error);
         }
-    };
+    }
 
     if (creatingQuiz) {
         return (
@@ -127,25 +114,14 @@ export const QuizPage = () => {
                     ← Back to Quizzes
                 </button>
 
-                <CreateQuiz
-                    onSubmit={createQuiz}
-                />
+                <CreateQuiz />
 
             </main>
         );
     }
 
-    if (activeQuiz) {
-        return (
-            <div>
-                <button onClick={() => setActiveQuiz(null)} style={{ margin: "1rem", cursor: "pointer" }} className={styles.startButton}>
-                    ← Back to Quizzes
-                </button>
-                <Quiz sampleQuiz={activeQuiz} sampleUser={user} />
-            </div>
-        );
-    }
-
+    if (activeQuiz) return <Quiz sampleQuiz={activeQuiz} sampleUser={user} onBack={() => setActiveQuiz(null)}/>
+    
     return (
         <main className={styles.page}>
             <div className={styles.header}>
@@ -223,6 +199,15 @@ export const QuizPage = () => {
                                 <button className={styles.startButton} onClick={() => startQuiz(item)}>
                                     Start Quiz →
                                 </button>
+
+                                <div className={styles.adminActions}>
+                                    <button className={styles.updateButton} onClick={() => updateQuiz(item.id)}>
+                                        Update Quiz
+                                    </button>
+                                    <button className={styles.deleteButton} onClick={() => deleteQuiz(item.id)}>
+                                        Delete Quiz
+                                    </button>
+                                </div>
                             </div>
                         </article>
                     ))}

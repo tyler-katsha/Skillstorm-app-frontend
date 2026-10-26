@@ -1,110 +1,149 @@
-// profile page
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BadgeCard } from '../components/BadgeCard';
 import { Profile } from '../components/ProfileImageHolder';
 import { useUser } from '../contexts/UserContext';
 import styles from '../module/ProfilePage.module.css';
 import { getYear } from '../utils/Utils';
-import { createRoom, friendJoinRoom, quickJoinRoom } from '../utils/services/RoomApi';
-import { useState } from 'react';
-import { challengeData } from '../data/challengeData';
-import { statsData } from '../data/statsData';
+import type { UserTrackerResponse } from '../types/tracker';
+import { fetchUserTrackerHistory, getSavedQuizPercentage } from '../services/trackerService';
 
 export const ProfilePage = () => {
-    const navigate = useNavigate();
     const { user } = useUser();
+    const navigate = useNavigate();
+    const [tracker, setTracker] = useState<UserTrackerResponse | null>(null);
+    const [loading, setLoading] = useState<boolean>(true);
 
-    const [roomId,setRoomId] = useState('');
-    const [errorMsg, setErrorMsg] = useState<string | null>(null);
+    useEffect(() => {
+        const loadTracker = async () => {
+            try {
+                setLoading(true);
+                const data = await fetchUserTrackerHistory();
+                setTracker(data);
+            } catch (error) {
+                console.error('Error loading user tracker history:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        loadTracker();
+    }, [user]);
+
     if (!user) {
-        return;
+        return null;
     }
 
-    const handleHostRoom = async () => {
-        try {
-            setErrorMsg(null);
-            const response = await createRoom();
-            const createdRoomId = response.roomId;
-            navigate(`/room`, { state: { roomId:createdRoomId,isHost: true, isPublic:true } });
-        } catch (error) {
-            console.error("Failed to host room", error);
-            setErrorMsg('Failed to create room. Please try again.');
-        }
+    const quizzesTaken = tracker?.quizzesTaken ?? 0;
+    const quizzesWon = tracker?.quizzesWon ?? 0;
+    const streak = tracker?.streak ?? 0;
+    const longestStreak = tracker?.longestStreak ?? 0;
+    const perfectQuizzes = tracker?.perfectQuizzes ?? 0;
+    const totalXp = tracker?.totalXp ?? user.xp ?? 0;
+    const currentLevel = tracker?.currentLevel ?? 1;
+
+    const calculatedWinRate = tracker?.winRate != null
+        ? (tracker.winRate <= 1 ? tracker.winRate * 100 : tracker.winRate).toFixed(2)
+        : quizzesTaken > 0
+            ? ((quizzesWon / quizzesTaken) * 100).toFixed(2)
+            : '0.00';
+
+    const calculatedAccuracy = tracker?.accuracyRate != null
+        ? (tracker.accuracyRate <= 1 ? tracker.accuracyRate * 100 : tracker.accuracyRate).toFixed(1)
+        : (tracker?.totalQuestionsAnswered ?? 0) > 0
+            ? (((tracker?.totalCorrectAnswers ?? 0) / (tracker?.totalQuestionsAnswered ?? 1)) * 100).toFixed(1)
+            : '0.0';
+
+    const formatDuration = (seconds?: number) => {
+        if (!seconds) return '0m';
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return mins > 0 ? `${mins}m ${secs}s` : `${secs}s`;
     };
 
-    const handleQuickJoinRoom = async () => {
-        try {
-            setErrorMsg(null);
-            const room = await quickJoinRoom();
-            
-            const roomId = room.roomId;
-
-            if(room.roomId){
-                // Match found
-                navigate(`/room`, { state: { roomId, isHost: false, isPublic: true } });
-            }
-        } catch (error) {
-            console.error('Failed to quick join room', error);
-            setErrorMsg('Quick match failed. Try again.');
-        }
-    }
-
-    const handleFriendJoinRoom = async () => {
-        const trimmedRoomId = roomId.trim();
-        if(!trimmedRoomId) return;
-        try {
-            setErrorMsg(null);
-            const room = await friendJoinRoom(trimmedRoomId);
-            const targetRoomId = room.roomId || trimmedRoomId;
-            navigate(`/room`, { state: { roomId:targetRoomId, isHost: false, isPublic: false } })
-            
-        } catch (error) {
-            console.error('Failed to quick join room', error);
-            setErrorMsg('Room not found or code is invalid.');
-        }
-    }
     return (
         <div className={styles.pageWrapper}>
-
-            <h1 className={styles.title}>
-                My Profile
-            </h1>
+            <h1 className={styles.title}>My Profile</h1>
 
             <p className={styles.titleDescription}>
                 SkillStorm - compete, earn badges, track progress
             </p>
 
-            {errorMsg && <p className={styles.errorMessage} style={{ color: '#ef4444' }}>{errorMsg}</p>}
-
             <div className={styles.profileContainer}>
                 <div className={styles.leftContainer}>
-
                     <Profile name={user.username} profileImageUrl={undefined} />
 
                     <div className={styles.statsGrid}>
-                        <div className={styles.statsCard}>{statsData.quizzesTaken} Quizzes</div>
-                        <div className={styles.statsCard}>{statsData.quizzesWon} Won</div>
-                        <div className={styles.statsCard}>{statsData.streak} Streak</div>
+                        <div className={styles.statsCard}>{quizzesTaken} Quizzes</div>
+                        <div className={styles.statsCard}>{quizzesWon} Won</div>
+                        <div className={styles.statsCard}>{streak} Streak</div>
                     </div>
 
-                    // could add game history
+                    <div className={styles.historySection}>
+                        <div className={styles.historyHeader}>
+                            <h3>Tracker Overview</h3>
+                            <span className={styles.levelBadge}>Lvl {currentLevel}</span>
+                        </div>
 
-                    // like Duel's played
+                        <div className={styles.trackerMetricsGrid}>
+                            <div className={styles.metricItem}>
+                                <span className={styles.metricLabel}>Perfect Quizzes</span>
+                                <span className={styles.metricValue}>{perfectQuizzes}</span>
+                            </div>
+                            <div className={styles.metricItem}>
+                                <span className={styles.metricLabel}>Longest Streak</span>
+                                <span className={styles.metricValue}>{longestStreak}d</span>
+                            </div>
+                            <div className={styles.metricItem}>
+                                <span className={styles.metricLabel}>Accuracy</span>
+                                <span className={styles.metricValue}>{calculatedAccuracy}%</span>
+                            </div>
+                            <div className={styles.metricItem}>
+                                <span className={styles.metricLabel}>Time Spent</span>
+                                <span className={styles.metricValue}>
+                                    {formatDuration(tracker?.totalTimeSpentSeconds)}
+                                </span>
+                            </div>
+                        </div>
 
-                    // Duel's Won
-
-                    // Duel's lost
-
-                    // Duel's Drawn
-
-                    //
+                        <h4 className={styles.subHeading}>Recent Attempts</h4>
+                        <div className={styles.attemptList}>
+                            {loading ? (
+                                <p className={styles.emptyText}>Loading history...</p>
+                            ) : tracker?.attemptRecords && tracker.attemptRecords.length > 0 ? (
+                                tracker.attemptRecords.slice(0, 5).map((attempt, idx) => (
+                                    <div key={idx} className={styles.attemptRow}>
+                                        <div className={styles.attemptInfo}>
+                                            <span className={styles.attemptTitle}>
+                                                {attempt.quizTitle || `Quiz #${attempt.quizId}`} (Try #{attempt.attemptNumber})
+                                            </span>
+                                            <span className={styles.attemptMeta}>
+                                                {attempt.correctAnswers}/{attempt.questionsAnswered} correct • +{attempt.gainedXp} XP
+                                            </span>
+                                        </div>
+                                        <span
+                                            className={`${styles.attemptStatus} ${
+                                                attempt.isPerfectQuiz
+                                                    ? styles.statusPerfect
+                                                    : attempt.isQuizWon
+                                                    ? styles.statusWon
+                                                    : styles.statusLost
+                                            }`}
+                                        >
+                                            {attempt.isPerfectQuiz ? 'Perfect' : attempt.isQuizWon ? 'Won' : 'Lost'}
+                                        </span>
+                                    </div>
+                                ))
+                            ) : (
+                                <p className={styles.emptyText}>No attempts recorded yet</p>
+                            )}
+                        </div>
+                    </div>
 
                     <div className={styles.userData}>
                         <h3>Email: {user.email}</h3>
                         <h3>Join {getYear(user.createdAt)}</h3>
                     </div>
-
-
                 </div>
 
                 <div className={styles.rightContainer}>
@@ -112,12 +151,13 @@ export const ProfilePage = () => {
                         <h2>Badges</h2>
                         <hr className={styles.divider} />
 
-                        {user.badges !== undefined && user.badges.length > 0 ?
-                            (user.badges.map((item:any, index:number) => (
+                        {user.badges !== undefined && user.badges.length > 0 ? (
+                            user.badges.map((item: any, index: number) => (
                                 <BadgeCard key={index} name={item.name} description={item.description} />
-                            ))) : (
-                                <div style={{ display: 'flex', justifyContent: 'center', fontSize: '1.2rem', color: '#64748B', alignItems: 'center' }}>No Badges Obtained</div>
-                            )}
+                            ))
+                        ) : (
+                            <div className={styles.emptyBadgeState}>No Badges Obtained</div>
+                        )}
                     </div>
 
                     <div className={styles.statsCardData}>
@@ -125,47 +165,46 @@ export const ProfilePage = () => {
                         <hr className={styles.divider} />
 
                         <p className={styles.ranking}>#8 Global</p>
-                        <p className={styles.points}>{user.xp} pts</p>
-                        <p className={styles.winRate}>{((statsData.quizzesWon / statsData.quizzesTaken) * 100).toFixed(2)}% win rate</p>
+                        <p className={styles.points}>{totalXp} pts</p>
+                        <p className={styles.winRate}>{calculatedWinRate}% win rate</p>
                     </div>
 
                     <div className={styles.statsCardData}>
-                        <h2>Challenges</h2>
+                        <h2>Challenges (Uncompleted)</h2>
                         <hr className={styles.divider} />
 
                         <div className={styles.quizRowsContainer}>
-                            {challengeData.map((item, index) => (
-                                <div key={index} className={styles.bubbleChallenge}>
-                                    <p>
-                                        {item.topic} - {item.percent}
-                                        <button className={styles.resumeBtn}>Resume</button>
-                                    </p>
-                                </div>
-                            ))}
-                        </div>
-
-                        <div className={styles.pvpContainer}>
-
-                            <div className={styles.quickJoinContainer}>
-                                <button className={styles.quickJoinBtn} onClick={handleQuickJoinRoom}>Quick Join</button>
-                            </div>
-
-                            <div className={styles.hostContainer}>
-
-                                <p className={styles.hostRoom}>Host a Room</p>
-
-                                <button className={styles.hostBtn} onClick={handleHostRoom}>Host</button>
-                            </div>
-
-                            <div className={styles.friendJoinContainer}>
-
-                                <p className={styles.friendRoom}>Join a Room</p>
-
-                                <input type='text' placeholder='Enter Room ID' value={roomId} className={styles.joinInput} onChange={(e) => setRoomId(e.target.value)}/>
-                                <button className={styles.hostBtn} onClick={handleFriendJoinRoom}>Join</button>
-                            </div>
-
-
+                            {tracker?.uncompletedQuizzes && tracker.uncompletedQuizzes.length > 0 ? (
+                                tracker.uncompletedQuizzes.map((quiz, index) => {
+                                    const qId = quiz.quizId ?? quiz.id ?? 0;
+                                    const pct = getSavedQuizPercentage(qId);
+                                    return (
+                                        <div key={qId || index} className={styles.bubbleChallenge}>
+                                            <div className={styles.challengeRow}>
+                                                <div className={styles.challengeDetails}>
+                                                    <span className={styles.challengeTitle}>{quiz.title}</span>
+                                                    <span className={styles.challengePercent}>{pct}% completed</span>
+                                                </div>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => navigate(`/quizzes/${qId}`)}
+                                                    className={styles.resumeBtn}
+                                                >
+                                                    Resume
+                                                </button>
+                                            </div>
+                                            <div className={styles.progressTrack}>
+                                                <div
+                                                    className={styles.progressFill}
+                                                    style={{ width: `${pct}%` }}
+                                                />
+                                            </div>
+                                        </div>
+                                    );
+                                })
+                            ) : (
+                                <p className={styles.emptyText}>No uncompleted quizzes</p>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -173,5 +212,5 @@ export const ProfilePage = () => {
 
             <p className={styles.bottomDescription}>SkillStorm - Compete, Earn, Conquer</p>
         </div>
-    )
-}
+    );
+};
