@@ -10,7 +10,6 @@ export const findAllLeadingUsers = async (setIsLoading: any, setLeadingUsers: an
             throw new Error('No Token Found');
         }
         const response = await fetch(`${API}/leaderboard`, {
-            method: "GET",
             headers: {
                 'content-type': 'application/json',
                 'Authorization': `Bearer ${token}`

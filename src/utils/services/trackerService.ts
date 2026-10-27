@@ -1,7 +1,6 @@
-// src/services/trackerService.ts
-import type { UserTrackerResponse } from '../types/tracker';
-import { API } from '../utils/API';
-import { getToken } from '../utils/Utils';
+import type { UserTrackerResponse } from "../../types/tracker";
+import { API } from "../API";
+import { getToken } from "../Utils";
 
 const PROGRESS_STORAGE_KEY = 'skillstorm_quiz_progress';
 
@@ -29,7 +28,6 @@ export const saveUncompletedQuizProgress = async (quizId: number,currentQuestion
     existing[quizId] = percentage;
     localStorage.setItem(PROGRESS_STORAGE_KEY, JSON.stringify(existing));
 
-    // Sync uncompleted state with backend UserTracker
     await fetch(`${API}/users/uncompleted/${quizId}`, {
         method: 'POST',
         headers: {

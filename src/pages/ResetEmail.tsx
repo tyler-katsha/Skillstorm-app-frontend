@@ -25,9 +25,8 @@ export const ResetEmail = () => {
 
 
         try {
-            const response = await fetch(`${API}/email/reset-password`, {
+            const response = await fetch(`${API}/auth/forgot-password`, {
                 method: "POST",
-                credentials: 'include',
                 headers: { 'content-type': 'application/json' },
                 body: JSON.stringify({ email: email })
             })

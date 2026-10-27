@@ -84,7 +84,7 @@ export const QuizResults: React.FC<QuizResultsProps> = ({quiz, result, fallbackC
               onClick={onDelete}
               disabled={isDeleting}
             >
-              {isDeleting ? 'Deleting...' : '🗑️ Delete Quiz'}
+              {isDeleting ? 'Deleting...' : 'Delete Quiz'}
             </button>
           )}
         </div>

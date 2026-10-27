@@ -6,7 +6,7 @@ import { useUser } from '../contexts/UserContext';
 import styles from '../module/ProfilePage.module.css';
 import { getYear } from '../utils/Utils';
 import type { UserTrackerResponse } from '../types/tracker';
-import { fetchUserTrackerHistory, getSavedQuizPercentage } from '../services/trackerService';
+import { fetchUserTrackerHistory, getSavedQuizPercentage } from '../utils/services/trackerService';
 
 export const ProfilePage = () => {
     const { user } = useUser();
@@ -70,6 +70,7 @@ export const ProfilePage = () => {
             </p>
 
             <div className={styles.profileContainer}>
+                {/* LEFT SIDEBAR PANEL */}
                 <div className={styles.leftContainer}>
                     <Profile name={user.username} profileImageUrl={undefined} />
 
@@ -142,15 +143,43 @@ export const ProfilePage = () => {
 
                     <div className={styles.userData}>
                         <h3>Email: {user.email}</h3>
-                        <h3>Join {getYear(user.createdAt)}</h3>
+                        <h3>Joined {getYear(user.createdAt)}</h3>
                     </div>
                 </div>
 
+                {/* RIGHT MAIN PANEL */}
                 <div className={styles.rightContainer}>
+                    
+                    {/* PVP / MULTIPLAYER SECTION (Added) */}
+                    <div className={styles.statsCardData}>
+                        <h2>Multiplayer & PvP</h2>
+                        <hr className={styles.divider} />
+                        <div className={styles.pvpContainer}>
+                            <div className={styles.quickJoinContainer}>
+                                <p className={styles.hostRoom}>Looking for a match?</p>
+                                <button className={styles.quickJoinBtn}>Quick Join</button>
+                            </div>
+                            <div className={styles.hostContainer}>
+                                <button className={styles.hostBtn}>Host Room</button>
+                            </div>
+                            <div className={styles.friendJoinContainer}>
+                                <p className={styles.friendRoom}>Join by Code:</p>
+                                <input type="text" className={styles.joinInput} placeholder="Ex: A4X9" maxLength={6} />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className={styles.statsCardData}>
+                        <h2>Ranking</h2>
+                        <hr className={styles.divider} />
+                        <p className={styles.ranking}>#8 Global</p>
+                        <p className={styles.points}>{totalXp} pts</p>
+                        <p className={styles.winRate}>{calculatedWinRate}% win rate</p>
+                    </div>
+
                     <div className={styles.statsCardData}>
                         <h2>Badges</h2>
                         <hr className={styles.divider} />
-
                         {user.badges !== undefined && user.badges.length > 0 ? (
                             user.badges.map((item: any, index: number) => (
                                 <BadgeCard key={index} name={item.name} description={item.description} />
@@ -161,18 +190,8 @@ export const ProfilePage = () => {
                     </div>
 
                     <div className={styles.statsCardData}>
-                        <h2>Ranking</h2>
-                        <hr className={styles.divider} />
-
-                        <p className={styles.ranking}>#8 Global</p>
-                        <p className={styles.points}>{totalXp} pts</p>
-                        <p className={styles.winRate}>{calculatedWinRate}% win rate</p>
-                    </div>
-
-                    <div className={styles.statsCardData}>
                         <h2>Challenges (Uncompleted)</h2>
                         <hr className={styles.divider} />
-
                         <div className={styles.quizRowsContainer}>
                             {tracker?.uncompletedQuizzes && tracker.uncompletedQuizzes.length > 0 ? (
                                 tracker.uncompletedQuizzes.map((quiz, index) => {

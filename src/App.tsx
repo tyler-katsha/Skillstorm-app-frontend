@@ -87,7 +87,6 @@ function App() {
             </ProtectedRoute>
           ),
         },
-        // --- NEW ROUTES ADDED HERE ---
         {
           path: "/create-quiz",
           element: (

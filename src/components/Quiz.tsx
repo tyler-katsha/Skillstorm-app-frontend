@@ -10,7 +10,7 @@ import { QuestionOption } from './QuestionOption';
 import { SubmitButton } from './SubmitButton';
 import { QuizResults } from './QuizResults';
 import { useUser } from '../contexts/UserContext';
-import { saveUncompletedQuizProgress } from '../services/trackerService';
+import { saveUncompletedQuizProgress } from '../utils/services/trackerService';
 
 export const Quiz: React.FC<QuizCompProps> = ({ sampleQuiz, sampleUser, onQuizDeleted, onBack }) => {
 
@@ -31,7 +31,7 @@ export const Quiz: React.FC<QuizCompProps> = ({ sampleQuiz, sampleUser, onQuizDe
   const [finalTimeSeconds, setFinalTimeSeconds] = useState<number>(0);
 
 
- 
+
   if (!sampleUser) {
     return <RedirectUser />;
   }
@@ -117,6 +117,7 @@ export const Quiz: React.FC<QuizCompProps> = ({ sampleQuiz, sampleUser, onQuizDe
       }
 
       const result: SubmissionResult = await response.json();
+      console.log(result)
       setSubmissionResult(result);
 
       if (result.currentXp !== undefined) {
@@ -246,24 +247,23 @@ export const Quiz: React.FC<QuizCompProps> = ({ sampleQuiz, sampleUser, onQuizDe
       <div className={styles.quizPageBg} aria-hidden="true" />
 
       <div className={styles.quizContainer}>
-        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '10px' }}>
-
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '1.25rem',
+            width: '100%',
+          }}
+        >
           <button
+            type="button"
             onClick={handleBackToQuizzes}
-            className={styles.startButton}
-            style={{ marginBottom: "1rem", cursor: "pointer", alignSelf: "flex-start" }}
+            className={styles.backButton}
           >
-            ← Back to Quizzes
+            <span className={styles.backIcon} aria-hidden="true">←</span>
+            <span>Back to Quizzes</span>
           </button>
-          {sampleQuiz.id && (
-            <button
-              onClick={handleDeleteQuiz}
-              disabled={isDeleting}
-              style={{ backgroundColor: 'transparent', color: 'var(--guardsman-red)', border: '1px solid var(--guardsman-red)', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer' }}
-            >
-              {isDeleting ? 'Deleting...' : '🗑️ Delete Quiz'}
-            </button>
-          )}
         </div>
 
         <Progressbars

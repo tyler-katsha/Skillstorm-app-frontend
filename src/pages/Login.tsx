@@ -42,8 +42,10 @@ export const Login = () => {
         e.preventDefault();
 
         try {
+            console.log('HER121')
             removeAll();
             destroyToken(); // Destroy previous token stored in the browser
+            console.log('HE 1')
             const response = await fetch(`${API}/auth/login`, {
                 method: "POST",
                 headers: {
@@ -68,7 +70,9 @@ export const Login = () => {
             const token = await response.text();
             localStorage.setItem('jwt-token', token);
 
+            console.log('Here')
             await fetchUser();
+            console.log('HEREHERE')
 
             setPopupConfig({
                 isOpen: true,
@@ -77,12 +81,13 @@ export const Login = () => {
             });
 
             navigate('/')
+            console.log('Here 3')
 
         } catch (error) {
             setPopupConfig({
                 isOpen: true,
                 type: 'error',
-                message: 'Something went wrong. Please try again'
+                message: 'Network Issue Occurred'
             });
         } finally {
             removeAll()

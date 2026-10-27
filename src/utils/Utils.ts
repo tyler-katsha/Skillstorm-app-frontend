@@ -1,5 +1,4 @@
 import type { PlayerSlot } from "../types/player";
-import type { QuizData, UpdateQuizData } from "../types/quiz";
 import { type AppRole, type AuthProvider } from "../types/type";
 import type { UserProps } from "../types/user";
 
@@ -108,14 +107,11 @@ export function validAdmin(roles: AppRole[]): boolean {
     if (!roles) return false;
     return roles.includes('ADMIN');
 }
-export function canEditQuiz(user:UserProps,quiz:QuizData | UpdateQuizData): boolean {
-    if(!user) return false;
-    return user.roles.includes('ADMIN') || (!quiz.email && user.email === quiz.email);
-}
+
 
 export function removeAll() {
-    localStorage.removeItem('login-register-pages')
-    destroyToken();
+    localStorage.removeItem('login-register-pages');
+    localStorage.removeItem('email')
 }
 export function getToken(): string | null {
     const token = localStorage.getItem('jwt-token');

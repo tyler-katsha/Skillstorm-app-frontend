@@ -1,8 +1,9 @@
 export interface LeaderBoardUser {
     rank: string;
-    points: number;
+    xp: number;
     level: number;
     username: string;
+    userId: number;
 }
 
 export interface LeaderboardProps {
