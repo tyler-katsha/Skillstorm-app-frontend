@@ -1,3 +1,4 @@
+import type { UserAnswerSubmission } from "../../types/quiz";
 import type { ProfileTrackerAPIResponse } from "../../types/tracker";
 import { API } from "../API";
 import { getToken } from "../Utils";
@@ -20,7 +21,9 @@ export const fetchUserTrackerHistory = async (): Promise<ProfileTrackerAPIRespon
     return response.json();
 };
 
-export const saveUncompletedQuizProgress = async (quizId: number,currentQuestionIndex: number,totalQuestions: number) => {
+export const saveUncompletedQuizProgress = async (quizId: number,currentQuestionIndex: number,totalQuestions: number,quiz:UserAnswerSubmission[]) => {
+
+    console.log(quiz);
     const token = getToken();
     const percentage = totalQuestions > 0 ? Math.round((currentQuestionIndex / totalQuestions) * 100) : 0;
 
@@ -38,6 +41,7 @@ export const saveUncompletedQuizProgress = async (quizId: number,currentQuestion
             currentQuestion: currentQuestionIndex,
             totalQuestions,
             percentage,
+            quiz
         }),
     });
 };

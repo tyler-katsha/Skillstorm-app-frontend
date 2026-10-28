@@ -72,6 +72,10 @@ export interface QuizSubmissionPayload {
   answers: UserAnswerSubmission[];
 }
 
+export interface PartialQuizSubmissionPayload extends Omit<QuizSubmissionPayload,'timeSpentSeconds'> {
+    answers: UserAnswerSubmission[];
+}
+
 export interface QuizResultsProps {
   quiz: QuizProps;
   result: SubmissionResult | null;

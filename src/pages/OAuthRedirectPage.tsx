@@ -18,7 +18,7 @@ export const OAuth2Redirect = () => {
 
         try {
             localStorage.setItem("jwt-token", token);
-            
+            console.log(token);
             window.history.replaceState({}, document.title, window.location.pathname);
 
             await Promise.all([fetchUser(),delay(1500)]);

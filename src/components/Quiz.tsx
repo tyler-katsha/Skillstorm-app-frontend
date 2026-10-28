@@ -20,10 +20,8 @@ export const Quiz: React.FC<QuizCompProps> = ({ sampleQuiz, sampleUser, onQuizDe
   const startTimerRef = useRef<number>(Date.now());
   const initialXpRef = useRef<number>(sampleUser?.xp ?? 0);
 
-  // Extract location state safely
   const { resumeData, isResuming } = (location.state as any) || {};
 
-  // Initialize question index strictly from resumeData.completedCount
   const [questionIdx, setQuestionIdx] = useState(() => {
     if (isResuming && resumeData?.completedCount) {
       return Number(resumeData.completedCount);
@@ -82,16 +80,16 @@ export const Quiz: React.FC<QuizCompProps> = ({ sampleQuiz, sampleUser, onQuizDe
     setIsAnswering(false);
   };
 
-  const handleBackToQuizzes = async () => {
-    // Requires a number type to match your service signature
+  const handleBackToQuizzes = async (finalAnswers: UserAnswerSubmission[]) => {
     const quizId = Number(sampleQuiz?.id);
     const completedCount = questionIdx; 
     const totalCount = sampleQuiz?.questions?.length || 1;
 
+
+
     if (quizId) {
       try {
-        // Matches your exact trackerService signature: (quizId, currentQuestionIndex, totalQuestions)
-        await saveUncompletedQuizProgress(quizId, completedCount, totalCount);
+        await saveUncompletedQuizProgress(quizId, completedCount, totalCount,finalAnswers);
       } catch (err) {
         console.error('Could not save uncompleted quiz progress:', err);
       }
@@ -247,7 +245,7 @@ export const Quiz: React.FC<QuizCompProps> = ({ sampleQuiz, sampleUser, onQuizDe
       <div className={styles.quizPageBg} aria-hidden="true" />
       <div className={styles.quizContainer}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', width: '100%' }}>
-          <button type="button" onClick={handleBackToQuizzes} className={styles.backButton}>
+          <button type="button" onClick={() => handleBackToQuizzes(userSubmissions)} className={styles.backButton}>
             <span className={styles.backIcon} aria-hidden="true">←</span>
             <span>Back to Quizzes</span>
           </button>

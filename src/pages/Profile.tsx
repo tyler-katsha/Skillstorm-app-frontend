@@ -48,7 +48,6 @@ export const ProfilePage = () => {
             : '0.0';
 
     const handleResumeQuiz = (quizId: number, quizData: QuizData) => {
-        console.log(quizData);
     navigate(`/quizzes/${quizId}`, { 
         state: { 
             resumeData: quizData, 
