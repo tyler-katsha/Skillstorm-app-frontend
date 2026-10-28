@@ -229,9 +229,16 @@ export function formatTimeSpent(totalSeconds: number): string {
     const minutes = Math.floor(totalSeconds / 60);
     const seconds = totalSeconds % 60;
 
-    if(minutes === 0) {
+    if (minutes === 0) {
         return `${seconds}s`;
     }
 
     return `${minutes}m ${seconds}s`;
 }
+
+export function formatDuration(seconds?: number): string {
+    if (!seconds) return '0m';
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return mins > 0 ? `${mins}m ${secs}s` : `${secs}s`;
+};

@@ -43,3 +43,12 @@ export interface UserContextType {
   updateUserStats: (newXp: number, newLevel?: number) => void;
   logout: () => void;
 }
+
+export interface UserProfile {
+    userId: number;
+    username: string;
+    email: string;
+    level: number;
+    xp: number;
+    roles: string[];
+}

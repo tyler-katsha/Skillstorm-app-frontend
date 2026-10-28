@@ -1,4 +1,5 @@
-import React, { Fragment, useRef, useState } from 'react';
+import React, { Fragment, useRef, useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import styles from '../module/Quiz.module.css';
 import { calculateLevel, calculateNextLevel, getToken, OptionState } from '../utils/Utils';
 import { RedirectUser } from './RedirectUser';
@@ -13,24 +14,40 @@ import { useUser } from '../contexts/UserContext';
 import { saveUncompletedQuizProgress } from '../utils/services/trackerService';
 
 export const Quiz: React.FC<QuizCompProps> = ({ sampleQuiz, sampleUser, onQuizDeleted, onBack }) => {
-
   const { updateUserStats } = useUser();
+  const location = useLocation(); 
+  
   const startTimerRef = useRef<number>(Date.now());
   const initialXpRef = useRef<number>(sampleUser?.xp ?? 0);
 
-  const [questionIdx, setQuestionIdx] = useState(0);
+  // Extract location state safely
+  const { resumeData, isResuming } = (location.state as any) || {};
+
+  // Initialize question index strictly from resumeData.completedCount
+  const [questionIdx, setQuestionIdx] = useState(() => {
+    if (isResuming && resumeData?.completedCount) {
+      return Number(resumeData.completedCount);
+    }
+    return 0;
+  });
+  
   const [score, setScore] = useState(0);
   const [questionsCorrect, setQuestionsCorrect] = useState(0);
+  const [userSubmissions, setUserSubmissions] = useState<UserAnswerSubmission[]>([]);
+  
   const [selectedIdx, setSelectedIdx] = useState<number>(-1);
   const [isAnswering, setIsAnswering] = useState(true);
   const [isDeleting, setIsDeleting] = useState(false);
-
-  const [userSubmissions, setUserSubmissions] = useState<UserAnswerSubmission[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submissionResult, setSubmissionResult] = useState<SubmissionResult | null>(null);
   const [finalTimeSeconds, setFinalTimeSeconds] = useState<number>(0);
 
-
+  // Ensure index stays in bounds when the quiz loads asynchronously
+  useEffect(() => {
+    if (sampleQuiz?.questions?.length && questionIdx >= sampleQuiz.questions.length) {
+      setQuestionIdx(Math.max(0, sampleQuiz.questions.length - 1));
+    }
+  }, [sampleQuiz, questionIdx]);
 
   if (!sampleUser) {
     return <RedirectUser />;
@@ -45,19 +62,13 @@ export const Quiz: React.FC<QuizCompProps> = ({ sampleQuiz, sampleUser, onQuizDe
     if (ans) {
       return Boolean(ans.isCorrect ?? ans.correct);
     }
-    return index === currentQuestion.correctOption;
+    return index === currentQuestion?.correctOption;
   };
 
   const getBtnState = (index: number) => {
-    if (isAnswering) {
-      return OptionState.POSSIBLE;
-    }
-    if (isChoiceCorrect(index)) {
-      return OptionState.CORRECT;
-    }
-    if (index === selectedIdx) {
-      return OptionState.INCORRECT;
-    }
+    if (isAnswering) return OptionState.POSSIBLE;
+    if (isChoiceCorrect(index)) return OptionState.CORRECT;
+    if (index === selectedIdx) return OptionState.INCORRECT;
     return OptionState.UNSELECTED;
   };
 
@@ -65,28 +76,28 @@ export const Quiz: React.FC<QuizCompProps> = ({ sampleQuiz, sampleUser, onQuizDe
     if (indexToCheck === -1) return;
 
     if (isChoiceCorrect(indexToCheck)) {
-      setScore((prev) => prev + (currentQuestion.score || 10));
-      setQuestionsCorrect((prev) => prev + 1);
+      setScore((prev: number) => prev + (currentQuestion?.score || 10));
+      setQuestionsCorrect((prev: number) => prev + 1);
     }
     setIsAnswering(false);
   };
 
   const handleBackToQuizzes = async () => {
-    const quizId = sampleQuiz.id;
-    const completedCount = questionIdx;
-    const totalCount = sampleQuiz.questions.length || 1;
+    // Requires a number type to match your service signature
+    const quizId = Number(sampleQuiz?.id);
+    const completedCount = questionIdx; 
+    const totalCount = sampleQuiz?.questions?.length || 1;
 
     if (quizId) {
       try {
+        // Matches your exact trackerService signature: (quizId, currentQuestionIndex, totalQuestions)
         await saveUncompletedQuizProgress(quizId, completedCount, totalCount);
       } catch (err) {
         console.error('Could not save uncompleted quiz progress:', err);
       }
     }
 
-    if (onBack) {
-      onBack();
-    }
+    if (onBack) onBack();
   };
 
   const submitQuiz = async (finalAnswers: UserAnswerSubmission[]) => {
@@ -112,12 +123,9 @@ export const Quiz: React.FC<QuizCompProps> = ({ sampleQuiz, sampleUser, onQuizDe
         body: JSON.stringify(payload),
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to submit quiz results.');
-      }
+      if (!response.ok) throw new Error('Failed to submit quiz results.');
 
       const result: SubmissionResult = await response.json();
-      console.log(result)
       setSubmissionResult(result);
 
       if (result.currentXp !== undefined) {
@@ -137,7 +145,7 @@ export const Quiz: React.FC<QuizCompProps> = ({ sampleQuiz, sampleUser, onQuizDe
   const handleNextQuestion = () => {
     const selectedAnswerObj = answers[selectedIdx] as any;
     const newSubmission: UserAnswerSubmission = {
-      questionId: currentQuestion.questionId ?? 0,
+      questionId: currentQuestion?.questionId ?? 0,
       selectedAnswerId: selectedAnswerObj?.answerId ?? 0,
     };
 
@@ -147,11 +155,12 @@ export const Quiz: React.FC<QuizCompProps> = ({ sampleQuiz, sampleUser, onQuizDe
     setSelectedIdx(-1);
     setIsAnswering(true);
 
-    const isLastQuestion = questionIdx + 1 >= sampleQuiz.questions.length;
-    setQuestionIdx((prev) => prev + 1);
-
+    const isLastQuestion = questionIdx + 1 >= (sampleQuiz?.questions?.length || 0);
+    
     if (isLastQuestion) {
       submitQuiz(updatedSubmissions);
+    } else {
+      setQuestionIdx((prev: number) => prev + 1);
     }
   };
 
@@ -169,36 +178,23 @@ export const Quiz: React.FC<QuizCompProps> = ({ sampleQuiz, sampleUser, onQuizDe
 
   const handleSelectOption = (index: number) => {
     if (!isAnswering) return;
-
     setSelectedIdx(index);
-
-    if (quickSelect) {
-      handleCheckAnswer(index);
-    }
+    if (quickSelect) handleCheckAnswer(index);
   };
 
   const handleDeleteQuiz = async () => {
-    if (!sampleQuiz?.id) {
-      alert("Cannot delete: Quiz ID is missing.");
-      return;
-    }
-
-    const confirmDelete = window.confirm("Are you sure you want to delete this quiz?");
-    if (!confirmDelete) return;
+    if (!sampleQuiz?.id) return alert("Cannot delete: Quiz ID is missing.");
+    if (!window.confirm("Are you sure you want to delete this quiz?")) return;
 
     try {
       setIsDeleting(true);
       const token = getToken();
       const response = await fetch(`${API}/quizzes/${sampleQuiz.id}`, {
         method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+        headers: { 'Authorization': `Bearer ${token}` }
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to delete quiz');
-      }
+      if (!response.ok) throw new Error('Failed to delete quiz');
 
       if (onQuizDeleted) {
         onQuizDeleted(sampleQuiz.id);
@@ -212,7 +208,11 @@ export const Quiz: React.FC<QuizCompProps> = ({ sampleQuiz, sampleUser, onQuizDe
     }
   };
 
-  if (!sampleQuiz?.questions?.length || questionIdx >= sampleQuiz.questions.length) {
+  if (!sampleQuiz?.questions?.length) {
+    return <div className={styles.pageRoot}>Loading quiz...</div>;
+  }
+
+  if (questionIdx >= sampleQuiz.questions.length || submissionResult) {
     return (
       <div className={styles.pageRoot}>
         <div className={styles.quizPageBg} aria-hidden="true" />
@@ -245,22 +245,9 @@ export const Quiz: React.FC<QuizCompProps> = ({ sampleQuiz, sampleUser, onQuizDe
   return (
     <div className={styles.pageRoot}>
       <div className={styles.quizPageBg} aria-hidden="true" />
-
       <div className={styles.quizContainer}>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            marginBottom: '1.25rem',
-            width: '100%',
-          }}
-        >
-          <button
-            type="button"
-            onClick={handleBackToQuizzes}
-            className={styles.backButton}
-          >
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', width: '100%' }}>
+          <button type="button" onClick={handleBackToQuizzes} className={styles.backButton}>
             <span className={styles.backIcon} aria-hidden="true">←</span>
             <span>Back to Quizzes</span>
           </button>
@@ -274,7 +261,7 @@ export const Quiz: React.FC<QuizCompProps> = ({ sampleQuiz, sampleUser, onQuizDe
           nextLevelXp={calculateNextLevel(sampleUser.xp)}
         />
 
-        <QuestionTextbox content={currentQuestion.text} />
+        <QuestionTextbox content={currentQuestion?.text} />
 
         <div className={styles.optionsList}>
           {answers.map((answer: any, i: number) => {
@@ -287,9 +274,7 @@ export const Quiz: React.FC<QuizCompProps> = ({ sampleQuiz, sampleUser, onQuizDe
                   state={getBtnState(i)}
                   myOnClick={() => handleSelectOption(i)}
                 />
-                {i < answers.length - 1 && (
-                  <hr className={styles.divider} />
-                )}
+                {i < answers.length - 1 && <hr className={styles.divider} />}
               </Fragment>
             );
           })}

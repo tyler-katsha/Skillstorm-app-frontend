@@ -1,24 +1,24 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Quiz } from "../components/Quiz";
 import { RedirectUser } from "../components/RedirectUser";
 import { useUser } from "../contexts/UserContext";
+import { useQuiz } from "../contexts/QuizContext";
 import styles from "../module/QuizPage.module.css";
-import { API } from "../utils/API";
 import { formatTopicNames, getToken } from "../utils/Utils";
 import type { QuizProps } from "../types/quiz";
 import { CreateQuiz } from "../components/CreateQuiz";
 import { useNavigate } from "react-router-dom";
+import { API } from "../utils/API";
 
 export const QuizPage = () => {
     const navigate = useNavigate();
     const [search, setSearch] = useState("");
     const [category, setCategory] = useState("All");
-    const [quizzes, setQuizzes] = useState<QuizProps[]>([]);
-    const [loading, setLoading] = useState(true);
     const [activeQuiz, setActiveQuiz] = useState<QuizProps | null>(null);
     const [creatingQuiz, setCreatingQuiz] = useState(false);
 
     const { user } = useUser();
+    const { quizzes, loading, error, refreshQuizzes } = useQuiz(); 
 
     if (!user) {
         return <RedirectUser />
@@ -26,14 +26,14 @@ export const QuizPage = () => {
 
     const categories = useMemo(() => {
         const uniqueTopics = new Set<string>();
-        quizzes.forEach((item) => {
+        quizzes.forEach((item: QuizProps) => {
             item.topicNames?.forEach((topic) => uniqueTopics.add(topic));
         });
         return ["All", ...Array.from(uniqueTopics)];
     }, [quizzes]);
 
     const filteredQuizzes = useMemo(() => {
-        return quizzes.filter((item) => {
+        return quizzes.filter((item: QuizProps) => {
             const matchesSearch = item.title.toLowerCase().includes(search.toLowerCase());
             const matchesCategory = category === "All" || item.topicNames.includes(category);
 
@@ -45,49 +45,14 @@ export const QuizPage = () => {
         setActiveQuiz(selectedQuiz);
     };
 
-    const fetchQuizzes = async () => {
-        try {
-            setLoading(true);
-            
-            const token = getToken();
-            const response = await fetch(`${API}/quizzes`, {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`
-                }
-            });
-
-            if (!response.ok) {
-                throw new Error("No quizzes found");
-            }
-
-            const data: QuizProps[] = await response.json();
-
-            setQuizzes(data);
-
-        } catch (err) {
-            console.error(err);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        fetchQuizzes();
-    }, []);
-
-    
-
-    const updateQuiz = async (id:number) => {
-        navigate(`/edit-quiz/${id}`)
+    const updateQuiz = async (id: number) => {
+        navigate(`/edit-quiz/${id}`);
     }
 
     const deleteQuiz = async (id: number) => {
-        setQuizzes(prevQuizzes => prevQuizzes.filter(quiz => quiz.id !== id));
         const token = getToken();
         try {
-            const response = await fetch(`http://localhost:8080/api/quizzes/${id}`, {
+            const response = await fetch(`${API}/quizzes/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -97,6 +62,8 @@ export const QuizPage = () => {
             if (!response.ok) {
                 throw new Error("Failed to delete the quiz.");
             }
+            
+            await refreshQuizzes(id);
 
         } catch (error) {
             console.error("Error executing delete command:", error);
@@ -106,21 +73,18 @@ export const QuizPage = () => {
     if (creatingQuiz) {
         return (
             <main className={styles.page}>
-
                 <button
                     type="button"
                     onClick={() => setCreatingQuiz(false)}
                     className={styles.startButton}>
                     ← Back to Quizzes
                 </button>
-
                 <CreateQuiz />
-
             </main>
         );
     }
 
-    if (activeQuiz) return <Quiz sampleQuiz={activeQuiz} sampleUser={user} onBack={() => setActiveQuiz(null)}/>
+    if (activeQuiz) return <Quiz sampleQuiz={activeQuiz} sampleUser={user} onBack={() => setActiveQuiz(null)} />
     
     return (
         <main className={styles.page}>
@@ -171,9 +135,13 @@ export const QuizPage = () => {
                 <div className={styles.empty}>
                     <p>Loading quizzes...</p>
                 </div>
+            ) : error ? (
+                <div className={styles.empty}>
+                    <p>Error loading quizzes: {error}</p>
+                </div>
             ) : filteredQuizzes.length > 0 ? (
                 <section className={styles.quizGrid}>
-                    {filteredQuizzes.map((item, index) => (
+                    {filteredQuizzes.map((item: QuizProps, index: number) => (
                         <article className={styles.quizCard} key={item.title + index}>
                             <div className={styles.cardTop}>
                                 <span className={styles.category}>

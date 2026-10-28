@@ -85,3 +85,11 @@ export interface QuizResultsProps {
   onDelete?: () => void;
   isDeleting?: boolean;
 }
+
+export interface QuizContextType {
+  quizzes: QuizProps[];
+  loading: boolean;
+  error: string | null;
+  getQuizById: (id: number) => QuizProps | undefined;
+  refreshQuizzes: (id: number) => Promise<void>;
+}

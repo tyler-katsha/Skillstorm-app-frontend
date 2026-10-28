@@ -1,37 +1,30 @@
-import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BadgeCard } from '../components/BadgeCard';
 import { Profile } from '../components/ProfileImageHolder';
 import { useUser } from '../contexts/UserContext';
 import styles from '../module/ProfilePage.module.css';
-import { getYear } from '../utils/Utils';
-import type { UserTrackerResponse } from '../types/tracker';
-import { fetchUserTrackerHistory, getSavedQuizPercentage } from '../utils/services/trackerService';
+import { formatDuration, getYear } from '../utils/Utils';
+import { getSavedQuizPercentage } from '../utils/services/trackerService'; // Removed fetchUserTrackerHistory
+import { useProfileHistory } from '../contexts/UserTrackerContext';
+import type { QuizData } from '../types/quiz';
 
 export const ProfilePage = () => {
     const { user } = useUser();
     const navigate = useNavigate();
-    const [tracker, setTracker] = useState<UserTrackerResponse | null>(null);
-    const [loading, setLoading] = useState<boolean>(true);
 
-    useEffect(() => {
-        const loadTracker = async () => {
-            try {
-                setLoading(true);
-                const data = await fetchUserTrackerHistory();
-                setTracker(data);
-            } catch (error) {
-                console.error('Error loading user tracker history:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        loadTracker();
-    }, [user]);
+    const { tracker, rank, isLoading, error } = useProfileHistory();
 
     if (!user) {
         return null;
+    }
+
+    if (error) {
+        return (
+            <div className={styles.pageWrapper}>
+                <h1 className={styles.title}>My Profile</h1>
+                <p className={styles.emptyText}>Failed to load profile data: {error}</p>
+            </div>
+        );
     }
 
     const quizzesTaken = tracker?.quizzesTaken ?? 0;
@@ -54,13 +47,15 @@ export const ProfilePage = () => {
             ? (((tracker?.totalCorrectAnswers ?? 0) / (tracker?.totalQuestionsAnswered ?? 1)) * 100).toFixed(1)
             : '0.0';
 
-    const formatDuration = (seconds?: number) => {
-        if (!seconds) return '0m';
-        const mins = Math.floor(seconds / 60);
-        const secs = seconds % 60;
-        return mins > 0 ? `${mins}m ${secs}s` : `${secs}s`;
-    };
-
+    const handleResumeQuiz = (quizId: number, quizData: QuizData) => {
+        console.log(quizData);
+    navigate(`/quizzes/${quizId}`, { 
+        state: { 
+            resumeData: quizData, 
+            isResuming: true 
+        } 
+    });
+};
     return (
         <div className={styles.pageWrapper}>
             <h1 className={styles.title}>My Profile</h1>
@@ -70,7 +65,6 @@ export const ProfilePage = () => {
             </p>
 
             <div className={styles.profileContainer}>
-                {/* LEFT SIDEBAR PANEL */}
                 <div className={styles.leftContainer}>
                     <Profile name={user.username} profileImageUrl={undefined} />
 
@@ -109,10 +103,8 @@ export const ProfilePage = () => {
 
                         <h4 className={styles.subHeading}>Recent Attempts</h4>
                         <div className={styles.attemptList}>
-                            {loading ? (
-                                <p className={styles.emptyText}>Loading history...</p>
-                            ) : tracker?.attemptRecords && tracker.attemptRecords.length > 0 ? (
-                                tracker.attemptRecords.slice(0, 5).map((attempt, idx) => (
+                            {isLoading ? (<p className={styles.emptyText}>Loading history...</p>) : tracker?.attemptRecords && tracker.attemptRecords.length > 0 ? (
+                                tracker.attemptRecords.slice(0, 5).map((attempt: any, idx: number) => (
                                     <div key={idx} className={styles.attemptRow}>
                                         <div className={styles.attemptInfo}>
                                             <span className={styles.attemptTitle}>
@@ -123,13 +115,8 @@ export const ProfilePage = () => {
                                             </span>
                                         </div>
                                         <span
-                                            className={`${styles.attemptStatus} ${
-                                                attempt.isPerfectQuiz
-                                                    ? styles.statusPerfect
-                                                    : attempt.isQuizWon
-                                                    ? styles.statusWon
-                                                    : styles.statusLost
-                                            }`}
+                                            className={`${styles.attemptStatus} ${attempt.isPerfectQuiz ? styles.statusPerfect : attempt.isQuizWon ? styles.statusWon : styles.statusLost
+                                                }`}
                                         >
                                             {attempt.isPerfectQuiz ? 'Perfect' : attempt.isQuizWon ? 'Won' : 'Lost'}
                                         </span>
@@ -147,32 +134,12 @@ export const ProfilePage = () => {
                     </div>
                 </div>
 
-                {/* RIGHT MAIN PANEL */}
                 <div className={styles.rightContainer}>
-                    
-                    {/* PVP / MULTIPLAYER SECTION (Added) */}
-                    <div className={styles.statsCardData}>
-                        <h2>Multiplayer & PvP</h2>
-                        <hr className={styles.divider} />
-                        <div className={styles.pvpContainer}>
-                            <div className={styles.quickJoinContainer}>
-                                <p className={styles.hostRoom}>Looking for a match?</p>
-                                <button className={styles.quickJoinBtn}>Quick Join</button>
-                            </div>
-                            <div className={styles.hostContainer}>
-                                <button className={styles.hostBtn}>Host Room</button>
-                            </div>
-                            <div className={styles.friendJoinContainer}>
-                                <p className={styles.friendRoom}>Join by Code:</p>
-                                <input type="text" className={styles.joinInput} placeholder="Ex: A4X9" maxLength={6} />
-                            </div>
-                        </div>
-                    </div>
 
                     <div className={styles.statsCardData}>
                         <h2>Ranking</h2>
                         <hr className={styles.divider} />
-                        <p className={styles.ranking}>#8 Global</p>
+                        <p className={styles.ranking}>#{rank ?? 'Unranked'} Global</p>
                         <p className={styles.points}>{totalXp} pts</p>
                         <p className={styles.winRate}>{calculatedWinRate}% win rate</p>
                     </div>
@@ -194,7 +161,7 @@ export const ProfilePage = () => {
                         <hr className={styles.divider} />
                         <div className={styles.quizRowsContainer}>
                             {tracker?.uncompletedQuizzes && tracker.uncompletedQuizzes.length > 0 ? (
-                                tracker.uncompletedQuizzes.map((quiz, index) => {
+                                tracker.uncompletedQuizzes.map((quiz: any, index: number) => {
                                     const qId = quiz.quizId ?? quiz.id ?? 0;
                                     const pct = getSavedQuizPercentage(qId);
                                     return (
@@ -206,7 +173,7 @@ export const ProfilePage = () => {
                                                 </div>
                                                 <button
                                                     type="button"
-                                                    onClick={() => navigate(`/quizzes/${qId}`)}
+                                                    onClick={() => handleResumeQuiz(qId,quiz)}
                                                     className={styles.resumeBtn}
                                                 >
                                                     Resume

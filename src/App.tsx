@@ -18,6 +18,8 @@ import { QuizPage } from './pages/Quizzes'
 import { Room } from './pages/Room'
 import { CreateQuiz } from './components/CreateQuiz' // Adjust this import path based on your folder structure
 import { useEffect, useState } from 'react'
+import { QuizProvider } from './contexts/QuizContext'
+import { ProfileHistoryProvider } from './contexts/UserTrackerContext'
 
 function App() {
 
@@ -103,7 +105,6 @@ function App() {
             </ProtectedRoute>
           ),
         },
-        // -----------------------------
         {
           path: "/badges",
           element: (
@@ -133,7 +134,11 @@ function App() {
   ])
   return (
     <UserProvider>
-      <RouterProvider router={router} />
+      <QuizProvider>
+        <ProfileHistoryProvider>
+          <RouterProvider router={router} />
+        </ProfileHistoryProvider>
+      </QuizProvider>
     </UserProvider>
   )
 }

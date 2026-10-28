@@ -1,3 +1,5 @@
+import type { UserProfile } from "./user";
+
 export interface QuizAttemptResponse {
     id?: number;
     quizId: number;
@@ -24,6 +26,7 @@ export interface QuizSummary {
 export interface UserTrackerResponse {
     id: number;
     userId: number;
+    rank:number;
     username: string;
     totalXp: number;
     xpToNewLevel: number;
@@ -46,4 +49,18 @@ export interface UserTrackerResponse {
     completedQuizzes: QuizSummary[];
     uncompletedQuizzes: QuizSummary[];
     bookmarkedQuizzes: QuizSummary[];
+}
+
+export interface ProfileTrackerAPIResponse {
+    user: UserProfile;
+    userTrackerResponse: UserTrackerResponse;
+    rank: number;
+}
+export interface ProfileHistoryState {
+    profile: UserProfile | null;
+    tracker: UserTrackerResponse | null;
+    rank: number | null;
+    isLoading: boolean;
+    error: string | null;
+    refreshData: () => Promise<void>;
 }

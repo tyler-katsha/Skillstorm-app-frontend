@@ -57,6 +57,16 @@ export const Login = () => {
                 })
             });
 
+
+            if(response.status === 429) {
+                const data = await response.json();
+                setPopupConfig({
+                    isOpen: true,
+                    type: 'error',
+                    message: data.message
+                });
+                return;
+            }
             if (!response.ok) {
 
                 setPopupConfig({

@@ -24,5 +24,5 @@ export const errorMessages: Record<string, string> = {
     oauth_failed: "Google authentication failed. Please try again.",
     oauth_cancelled: "Google sign-in was cancelled.",
     token_missing: "Session expired",
-    server_error: "Something went wrong. Please try again later."
+    server_error: "Something went wrong. Please try again later.",
 };

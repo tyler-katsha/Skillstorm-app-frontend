@@ -1,10 +1,10 @@
-import type { UserTrackerResponse } from "../../types/tracker";
+import type { ProfileTrackerAPIResponse } from "../../types/tracker";
 import { API } from "../API";
 import { getToken } from "../Utils";
 
 const PROGRESS_STORAGE_KEY = 'skillstorm_quiz_progress';
 
-export const fetchUserTrackerHistory = async (): Promise<UserTrackerResponse> => {
+export const fetchUserTrackerHistory = async (): Promise<ProfileTrackerAPIResponse> => {
     const token = getToken();
     const response = await fetch(`${API}/users/history`, {
         headers: {
