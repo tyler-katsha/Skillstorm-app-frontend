@@ -1,17 +1,15 @@
 import type { AppRole } from "./type";
 import type { OptionStateT } from "../utils/Utils";
 import type { Attempt } from "./attempt";
-import type { Badge } from "./badge";
 import type { Dispatch, SetStateAction } from "react";
 
 export interface UserProps {
     username: string;
     email: string;
     xp: number;
-    roles: AppRole[];
+    role: AppRole;
     options: UserOptions;
     attempts?: Attempt[];
-    badges?: Badge[];
     createdAt: string;
 }
 

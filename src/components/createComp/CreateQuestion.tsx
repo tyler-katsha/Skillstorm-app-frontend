@@ -1,6 +1,6 @@
 import React from 'react';
-import { DEFAULT_QUESTION, type CreateQuestionProps, type QuestionData } from "../types/question";
-import styles from '../module/CreateQuestion.module.css';
+import { DEFAULT_QUESTION, type CreateQuestionProps, type QuestionData } from "../../types/question";
+import styles from '../../module/CreateQuestion.module.css';
 
 export const CreateQuestion: React.FC<CreateQuestionProps> = ({ questionNumber, initialData, onChange, onRemove }) => {
   const question: QuestionData = {

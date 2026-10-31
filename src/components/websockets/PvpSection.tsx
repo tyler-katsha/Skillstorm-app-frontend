@@ -1,6 +1,6 @@
 import { useState } from "react";
-import styles from '../module/ProfilePage.module.css';
-import { createRoom, friendJoinRoom, quickJoinRoom } from '../utils/services/RoomApi';
+import styles from '../../module/ProfilePage.module.css';
+import { createRoom, friendJoinRoom, quickJoinRoom } from '../../utils/services/RoomApi';
 import { useNavigate } from "react-router-dom";
 export const PvpSection = () => {
 

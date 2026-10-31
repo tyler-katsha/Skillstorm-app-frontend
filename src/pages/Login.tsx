@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { OAuthLogin } from '../components/OAuthLogin';
+import { OAuthLogin } from '../components/auth/OAuthLogin';
 import { useUser } from '../contexts/UserContext';
 import { CustomPopup } from '../modals/CustomPopup';
 import styles from '../module/Auth.module.css';

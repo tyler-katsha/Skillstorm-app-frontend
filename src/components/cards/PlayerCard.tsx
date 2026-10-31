@@ -1,7 +1,7 @@
 
-import styles from '../module/PlayerCard.module.css';
-import type { PlayerCardProps } from '../types/player';
-import { Profile } from './ProfileImageHolder';
+import styles from '../../module/PlayerCard.module.css';
+import type { PlayerCardProps } from '../../types/player';
+import { Profile } from '../image/ProfileImageHolder';
 
 export const PlayerCard: React.FC<PlayerCardProps> = ({ player, isHost = false, isCurrentUser = false, isReady = false, onToggleReady, placeholderText }) => {
   if (!player) {

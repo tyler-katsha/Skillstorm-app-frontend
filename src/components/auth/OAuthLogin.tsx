@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import googleIcon from '../assets/google-icon.png';
-import styles from '../module/Auth.module.css';
-import type { ToastResponse } from '../types/type';
-import { OAUTH_API } from '../utils/API';
-import { removeAll } from '../utils/Utils';
+import googleIcon from '../../assets/google-icon.png';
+import styles from '../../module/Auth.module.css';
+import type { ToastResponse } from '../../types/type';
+import { OAUTH_API } from '../../utils/API';
+import { removeAll } from '../../utils/Utils';
 
 export const OAuthLogin = () => {
     const [_popupConfig, setPopupConfig] = useState({

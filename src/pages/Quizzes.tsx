@@ -1,14 +1,14 @@
 import { useMemo, useState } from "react";
-import { Quiz } from "../components/Quiz";
-import { RedirectUser } from "../components/RedirectUser";
-import { useUser } from "../contexts/UserContext";
-import { useQuiz } from "../contexts/QuizContext";
-import styles from "../module/QuizPage.module.css";
-import { formatTopicNames, getToken } from "../utils/Utils";
-import type { QuizProps } from "../types/quiz";
-import { CreateQuiz } from "../components/CreateQuiz";
 import { useNavigate } from "react-router-dom";
+import { RedirectUser } from "../components/auth/RedirectUser";
+import { CreateQuiz } from "../components/createComp/CreateQuiz";
+import { Quiz } from "../components/quiz/Quiz";
+import { useQuiz } from "../contexts/QuizContext";
+import { useUser } from "../contexts/UserContext";
+import styles from "../module/QuizPage.module.css";
+import type { QuizProps } from "../types/quiz";
 import { API } from "../utils/API";
+import { formatTopicNames, getToken } from "../utils/Utils";
 
 export const QuizPage = () => {
     const navigate = useNavigate();
@@ -18,7 +18,7 @@ export const QuizPage = () => {
     const [creatingQuiz, setCreatingQuiz] = useState(false);
 
     const { user } = useUser();
-    const { quizzes, loading, error, refreshQuizzes } = useQuiz(); 
+    const { quizzes, loading, error, refreshQuizzes } = useQuiz();
 
     if (!user) {
         return <RedirectUser />
@@ -62,7 +62,7 @@ export const QuizPage = () => {
             if (!response.ok) {
                 throw new Error("Failed to delete the quiz.");
             }
-            
+
             await refreshQuizzes(id);
 
         } catch (error) {
@@ -85,7 +85,7 @@ export const QuizPage = () => {
     }
 
     if (activeQuiz) return <Quiz sampleQuiz={activeQuiz} sampleUser={user} onBack={() => setActiveQuiz(null)} />
-    
+
     return (
         <main className={styles.page}>
             <div className={styles.header}>

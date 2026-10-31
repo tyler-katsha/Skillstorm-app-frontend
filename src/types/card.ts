@@ -1,18 +1,12 @@
-export interface CardProps {
-    width?: string | number;
-    height?: string | number;
-    title: string;
-    text: string;
-    numOfQuestions?: number;
-}
+import type { SmallBadgeResponse } from "./badge";
+import type { SmallQuizResponse } from "./quiz";
 
-export interface CardData {
-    title: string;
-    text: string;
-    numOfQuestions: number;
+export interface HomeBadgeCardProps {
+    badge: SmallBadgeResponse;
+}
+export interface HomeQuizCardProps {
+    quiz: SmallQuizResponse;
 }
 export interface CardGridProps {
-    width?: string | number;
-    height?: string | number;
-    cardData: CardData[]
+    children: React.ReactNode;
 }

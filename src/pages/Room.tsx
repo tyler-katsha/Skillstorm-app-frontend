@@ -1,7 +1,7 @@
 import type { Client } from '@stomp/stompjs';
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { PlayerCard } from '../components/PlayerCard';
+import { PlayerCard } from '../components/cards/PlayerCard';
 import { useUser } from '../contexts/UserContext';
 import styles from '../module/Room.module.css';
 import { getToken } from '../utils/Utils';

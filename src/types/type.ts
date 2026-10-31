@@ -12,4 +12,6 @@ export type Difficulty = "Easy" | "Medium" | "Hard";
 export type DifficultyLevel = "EASY" | "MEDIUM" | "HARD";
 export type Filter = 'All' | 'Earned' | 'Locked';
 export type Bloom = 'USERNAME' | 'EMAIL';
+export type Kind = 'GAMES' | 'WINS' | 'PERFECT' | 'HIGH_SCORES' | 'TOPICS' | 'LEADERBOARD';
+
 

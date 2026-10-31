@@ -1,6 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { BadgeCard } from '../components/BadgeCard';
-import { Profile } from '../components/ProfileImageHolder';
+import { Profile } from '../components/image/ProfileImageHolder';
 import { useUser } from '../contexts/UserContext';
 import styles from '../module/ProfilePage.module.css';
 import { formatDuration, getYear } from '../utils/Utils';
@@ -141,18 +140,6 @@ export const ProfilePage = () => {
                         <p className={styles.ranking}>#{rank ?? 'Unranked'} Global</p>
                         <p className={styles.points}>{totalXp} pts</p>
                         <p className={styles.winRate}>{calculatedWinRate}% win rate</p>
-                    </div>
-
-                    <div className={styles.statsCardData}>
-                        <h2>Badges</h2>
-                        <hr className={styles.divider} />
-                        {user.badges !== undefined && user.badges.length > 0 ? (
-                            user.badges.map((item: any, index: number) => (
-                                <BadgeCard key={index} name={item.name} description={item.description} />
-                            ))
-                        ) : (
-                            <div className={styles.emptyBadgeState}>No Badges Obtained</div>
-                        )}
                     </div>
 
                     <div className={styles.statsCardData}>

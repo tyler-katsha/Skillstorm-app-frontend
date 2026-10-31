@@ -1,6 +1,6 @@
-import { OptionState } from "../utils/Utils";
-import styles from '../module/Quiz.module.css';
-import type { QuestionOptionProps } from "../types/user";
+import { OptionState } from "../../utils/Utils";
+import styles from '../../module/Quiz.module.css';
+import type { QuestionOptionProps } from "../../types/user";
 export const QuestionOption: React.FC<QuestionOptionProps> = ({ label, selected, state, myOnClick }) => {
   const getStateClass = () => {
     switch (state) {

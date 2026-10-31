@@ -53,3 +53,14 @@
 .quizBtn:hover {
   background-color: var(--primary-blue-hover);
 }
+
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+  padding: 2rem; 
+}
+
+.errorContainer {
+  color: #ef4444; 
+  padding: 2rem;
+}

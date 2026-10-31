@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { PasswordRequirements } from '../components/PasswordRequirements';
+import { PasswordRequirements } from '../components/auth/PasswordRequirements';
 import { CustomPopup } from '../modals/CustomPopup';
 import styles from '../module/Auth.module.css';
 import type { ToastResponse } from '../types/type';

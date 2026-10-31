@@ -1,9 +1,10 @@
 import React from 'react';
-import styles from '../module/QuizResults.module.css';
-import type { QuizResultsProps } from '../types/quiz';
-import { calculateNextLevel, formatTimeSpent } from '../utils/Utils';
+import styles from '../../module/QuizResults.module.css';
+import type { QuizResultsProps } from '../../types/quiz';
+import { calculateNextLevel, formatTimeSpent } from '../../utils/Utils';
+import { BadgeToast } from '../../modals/BadgeToast';
 
-export const QuizResults: React.FC<QuizResultsProps> = ({quiz, result, fallbackCorrect, fallbackScore, timeSpentSeconds, userSubmissions, initialUserXp, initialUserLevel, onRetry, onDelete, isDeleting = false, }) => {
+export const QuizResults: React.FC<QuizResultsProps> = ({quiz, result, fallbackCorrect, fallbackScore, timeSpentSeconds, userSubmissions, initialUserXp, initialUserLevel, onRetry, earnedToasts, setEarnedToasts }) => {
   const totalQuestions = result?.totalQuestions ?? quiz.questions?.length ?? 0;
   const correctCount = result?.totalQuestions ?? (result as any)?.correctCount ?? fallbackCorrect;
   const xpEarned = result?.scoreEarned ?? fallbackScore;
@@ -77,27 +78,14 @@ export const QuizResults: React.FC<QuizResultsProps> = ({quiz, result, fallbackC
           <button type="button" className={styles.retryButton} onClick={onRetry}>
             ↻ Retry Quiz
           </button>
-          {quiz.id && onDelete && (
-            <button
-              type="button"
-              className={styles.deleteButton}
-              onClick={onDelete}
-              disabled={isDeleting}
-            >
-              {isDeleting ? 'Deleting...' : 'Delete Quiz'}
-            </button>
-          )}
         </div>
       </div>
 
-      {/* Question Breakdown Section */}
       <div className={styles.breakdownSection}>
         <h3 className={styles.breakdownTitle}>Question Breakdown</h3>
         <div className={styles.breakdownList}>
           {quiz.questions.map((q, index) => {
-            const submission = userSubmissions.find(
-              (sub) => sub.questionId === q.questionId
-            ) ?? userSubmissions[index];
+            const submission = userSubmissions.find((sub) => sub.questionId === q.questionId) ?? userSubmissions[index];
 
             const answers = q.answers ?? [];
             const selectedAnswer = answers.find((a: any) => a.answerId === submission?.selectedAnswerId);
@@ -137,6 +125,9 @@ export const QuizResults: React.FC<QuizResultsProps> = ({quiz, result, fallbackC
             );
           })}
         </div>
+          {earnedToasts.map((badge) => (
+            <BadgeToast key={badge.id} badge={badge} onClose={() => setEarnedToasts(prev => prev.filter(b => b.id !== badge.id))}/>
+          ))}
       </div>
     </div>
   );

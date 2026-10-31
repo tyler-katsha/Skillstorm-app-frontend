@@ -1,5 +1,5 @@
-import styles from '../module/PasswordRequirements.module.css';
-import type { PasswordRequirementsProps, RuleProps } from '../types/auth';
+import styles from '../../module/PasswordRequirements.module.css';
+import type { PasswordRequirementsProps, RuleProps } from '../../types/auth';
 
 export const PasswordRequirements: React.FC<PasswordRequirementsProps> = ({ passwordValue }) => {
     const rules: RuleProps[] = [

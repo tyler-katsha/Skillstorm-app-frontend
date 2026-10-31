@@ -1,22 +1,23 @@
-import React, { Fragment, useRef, useState, useEffect } from 'react';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import styles from '../module/Quiz.module.css';
-import { calculateLevel, calculateNextLevel, getToken, OptionState } from '../utils/Utils';
-import { RedirectUser } from './RedirectUser';
-import type { QuizCompProps, QuizSubmissionPayload, SubmissionResult, UserAnswerSubmission } from '../types/quiz';
-import { API } from '../utils/API';
-import { Progressbars } from './Progressbars';
-import { QuestionTextbox } from './QuestionTextbox';
-import { QuestionOption } from './QuestionOption';
-import { SubmitButton } from './SubmitButton';
+import { useUser } from '../../contexts/UserContext';
+import type { QuizCompProps, QuizSubmissionPayload, SubmissionResult, UserAnswerSubmission } from '../../types/quiz';
+import { API } from '../../utils/API';
+import { saveUncompletedQuizProgress } from '../../utils/services/trackerService';
+import { calculateLevel, calculateNextLevel, getToken, OptionState } from '../../utils/Utils';
+import { RedirectUser } from '../auth/RedirectUser';
+import { SubmitButton } from '../buttons/SubmitButton';
+import styles from '../../module/Quiz.module.css';
+import { Progressbars } from '../Progressbars';
+import { QuestionOption } from '../question/QuestionOption';
+import { QuestionTextbox } from '../question/QuestionTextbox';
 import { QuizResults } from './QuizResults';
-import { useUser } from '../contexts/UserContext';
-import { saveUncompletedQuizProgress } from '../utils/services/trackerService';
+import type { BadgeResponse } from '../../types/badge';
 
-export const Quiz: React.FC<QuizCompProps> = ({ sampleQuiz, sampleUser, onQuizDeleted, onBack }) => {
+export const Quiz: React.FC<QuizCompProps> = ({ sampleQuiz, sampleUser, onBack }) => {
   const { updateUserStats } = useUser();
-  const location = useLocation(); 
-  
+  const location = useLocation();
+
   const startTimerRef = useRef<number>(Date.now());
   const initialXpRef = useRef<number>(sampleUser?.xp ?? 0);
 
@@ -28,19 +29,18 @@ export const Quiz: React.FC<QuizCompProps> = ({ sampleQuiz, sampleUser, onQuizDe
     }
     return 0;
   });
-  
+
+  const [earnedToasts, setEarnedToasts] = useState<BadgeResponse[]>([]);
   const [score, setScore] = useState(0);
   const [questionsCorrect, setQuestionsCorrect] = useState(0);
   const [userSubmissions, setUserSubmissions] = useState<UserAnswerSubmission[]>([]);
-  
+
   const [selectedIdx, setSelectedIdx] = useState<number>(-1);
   const [isAnswering, setIsAnswering] = useState(true);
-  const [isDeleting, setIsDeleting] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submissionResult, setSubmissionResult] = useState<SubmissionResult | null>(null);
   const [finalTimeSeconds, setFinalTimeSeconds] = useState<number>(0);
 
-  // Ensure index stays in bounds when the quiz loads asynchronously
   useEffect(() => {
     if (sampleQuiz?.questions?.length && questionIdx >= sampleQuiz.questions.length) {
       setQuestionIdx(Math.max(0, sampleQuiz.questions.length - 1));
@@ -82,14 +82,14 @@ export const Quiz: React.FC<QuizCompProps> = ({ sampleQuiz, sampleUser, onQuizDe
 
   const handleBackToQuizzes = async (finalAnswers: UserAnswerSubmission[]) => {
     const quizId = Number(sampleQuiz?.id);
-    const completedCount = questionIdx; 
+    const completedCount = questionIdx;
     const totalCount = sampleQuiz?.questions?.length || 1;
 
 
 
     if (quizId) {
       try {
-        await saveUncompletedQuizProgress(quizId, completedCount, totalCount,finalAnswers);
+        await saveUncompletedQuizProgress(quizId, completedCount, totalCount, finalAnswers);
       } catch (err) {
         console.error('Could not save uncompleted quiz progress:', err);
       }
@@ -112,6 +112,18 @@ export const Quiz: React.FC<QuizCompProps> = ({ sampleQuiz, sampleUser, onQuizDe
     };
 
     try {
+
+      const preRes = await fetch(`${API}/badges`, {
+          headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        });
+
+        const preBadges: BadgeResponse[] = await preRes.json();
+
+        const previouslyEarnedIds = preBadges.filter(b => b.earned).map(b => b.id);
+
       const response = await fetch(`${API}/quizzes/${sampleQuiz.id}/submit`, {
         method: 'POST',
         headers: {
@@ -133,6 +145,32 @@ export const Quiz: React.FC<QuizCompProps> = ({ sampleQuiz, sampleUser, onQuizDe
         const newTotalXp = initialXpRef.current + earned;
         updateUserStats(newTotalXp, calculateLevel(newTotalXp));
       }
+
+      setTimeout(async () => {
+        try {
+
+          
+          const res = await fetch(`${API}/badges`, {
+          headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        });
+
+        if(!res.ok) throw new Error('Falied to fetch updated badges');
+        const updatedBadges: BadgeResponse[] = await res.json();
+
+        const newlyEarnedBadges = updatedBadges.filter(b => b.earned && !previouslyEarnedIds.includes(b.id));
+
+        if(newlyEarnedBadges.length > 0) {
+          setEarnedToasts(newlyEarnedBadges);
+        }
+        } catch(err) {
+          console.error('Error fetching updated badges: ', err);
+        }
+
+
+      },5000)
     } catch (error) {
       console.error('Error submitting quiz payload:', error);
     } finally {
@@ -154,7 +192,7 @@ export const Quiz: React.FC<QuizCompProps> = ({ sampleQuiz, sampleUser, onQuizDe
     setIsAnswering(true);
 
     const isLastQuestion = questionIdx + 1 >= (sampleQuiz?.questions?.length || 0);
-    
+
     if (isLastQuestion) {
       submitQuiz(updatedSubmissions);
     } else {
@@ -178,32 +216,6 @@ export const Quiz: React.FC<QuizCompProps> = ({ sampleQuiz, sampleUser, onQuizDe
     if (!isAnswering) return;
     setSelectedIdx(index);
     if (quickSelect) handleCheckAnswer(index);
-  };
-
-  const handleDeleteQuiz = async () => {
-    if (!sampleQuiz?.id) return alert("Cannot delete: Quiz ID is missing.");
-    if (!window.confirm("Are you sure you want to delete this quiz?")) return;
-
-    try {
-      setIsDeleting(true);
-      const token = getToken();
-      const response = await fetch(`${API}/quizzes/${sampleQuiz.id}`, {
-        method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-
-      if (!response.ok) throw new Error('Failed to delete quiz');
-
-      if (onQuizDeleted) {
-        onQuizDeleted(sampleQuiz.id);
-      } else {
-        window.location.href = '/';
-      }
-    } catch (error) {
-      console.error('Error deleting quiz:', error);
-    } finally {
-      setIsDeleting(false);
-    }
   };
 
   if (!sampleQuiz?.questions?.length) {
@@ -230,8 +242,8 @@ export const Quiz: React.FC<QuizCompProps> = ({ sampleQuiz, sampleUser, onQuizDe
             initialUserXp={sampleUser.xp}
             initialUserLevel={calculateLevel(sampleUser.xp)}
             onRetry={handleRetryQuiz}
-            onDelete={handleDeleteQuiz}
-            isDeleting={isDeleting}
+            earnedToasts={earnedToasts}
+            setEarnedToasts={setEarnedToasts}
           />
         )}
       </div>

@@ -1,11 +1,11 @@
-import { useState, useEffect, type ChangeEvent } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import styles from '../module/CreateQuiz.module.css';
-import { DEFAULT_QUESTION, type QuestionData } from '../types/question';
-import type { UpdateQuizData } from '../types/quiz';
+import { useEffect, useState, type ChangeEvent } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { DEFAULT_QUESTION, type QuestionData } from '../../types/question';
+import type { UpdateQuizData } from '../../types/quiz';
+import { API } from "../../utils/API";
+import { getToken } from '../../utils/Utils';
+import styles from '../../module/CreateQuiz.module.css';
 import { CreateQuestion } from './CreateQuestion';
-import { API } from "../utils/API";
-import { getToken } from '../utils/Utils';
 
 export const CreateQuiz: React.FC = () => {
   const { id } = useParams();
@@ -44,17 +44,17 @@ export const CreateQuiz: React.FC = () => {
 
       const fetchedQuestions: QuestionData[] = data.questions && data.questions.length > 0
         ? data.questions.map((q: any) => {
-            // Check both isCorrect and correct flags
-            const correctIndex = q.answers?.findIndex((a: any) => Boolean(a.isCorrect ?? a.correct));
-            return {
-              questionId: q.questionId,
-              text: q.text || "",
-              score: q.score || 10,
-              options: q.answers?.map((a: any) => a.answerText) || ["", "", "", ""],
-              correctOption: correctIndex !== -1 ? correctIndex : 0,
-              answerIds: q.answers?.map((a: any) => a.answerId) || []
-            };
-          })
+          // Check both isCorrect and correct flags
+          const correctIndex = q.answers?.findIndex((a: any) => Boolean(a.isCorrect ?? a.correct));
+          return {
+            questionId: q.questionId,
+            text: q.text || "",
+            score: q.score || 10,
+            options: q.answers?.map((a: any) => a.answerText) || ["", "", "", ""],
+            correctOption: correctIndex !== -1 ? correctIndex : 0,
+            answerIds: q.answers?.map((a: any) => a.answerId) || []
+          };
+        })
         : [{ ...DEFAULT_QUESTION }];
 
       setQuestions(fetchedQuestions);
@@ -187,12 +187,12 @@ export const CreateQuiz: React.FC = () => {
       <div className={styles.details}>
         <div className={styles.field}>
           <label>Quiz Title</label>
-          <input 
-            type="text" 
-            value={title} 
-            onChange={(event) => setTitle(event.target.value)} 
-            placeholder="Enter quiz title" 
-            required 
+          <input
+            type="text"
+            value={title}
+            onChange={(event) => setTitle(event.target.value)}
+            placeholder="Enter quiz title"
+            required
           />
         </div>
 
@@ -207,11 +207,11 @@ export const CreateQuiz: React.FC = () => {
 
         <div className={styles.field}>
           <label>Topics</label>
-          <input 
-            type="text" 
-            value={topicInput} 
-            onChange={(event) => setTopicInput(event.target.value)} 
-            placeholder="Java, Networking, Security" 
+          <input
+            type="text"
+            value={topicInput}
+            onChange={(event) => setTopicInput(event.target.value)}
+            placeholder="Java, Networking, Security"
           />
           <span className={styles.helpText}>Separate topics with commas.</span>
         </div>

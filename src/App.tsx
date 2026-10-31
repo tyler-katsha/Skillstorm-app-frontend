@@ -1,25 +1,25 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import './App.css'
-import { Login } from './pages/Login'
-import { Register } from './pages/Register'
-import { Home } from './pages/Home'
-import { ResetEmail } from './pages/ResetEmail'
-import { ErrorBoundary } from './components/ErrorBoundary'
-import { UserProvider } from './contexts/UserContext'
-import { LeaderboardPage } from './pages/LeaderboardPage'
-import { ErrorPage } from './pages/ErrorPage'
-import { ResetPassword } from './pages/ResetPassword'
-import { ProtectedRoute } from './components/ProtectedRoute'
-import { OAuth2Redirect } from './pages/OAuthRedirectPage'
-import { MainLayout } from './components/MainLayout'
-import { ProfilePage } from './pages/Profile'
-import { BadgePage } from './pages/BadgePage'
-import { QuizPage } from './pages/Quizzes'
-import { Room } from './pages/Room'
-import { CreateQuiz } from './components/CreateQuiz' // Adjust this import path based on your folder structure
-import { useEffect, useState } from 'react'
-import { QuizProvider } from './contexts/QuizContext'
-import { ProfileHistoryProvider } from './contexts/UserTrackerContext'
+import { useEffect, useState } from 'react';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import './App.css';
+import { MainLayout } from './components/_layout/MainLayout';
+import { CreateQuiz } from './components/createComp/CreateQuiz';
+import { ErrorBoundary } from './components/error/ErrorBoundary';
+import { ProtectedRoute } from './components/auth/ProtectedRoute';
+import { QuizProvider } from './contexts/QuizContext';
+import { UserProvider } from './contexts/UserContext';
+import { ProfileHistoryProvider } from './contexts/UserTrackerContext';
+import { BadgePage } from './pages/BadgePage';
+import { ErrorPage } from './pages/ErrorPage';
+import { Home } from './pages/Home';
+import { LeaderboardPage } from './pages/LeaderboardPage';
+import { Login } from './pages/Login';
+import { OAuth2Redirect } from './pages/OAuthRedirectPage';
+import { ProfilePage } from './pages/Profile';
+import { QuizPage } from './pages/Quizzes';
+import { Register } from './pages/Register';
+import { ResetEmail } from './pages/ResetEmail';
+import { ResetPassword } from './pages/ResetPassword';
+import { Room } from './pages/Room';
 
 function App() {
 
@@ -77,7 +77,7 @@ function App() {
           path: "/leaderboard",
           element: (
             <ProtectedRoute>
-              <LeaderboardPage />
+              <LeaderboardPage isBackground={false}/>
             </ProtectedRoute>
           ),
         },

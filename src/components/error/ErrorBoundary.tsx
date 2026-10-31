@@ -1,6 +1,6 @@
 import { Component, type ErrorInfo } from "react";
-import styles from '../module/ErrorBoundary.module.css';
-import type { State, Props } from "../types/error";
+import type { Props, State } from "../../types/error";
+import styles from '../../module/ErrorBoundary.module.css';
 export class ErrorBoundary extends Component<Props, State> {
 
     public state: State = { hasError: false };
@@ -21,7 +21,6 @@ export class ErrorBoundary extends Component<Props, State> {
             error: undefined
         });
 
-        // Reload the page
         window.location.reload();
     };
     render() {

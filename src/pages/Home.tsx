@@ -1,19 +1,71 @@
 import { useNavigate } from "react-router-dom"
-import { CardGrid } from "../components/CardGrid"
+import { useEffect, useState } from "react"
 import styles from '../module/Home.module.css'
+import { CardGrid } from "../components/cards/CardGrid"
 import { LeaderboardPage } from "./LeaderboardPage"
-import { cardData } from "../data/cardData"
-import { badgeData } from "../data/badgeData"
-import { quizData } from "../data/quizData"
-export const Home = () => {
+import { findHomePageData } from "../utils/services/HomeApi"
+import { HomeBadgeCard } from "../components/cards/HomeBadgeCard"
+import { HomeQuizCard } from "../components/cards/HomeQuizCard"
+import type { HomeSection } from "../types/home"
 
+export const Home = () => {
     const navigate = useNavigate();
-    const handleQuiz = () => {
-        navigate('/quizzes',{replace:true})
+    
+    const [homeData, setHomeData] = useState<HomeSection | null>(null);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        const loadHomeData = async () => {
+            try {
+                setIsLoading(true);
+                const data = await findHomePageData();
+                setHomeData(data);
+            } catch (err: any) {
+                console.error("Error loading home page:", err);
+                setError(err.message || "Something went wrong.");
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        loadHomeData();
+    }, []); 
+
+    if (isLoading) {
+        return <div className={styles.loadingContainer}>Loading your dashboard...</div>;
     }
-     return(
+
+    if (error) {
+        return <div className={styles.errorContainer}>Error: {error}</div>;
+    }
+
+    if (!homeData) return null;
+
+    const handleQuiz = () => {
+        navigate('/quizzes', { replace: true })
+    }
+
+    // Wrapped in CardGrid for layout
+    const renderBadges = () => (
+        <CardGrid>
+            {homeData.badgeSection.map((badge) => (
+                <HomeBadgeCard key={badge.definitionId} badge={badge} />
+            ))}
+        </CardGrid>
+    );
+
+    // Fixed missing return by using parentheses () instead of curly braces {}
+    const renderQuizzes = () => (
+        <CardGrid>
+            {homeData.quizSection.map((quiz, idx) => (
+                <HomeQuizCard key={quiz.topicName + idx} quiz={quiz} />
+            ))}
+        </CardGrid>
+    );
+
+    return (
         <>
-            
             <div className={styles.bigCardContainer}>
                 <p className={styles.bigCardParagraph}>Season 1 - Climb the Ranks</p>
                 <h1>Master Subject, Climb Leaderboards</h1>
@@ -23,19 +75,14 @@ export const Home = () => {
                 </p>
                 <button onClick={handleQuiz} className={styles.quizBtn}>Start a Quiz</button>
             </div>
-            
-            <CardGrid width={'250px'} cardData={cardData}/>
 
-            <LeaderboardPage limit={5} isBackground={false} title={'Global Leaderboard - Top 5 Stormers'}/>
+            <LeaderboardPage limit={5} isBackground={false} title={'Global Leaderboard - Top 5 Stormers'} />
 
-            <h1 style={{margin: '1rem'}}>Enable Badges</h1>
+            <h2 style={{ margin: '3rem' }}>Enable Badges</h2>
+            {renderBadges()}
 
-            <CardGrid width={'250px'} height={'150px'} cardData={badgeData}/>
-
-            <h1 style={{margin: '1rem'}}>Featured Quizzes</h1>
-            
-            <CardGrid width={'250px'} cardData={quizData}/>
-
+            <h2 style={{ margin: '3rem' }}>Featured Quizzes</h2>
+            {renderQuizzes()}
         </>
     )
 }

@@ -4,7 +4,7 @@ import type { LeaderboardProps } from '../types/leaderboard';
 export const Leaderboard: React.FC<LeaderboardProps> = ({ title, users, isLoading, limit = 10, isBackground }) => {
 
     return (
-        <div style={{ display: 'flex', justifyContent: 'center', padding: '40px', backgroundColor: isBackground ? '#fcf8ec' : '', minHeight: '100vh' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', padding: '40px', backgroundColor: isBackground ? '#fcf8ec' : '', minHeight: '100%' }}>
             <div className={styles.card}>
                 <h2 className={styles.title}>{title}</h2>
 

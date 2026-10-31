@@ -1,7 +1,7 @@
 import { useEffect, useState, type ChangeEvent } from 'react';
 import { Link } from 'react-router-dom';
-import { OAuthLogin } from '../components/OAuthLogin';
-import { PasswordRequirements } from '../components/PasswordRequirements';
+import { OAuthLogin } from '../components/auth/OAuthLogin';
+import { PasswordRequirements } from '../components/auth/PasswordRequirements';
 import { CustomPopup } from '../modals/CustomPopup';
 import styles from '../module/Auth.module.css';
 import { type ToastResponse } from '../types/type';

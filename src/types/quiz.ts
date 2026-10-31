@@ -1,3 +1,5 @@
+import type { Dispatch, SetStateAction } from "react";
+import type { BadgeResponse } from "./badge";
 import type { QuestionData, QuestionPayload } from "./question";
 import type { DifficultyLevel } from "./type";
 import type { UserProps } from "./user";
@@ -49,7 +51,6 @@ export interface CreateQuizProps{
 export interface QuizCompProps {
   sampleQuiz: QuizProps;
   sampleUser: UserProps | null;
-  onQuizDeleted?: (quizId: string | number) => void; // Optional callback for the parent
   onBack?: () => void;
 }
 
@@ -86,8 +87,8 @@ export interface QuizResultsProps {
   initialUserXp: number;
   initialUserLevel: number;
   onRetry: () => void;
-  onDelete?: () => void;
-  isDeleting?: boolean;
+  earnedToasts: BadgeResponse[];
+  setEarnedToasts: Dispatch<SetStateAction<BadgeResponse[]>>
 }
 
 export interface QuizContextType {
@@ -96,4 +97,10 @@ export interface QuizContextType {
   error: string | null;
   getQuizById: (id: number) => QuizProps | undefined;
   refreshQuizzes: (id: number) => Promise<void>;
+}
+
+export interface SmallQuizResponse {
+    topicName: string;
+    difficulty: string | DifficultyLevel;
+    numOfQuizForTopic: number;
 }
