@@ -12,8 +12,8 @@ export interface QuestionData {
   text: string;
   score: number;
   correctOption: number;
-  options: string[]; // Used by CreateQuestion form inputs
-  answers?: Answer[]; // Received from API
+  options: string[];
+  answers?: Answer[]; 
   answerIds?: number[];
 }
 

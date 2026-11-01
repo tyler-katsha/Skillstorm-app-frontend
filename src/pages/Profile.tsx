@@ -6,6 +6,7 @@ import { formatDuration, getYear } from '../utils/Utils';
 import { getSavedQuizPercentage } from '../utils/services/trackerService'; // Removed fetchUserTrackerHistory
 import { useProfileHistory } from '../contexts/UserTrackerContext';
 import type { QuizData } from '../types/quiz';
+import { RedirectUser } from '../components/auth/RedirectUser';
 
 export const ProfilePage = () => {
     const { user } = useUser();
@@ -14,7 +15,7 @@ export const ProfilePage = () => {
     const { tracker, rank, isLoading, error } = useProfileHistory();
 
     if (!user) {
-        return null;
+        return <RedirectUser />;
     }
 
     if (error) {
@@ -36,15 +37,11 @@ export const ProfilePage = () => {
 
     const calculatedWinRate = tracker?.winRate != null
         ? (tracker.winRate <= 1 ? tracker.winRate * 100 : tracker.winRate).toFixed(2)
-        : quizzesTaken > 0
-            ? ((quizzesWon / quizzesTaken) * 100).toFixed(2)
-            : '0.00';
+        : quizzesTaken > 0 ? ((quizzesWon / quizzesTaken) * 100).toFixed(2) : '0.00';
 
     const calculatedAccuracy = tracker?.accuracyRate != null
         ? (tracker.accuracyRate <= 1 ? tracker.accuracyRate * 100 : tracker.accuracyRate).toFixed(1)
-        : (tracker?.totalQuestionsAnswered ?? 0) > 0
-            ? (((tracker?.totalCorrectAnswers ?? 0) / (tracker?.totalQuestionsAnswered ?? 1)) * 100).toFixed(1)
-            : '0.0';
+        : (tracker?.totalQuestionsAnswered ?? 0) > 0 ? (((tracker?.totalCorrectAnswers ?? 0) / (tracker?.totalQuestionsAnswered ?? 1)) * 100).toFixed(1) : '0.0';
 
     const handleResumeQuiz = (quizId: number, quizData: QuizData) => {
     navigate(`/quizzes/${quizId}`, { 

@@ -7,7 +7,7 @@ export interface UserProps {
     username: string;
     email: string;
     xp: number;
-    role: AppRole;
+    roles: AppRole[];
     options: UserOptions;
     attempts?: Attempt[];
     createdAt: string;

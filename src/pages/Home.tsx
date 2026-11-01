@@ -46,7 +46,6 @@ export const Home = () => {
         navigate('/quizzes', { replace: true })
     }
 
-    // Wrapped in CardGrid for layout
     const renderBadges = () => (
         <CardGrid>
             {homeData.badgeSection.map((badge) => (
@@ -55,7 +54,6 @@ export const Home = () => {
         </CardGrid>
     );
 
-    // Fixed missing return by using parentheses () instead of curly braces {}
     const renderQuizzes = () => (
         <CardGrid>
             {homeData.quizSection.map((quiz, idx) => (

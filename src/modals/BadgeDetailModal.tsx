@@ -4,7 +4,7 @@ import { getToken } from '../utils/Utils';
 import { API } from '../utils/API';
 import type { BadgeDetailModalProps } from '../types/badge';
 
-export const BadgeDetailModal: React.FC<BadgeDetailModalProps> = ({ badge, isAdmin, onClose, onRefresh }) => {
+export const BadgeDetailModal: React.FC<BadgeDetailModalProps> = ({ badge, isAdminOrEmployee, onClose, onRefresh }) => {
     const [formData, setFormData] = useState({
         title: badge.title,
         description: badge.description,
@@ -18,9 +18,9 @@ export const BadgeDetailModal: React.FC<BadgeDetailModalProps> = ({ badge, isAdm
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
-    const handleUpdate = async (e: React.FormEvent) => {
+    const handleUpdate = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
-        if (!isAdmin) return;
+        if (!isAdminOrEmployee) return;
 
         setIsSaving(true);
         try {
@@ -59,7 +59,7 @@ export const BadgeDetailModal: React.FC<BadgeDetailModalProps> = ({ badge, isAdm
                 
                 <section className={styles.intro}>
                     <div>
-                        <div className={styles.eyebrow}>{isAdmin ? 'EDIT BADGE' : 'BADGE DETAILS'}</div>
+                        <div className={styles.eyebrow}>{isAdminOrEmployee ? 'EDIT BADGE' : 'BADGE DETAILS'}</div>
                         <h1>{badge.icon} {badge.title}<span>.</span></h1>
                         {badge.earned && (
                             <p style={{ color: '#10b981', fontWeight: 600 }}>
@@ -79,7 +79,7 @@ export const BadgeDetailModal: React.FC<BadgeDetailModalProps> = ({ badge, isAdm
                                 name="title" 
                                 value={formData.title} 
                                 onChange={handleChange} 
-                                disabled={!isAdmin} 
+                                disabled={!isAdminOrEmployee} 
                                 required 
                             />
                         </div>
@@ -98,7 +98,7 @@ export const BadgeDetailModal: React.FC<BadgeDetailModalProps> = ({ badge, isAdm
                             rows={3} 
                             value={formData.description} 
                             onChange={handleChange} 
-                            disabled={!isAdmin} 
+                            disabled={!isAdminOrEmployee} 
                             required 
                         />
                     </div>
@@ -112,7 +112,7 @@ export const BadgeDetailModal: React.FC<BadgeDetailModalProps> = ({ badge, isAdm
                                 name="icon" 
                                 value={formData.icon} 
                                 onChange={handleChange} 
-                                disabled={!isAdmin} 
+                                disabled={!isAdminOrEmployee} 
                                 required 
                             />
                         </div>
@@ -126,7 +126,7 @@ export const BadgeDetailModal: React.FC<BadgeDetailModalProps> = ({ badge, isAdm
                                 min="1" 
                                 value={formData.goal} 
                                 onChange={handleChange} 
-                                disabled={!isAdmin} 
+                                disabled={!isAdminOrEmployee} 
                                 required 
                             />
                         </div>
@@ -145,7 +145,7 @@ export const BadgeDetailModal: React.FC<BadgeDetailModalProps> = ({ badge, isAdm
                         <button type="button" className={styles.cancelBtn} onClick={onClose}>
                             Close
                         </button>
-                        {isAdmin && (
+                        {isAdminOrEmployee && (
                             <button type="submit" className={styles.submitBtn} disabled={isSaving}>
                                 {isSaving ? 'Saving...' : 'Save Changes'}
                             </button>

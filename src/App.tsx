@@ -19,7 +19,6 @@ import { QuizPage } from './pages/Quizzes';
 import { Register } from './pages/Register';
 import { ResetEmail } from './pages/ResetEmail';
 import { ResetPassword } from './pages/ResetPassword';
-import { Room } from './pages/Room';
 
 function App() {
 
@@ -121,14 +120,6 @@ function App() {
             </ProtectedRoute>
           ),
         },
-        {
-          path: "/room",
-          element: (
-            <ProtectedRoute>
-              <Room />
-            </ProtectedRoute>
-          )
-        }
       ],
     }
   ])

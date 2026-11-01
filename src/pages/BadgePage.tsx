@@ -14,7 +14,8 @@ export const BadgePage: React.FC = () => {
 
     if (!user) return null;
 
-    const isAdmin = user?.role === 'ADMIN';
+    const isAdminOrEmployee = user.roles.includes('ADMIN') || user.roles.includes('EMPLOYEE');
+    
     const [isCreateBadgeOpen, setIsCreateBadgeOpen] = useState(false)
     const [selectedBadge, setSelectedBadge] = useState<BadgeResponse | null>(null)
     const [badges, setBadges] = useState<BadgeResponse[]>([])
@@ -24,6 +25,7 @@ export const BadgePage: React.FC = () => {
 
     const fetchBadges = useCallback(async (isBackgroundRefresh = false) => {
         const token = getToken();
+        console.log(token)
         if (!isBackgroundRefresh) setIsLoadingBadges(true);
         else setIsRefreshing(true);
 
@@ -37,7 +39,6 @@ export const BadgePage: React.FC = () => {
             if (!response.ok) throw new Error('Failed to fetch badges')
 
             const data = await response.json()
-            console.log(data);
             setBadges(data)
         } catch (error) {
             console.error("Error fetching badges:", error)
@@ -84,12 +85,11 @@ export const BadgePage: React.FC = () => {
                         type="button"
                         className={styles.refreshBtn}
                         onClick={() => fetchBadges(true)}
-                        style={{ marginRight: '12px' }}
                     >
                         {isRefreshing ? '↻...' : '↻ Refresh List'}
                     </button>
 
-                    {isAdmin && (
+                    {isAdminOrEmployee && (
                         <button
                             type="button"
                             className={styles.createBtn}
@@ -193,7 +193,7 @@ export const BadgePage: React.FC = () => {
             {selectedBadge && (
                 <BadgeDetailModal
                     badge={selectedBadge}
-                    isAdmin={isAdmin}
+                    isAdminOrEmployee={isAdminOrEmployee}
                     onClose={() => setSelectedBadge(null)}
                     onRefresh={() => fetchBadges(true)}
                 />

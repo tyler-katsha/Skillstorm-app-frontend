@@ -1,6 +1,4 @@
-import type { PlayerSlot } from "../types/player";
 import { type AppRole, type AuthProvider } from "../types/type";
-import type { UserProps } from "../types/user";
 
 export function splitFullName(name: string) {
     const nameParts = name.split(' ');
@@ -19,25 +17,6 @@ export function getYear(createdAt: string): number | null {
     return joined.getFullYear();
 }
 
-export function getAge(dateOfBirth: string): number | null {
-    if (!dateOfBirth) return null;
-
-    const birthDate = new Date(dateOfBirth);
-    const today = new Date();
-
-    let age = today.getFullYear() - birthDate.getFullYear();
-
-    const hasHadBirthday =
-        today.getMonth() > birthDate.getMonth() ||
-        (today.getMonth() === birthDate.getMonth() &&
-            today.getDate() >= birthDate.getDate());
-
-    if (!hasHadBirthday) {
-        age--;
-    }
-
-    return age;
-}
 export function ColorUtil() {
 
     const colors = ['#EF4444', '#10B981', '#F59E0B', '#06B6D4', '#3B82F6'];
@@ -65,18 +44,6 @@ export function formatTime(timeStr: string): string {
     return `${formattedHour}:${String(minute).padStart(2, '0')} ${ampm}`;
 };
 
-
-export function formatRoles(roles: AppRole[]): string {
-    return roles.map(formatRole).join(", ");
-}
-export function formatRole(role: string): string {
-    return role
-        .toLowerCase()
-        .split("_")
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(" ");
-}
-
 export function formatTopicNames(topicNames: string[]): string {
     return topicNames.join(", ");
 }
@@ -103,16 +70,17 @@ export function isPermitted(roles: AppRole[]): boolean {
     if (!roles) return false;
     return roles.includes('ADMIN') || roles.includes('EMPLOYEE')
 }
+
 export function validAdmin(roles: AppRole[]): boolean {
     if (!roles) return false;
     return roles.includes('ADMIN');
 }
 
-
 export function removeAll() {
     localStorage.removeItem('login-register-pages');
     localStorage.removeItem('email')
 }
+
 export function getToken(): string | null {
     const token = localStorage.getItem('jwt-token');
     try {
@@ -129,20 +97,6 @@ export function getToken(): string | null {
 }
 export function isLocal(authProvider: AuthProvider): boolean {
     return authProvider === 'LOCAL';
-}
-
-export function copyUserToPlayer(user: UserProps | null): PlayerSlot | null {
-    if (!user) return null;
-
-    return {
-        username: user.username,
-        avatarUrl: undefined,
-        quizzesTaken: 0,
-        quizzesWon: 0,
-        streak: 0,
-        isHost: true,
-        isReady: false,
-    };
 }
 
 export function destroyToken(): void {

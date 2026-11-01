@@ -1,20 +1,11 @@
-import type { PlayerHistory } from "./player";
 import type { Kind } from "./type";
 
-export interface Badge {
-    name: string;
-    description: string;
-    // profile url in the future
-}
 
 export interface BadgeCardProps {
     name: string;
     description: string;
 }
 
-export interface BadgePageProps{
-    results?:PlayerHistory[];
-}
 
 export interface BadgeRequest {
     definitionId:string;
@@ -51,7 +42,7 @@ export interface CreateBadgeProps {
 
 export interface BadgeDetailModalProps {
     badge: BadgeResponse;
-    isAdmin: boolean;
+    isAdminOrEmployee: boolean;
     onClose: () => void;
     onRefresh: () => void;
 }
