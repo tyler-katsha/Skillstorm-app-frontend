@@ -9,6 +9,8 @@ import styles from "../module/QuizPage.module.css";
 import type { QuizProps } from "../types/quiz";
 import { API } from "../utils/API";
 import { formatTopicNames, getToken } from "../utils/Utils";
+import { ERROR_MESSAGES, type ErrorType } from "../types/error";
+import { ErrorPage } from "./ErrorPage";
 
 export const QuizPage = () => {
     const navigate = useNavigate();
@@ -16,11 +18,13 @@ export const QuizPage = () => {
     const [category, setCategory] = useState("All");
     const [activeQuiz, setActiveQuiz] = useState<QuizProps | null>(null);
     const [creatingQuiz, setCreatingQuiz] = useState(false);
+    const [errorType, setErrorType] = useState<ErrorType | null>(null);
 
     const { user } = useUser();
     const { quizzes, loading, error, refreshQuizzes } = useQuiz();
 
     if (!user) {
+        setErrorType('SESSION_EXPIRED');
         return <RedirectUser />
     }
 
@@ -66,8 +70,12 @@ export const QuizPage = () => {
             await refreshQuizzes(id);
 
         } catch (error) {
-            console.error("Error executing delete command:", error);
+            setErrorType('LOAD_DATA_FAILED');
         }
+    }
+
+    if(errorType) {
+        return <ErrorPage {...ERROR_MESSAGES[errorType]}/>
     }
 
     if (creatingQuiz) {

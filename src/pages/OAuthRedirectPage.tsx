@@ -1,11 +1,14 @@
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useRef } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useUser } from "../contexts/UserContext";
-import { delay } from "../utils/Utils";
+import { delay, destroyToken } from "../utils/Utils";
+import { HomeSkeleton } from "../skeletons/pages/HomeSkeleton";
 
 export const OAuth2Redirect = () => {
     const { fetchUser } = useUser();
     const navigate = useNavigate();
+    const location = useLocation();
+    const hasProcessed = useRef(false);
 
     const run = async () => {
         const params = new URLSearchParams(location.search);
@@ -26,15 +29,17 @@ export const OAuth2Redirect = () => {
             
             navigate("/", { replace: true });
         } catch (err) {
-            localStorage.removeItem("jwt-token");
+            destroyToken();
             navigate("/login?error=authentication_failed", { replace: true });
         }
     };
 
     useEffect(() => {
-        run();
-    }, []);
+        if(hasProcessed.current) return;
+        hasProcessed.current = true;
 
-    // TODO:  Implement Skeleton Loading Later
-    return <div>Loading...</div>
+        run();
+    },[location.search,navigate,fetchUser]);
+
+    return <HomeSkeleton />
 };

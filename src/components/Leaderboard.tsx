@@ -1,8 +1,12 @@
 import styles from '../module/Leaderboard.module.css';
+import { LeaderboardSkeleton } from '../skeletons/pages/LeaderboardSkeleton';
 import type { LeaderboardProps } from '../types/leaderboard';
 
 export const Leaderboard: React.FC<LeaderboardProps> = ({ title, users, isLoading, limit = 10, isBackground }) => {
 
+    if(isLoading) {
+        return <LeaderboardSkeleton />
+    }
     return (
         <div style={{ display: 'flex', justifyContent: 'center', padding: '40px', backgroundColor: isBackground ? '#fcf8ec' : '', minHeight: '100%' }}>
             <div className={styles.card}>

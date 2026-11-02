@@ -8,6 +8,8 @@ import type { ToastResponse } from '../types/type';
 import { API } from '../utils/API';
 import { destroyToken, removeAll } from '../utils/Utils';
 import type { LoginPayload } from '../types/auth';
+import { ERROR_MESSAGES, type ErrorType } from '../types/error';
+import { ErrorPage } from './ErrorPage';
 
 export const Login = () => {
     localStorage.setItem('login-register-pages', 'true')
@@ -19,6 +21,7 @@ export const Login = () => {
         type: 'success' as ToastResponse,
         message: ''
     });
+    const [errorType, setErrorType] = useState<ErrorType | null>(null);
     const closePopup = () => setPopupConfig(prev => ({ ...prev, isOpen: false }))
     const [showPassword, setShowPassword] = useState(false);
 
@@ -42,10 +45,9 @@ export const Login = () => {
         e.preventDefault();
 
         try {
-            console.log('HER121')
             removeAll();
-            destroyToken(); // Destroy previous token stored in the browser
-            console.log('HE 1')
+            destroyToken(); 
+
             const response = await fetch(`${API}/auth/login`, {
                 method: "POST",
                 headers: {
@@ -65,6 +67,7 @@ export const Login = () => {
                     type: 'error',
                     message: data.message
                 });
+                setErrorType('RATE_LIMITED')
                 return;
             }
             if (!response.ok) {
@@ -80,9 +83,7 @@ export const Login = () => {
             const token = await response.text();
             localStorage.setItem('jwt-token', token);
 
-            console.log('Here')
             await fetchUser();
-            console.log('HEREHERE')
 
             setPopupConfig({
                 isOpen: true,
@@ -91,7 +92,6 @@ export const Login = () => {
             });
 
             navigate('/')
-            console.log('Here 3')
 
         } catch (error) {
             setPopupConfig({
@@ -115,6 +115,9 @@ export const Login = () => {
 
     }, [navigate, searchParams])
 
+    if(errorType) {
+        return <ErrorPage {...ERROR_MESSAGES[errorType]}/>
+    }
     return (
         <div className={styles.pageWrapper}>
             <CustomPopup

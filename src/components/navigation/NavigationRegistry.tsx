@@ -8,7 +8,6 @@ export const NavigationRegistry = () => {
         '/quizzes': 'Quizzes',
         '/badges': 'Badges',
         '/profile': 'Profile',
-        '/homeSkel': 'HomeSkel',
     }
 
     return (

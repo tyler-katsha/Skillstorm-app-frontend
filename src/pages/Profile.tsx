@@ -7,24 +7,28 @@ import { getSavedQuizPercentage } from '../utils/services/trackerService'; // Re
 import { useProfileHistory } from '../contexts/UserTrackerContext';
 import type { QuizData } from '../types/quiz';
 import { RedirectUser } from '../components/auth/RedirectUser';
+import { ErrorPage } from './ErrorPage';
+import { ERROR_MESSAGES, type ErrorType } from '../types/error';
+import { useState } from 'react';
 
 export const ProfilePage = () => {
     const { user } = useUser();
     const navigate = useNavigate();
 
     const { tracker, rank, isLoading, error } = useProfileHistory();
+    const [errorType, setErrorType] = useState<ErrorType | null>(null);
 
     if (!user) {
+        setErrorType('SESSION_EXPIRED');
         return <RedirectUser />;
     }
 
-    if (error) {
-        return (
-            <div className={styles.pageWrapper}>
-                <h1 className={styles.title}>My Profile</h1>
-                <p className={styles.emptyText}>Failed to load profile data: {error}</p>
-            </div>
-        );
+    if (errorType) {
+        return <ErrorPage {...ERROR_MESSAGES[errorType]} />
+    }
+
+    if(error) {
+        return <ErrorPage message={error}/>
     }
 
     const quizzesTaken = tracker?.quizzesTaken ?? 0;
@@ -44,13 +48,13 @@ export const ProfilePage = () => {
         : (tracker?.totalQuestionsAnswered ?? 0) > 0 ? (((tracker?.totalCorrectAnswers ?? 0) / (tracker?.totalQuestionsAnswered ?? 1)) * 100).toFixed(1) : '0.0';
 
     const handleResumeQuiz = (quizId: number, quizData: QuizData) => {
-    navigate(`/quizzes/${quizId}`, { 
-        state: { 
-            resumeData: quizData, 
-            isResuming: true 
-        } 
-    });
-};
+        navigate(`/quizzes/${quizId}`, {
+            state: {
+                resumeData: quizData,
+                isResuming: true
+            }
+        });
+    };
     return (
         <div className={styles.pageWrapper}>
             <h1 className={styles.title}>My Profile</h1>
@@ -156,7 +160,7 @@ export const ProfilePage = () => {
                                                 </div>
                                                 <button
                                                     type="button"
-                                                    onClick={() => handleResumeQuiz(qId,quiz)}
+                                                    onClick={() => handleResumeQuiz(qId, quiz)}
                                                     className={styles.resumeBtn}
                                                 >
                                                     Resume

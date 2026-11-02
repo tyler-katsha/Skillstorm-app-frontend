@@ -7,6 +7,9 @@ import { findHomePageData } from "../utils/services/HomeApi"
 import { HomeBadgeCard } from "../components/cards/HomeBadgeCard"
 import { HomeQuizCard } from "../components/cards/HomeQuizCard"
 import type { HomeSection } from "../types/home"
+import { HomeSkeleton } from "../skeletons/pages/HomeSkeleton"
+import { RedirectUser } from "../components/auth/RedirectUser"
+import { ErrorPage } from "./ErrorPage"
 
 export const Home = () => {
     const navigate = useNavigate();
@@ -33,14 +36,14 @@ export const Home = () => {
     }, []); 
 
     if (isLoading) {
-        return <div className={styles.loadingContainer}>Loading your dashboard...</div>;
+        return <HomeSkeleton />
     }
 
     if (error) {
-        return <div className={styles.errorContainer}>Error: {error}</div>;
+        return <ErrorPage message={error}/>
     }
 
-    if (!homeData) return null;
+    if (!homeData) return <RedirectUser />;
 
     const handleQuiz = () => {
         navigate('/quizzes', { replace: true })

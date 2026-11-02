@@ -8,6 +8,9 @@ import { BadgeDetailModal } from "../modals/BadgeDetailModal"
 import { API } from "../utils/API"
 import { getToken } from "../utils/Utils"
 import { useUser } from "../contexts/UserContext"
+import { BadgeSkeleton } from "../skeletons/pages/BadgeSkeleton"
+import { ERROR_MESSAGES, type ErrorType } from "../types/error"
+import { ErrorPage } from "./ErrorPage"
 
 export const BadgePage: React.FC = () => {
     const { user } = useUser();
@@ -22,6 +25,7 @@ export const BadgePage: React.FC = () => {
     const [isLoadingBadges, setIsLoadingBadges] = useState(true)
     const [isRefreshing, setIsRefreshing] = useState(false)
     const [filter, setFilter] = useState<Filter>('All')
+    const [errorType, setErrorType] = useState<ErrorType | null>(null);
 
     const fetchBadges = useCallback(async (isBackgroundRefresh = false) => {
         const token = getToken();
@@ -41,7 +45,7 @@ export const BadgePage: React.FC = () => {
             const data = await response.json()
             setBadges(data)
         } catch (error) {
-            console.error("Error fetching badges:", error)
+            setErrorType('LOAD_DATA_FAILED');
         } finally {
             setIsLoadingBadges(false)
             setIsRefreshing(false)
@@ -67,9 +71,12 @@ export const BadgePage: React.FC = () => {
     })
 
     if (isLoadingBadges) {
-        return <div className={styles.badgePage}>Loading your achievements...</div>
+        return <BadgeSkeleton />
     }
 
+    if(errorType) {
+        return <ErrorPage {...ERROR_MESSAGES[errorType]}/>
+    }
     return (
         <div className={styles.badgePage}>
             <div className={styles.breadcrumb}>YOUR PROFILE <span>/</span> BADGES</div>
