@@ -7,7 +7,6 @@ import { ErrorBoundary } from './components/error/ErrorBoundary';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
 import { QuizProvider } from './contexts/QuizContext';
 import { UserProvider } from './contexts/UserContext';
-import { ProfileHistoryProvider } from './contexts/UserTrackerContext';
 import { BadgePage } from './pages/BadgePage';
 import { ErrorPage } from './pages/ErrorPage';
 import { Home } from './pages/Home';
@@ -126,9 +125,7 @@ function App() {
   return (
     <UserProvider>
       <QuizProvider>
-        <ProfileHistoryProvider>
           <RouterProvider router={router} />
-        </ProfileHistoryProvider>
       </QuizProvider>
     </UserProvider>
   )

@@ -3,20 +3,43 @@ import { Profile } from '../components/image/ProfileImageHolder';
 import { useUser } from '../contexts/UserContext';
 import styles from '../module/ProfilePage.module.css';
 import { formatDuration, getYear } from '../utils/Utils';
-import { getSavedQuizPercentage } from '../utils/services/trackerService'; // Removed fetchUserTrackerHistory
-import { useProfileHistory } from '../contexts/UserTrackerContext';
+import { fetchUserTrackerHistory, getSavedQuizPercentage } from '../utils/services/trackerService'; // Removed fetchUserTrackerHistory
 import type { QuizData } from '../types/quiz';
 import { RedirectUser } from '../components/auth/RedirectUser';
 import { ErrorPage } from './ErrorPage';
 import { ERROR_MESSAGES, type ErrorType } from '../types/error';
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import type { UserTrackerResponse, ProfileTrackerAPIResponse } from '../types/tracker';
 
 export const ProfilePage = () => {
     const { user } = useUser();
     const navigate = useNavigate();
 
-    const { tracker, rank, isLoading, error } = useProfileHistory();
+    const [tracker, setTracker] = useState<UserTrackerResponse | null>(null);
+    const [rank, setRank] = useState<number | null>(null);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
     const [errorType, setErrorType] = useState<ErrorType | null>(null);
+
+    const fetchProfileData = useCallback(async () => {
+        setIsLoading(true);
+        
+        try {
+            const data: ProfileTrackerAPIResponse = await fetchUserTrackerHistory();
+    
+            setTracker(data.userTrackerResponse); 
+            setRank(data.rank);
+
+        } catch (err: any) {
+            setErrorType("LOAD_DATA_FAILED");
+        } finally {
+            setIsLoading(false);
+        }
+    }, []);
+
+    useEffect(() => {
+        fetchProfileData();
+    }, [fetchProfileData]);
+    
 
     if (!user) {
         setErrorType('SESSION_EXPIRED');
@@ -25,10 +48,6 @@ export const ProfilePage = () => {
 
     if (errorType) {
         return <ErrorPage {...ERROR_MESSAGES[errorType]} />
-    }
-
-    if(error) {
-        return <ErrorPage message={error}/>
     }
 
     const quizzesTaken = tracker?.quizzesTaken ?? 0;

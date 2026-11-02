@@ -104,7 +104,7 @@ export const CreateQuiz: React.FC = () => {
     setQuestionCount(currentCount => Math.max(1, currentCount - 1));
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
 
@@ -115,6 +115,7 @@ export const CreateQuiz: React.FC = () => {
 
     // Map question options back to the answers array structure
     const formattedQuestions = questions.map((q) => {
+
       const answersPayload = (q.options || []).map((optionText, index) => {
         const isThisCorrect = index === q.correctOption;
         return {
@@ -129,7 +130,8 @@ export const CreateQuiz: React.FC = () => {
         questionId: q.questionId || null,
         text: q.text,
         score: q.score,
-        answers: answersPayload
+        answers: answersPayload,
+        correctOption: q.correctOption
       };
     });
 
@@ -145,6 +147,7 @@ export const CreateQuiz: React.FC = () => {
     const token = getToken();
     const method = isEditMode ? 'PUT' : 'POST';
 
+    console.log(quiz);
     try {
       const response = await fetch(url, {
         method: method,

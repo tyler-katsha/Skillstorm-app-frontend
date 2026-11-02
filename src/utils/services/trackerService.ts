@@ -21,9 +21,8 @@ export const fetchUserTrackerHistory = async (): Promise<ProfileTrackerAPIRespon
     return response.json();
 };
 
-export const saveUncompletedQuizProgress = async (quizId: number,currentQuestionIndex: number,totalQuestions: number,quiz:UserAnswerSubmission[]) => {
+export const saveUncompletedQuizProgress = async (quizId: number,currentQuestionIndex: number,totalQuestions: number,userAnswerSubmission:UserAnswerSubmission[]) => {
 
-    console.log(quiz);
     const token = getToken();
     const percentage = totalQuestions > 0 ? Math.round((currentQuestionIndex / totalQuestions) * 100) : 0;
 
@@ -31,18 +30,23 @@ export const saveUncompletedQuizProgress = async (quizId: number,currentQuestion
     existing[quizId] = percentage;
     localStorage.setItem(PROGRESS_STORAGE_KEY, JSON.stringify(existing));
 
-    await fetch(`${API}/users/uncompleted/${quizId}`, {
+    if(currentQuestionIndex === 0) return;
+    const payload = {
+        currentQuestion: currentQuestionIndex,
+            totalQuestions,
+            percentage,
+            userAnswerSubmission
+    }
+
+    console.log(payload);
+
+    await fetch(`${API}/quizzes/uncompleted/${quizId}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify({
-            currentQuestion: currentQuestionIndex,
-            totalQuestions,
-            percentage,
-            quiz
-        }),
+        body: JSON.stringify(payload),
     });
 };
 
