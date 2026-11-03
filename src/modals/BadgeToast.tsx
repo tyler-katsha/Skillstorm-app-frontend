@@ -1,11 +1,7 @@
 import React, { useEffect } from 'react';
 import styles from '../module/BadgeToast.module.css';
-import type { BadgeResponse } from '../types/badge';
+import type { BadgeToastProps } from '../types/popup';
 
-interface BadgeToastProps {
-    badge: BadgeResponse;
-    onClose: () => void;
-}
 
 export const BadgeToast: React.FC<BadgeToastProps> = ({ badge, onClose }) => {
     useEffect(() => {

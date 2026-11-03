@@ -37,9 +37,7 @@ export const saveUncompletedQuizProgress = async (quizId: number,currentQuestion
             percentage,
             userAnswerSubmission
     }
-
-    console.log(payload);
-
+    
     await fetch(`${API}/quizzes/uncompleted/${quizId}`, {
         method: 'POST',
         headers: {

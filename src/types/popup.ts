@@ -1,3 +1,4 @@
+import type { BadgeResponse } from "./badge";
 import type { ToastResponse } from "./type";
 
 export interface CustomPopupProps{
@@ -26,4 +27,9 @@ export interface ToastProps {
 export interface PartialToast {
   message: string;
   type: ToastResponse;
+}
+
+export interface BadgeToastProps {
+    badge: BadgeResponse;
+    onClose: () => void;
 }

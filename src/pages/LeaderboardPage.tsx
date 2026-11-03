@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { Leaderboard } from "../components/Leaderboard";
-import { findAllLeadingUsers } from "../utils/services/LeaderboardApi";
+import { Leaderboard } from "../components/leaderboard/Leaderboard";
 import type { LeaderBoardUser } from "../types/leaderboard";
+import { findAllLeadingUsers } from "../utils/services/LeaderboardApi";
 
 
 export const LeaderboardPage = ({ limit = 10, isBackground = true, title = 'Global Leaderboard - Top 10 Stormers' }) => {

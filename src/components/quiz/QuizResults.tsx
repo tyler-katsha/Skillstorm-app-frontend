@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from '../../module/QuizResults.module.css';
 import type { QuizResultsProps } from '../../types/quiz';
-import { calculateNextLevel, formatTimeSpent } from '../../utils/Utils';
+import { calculateNextLevel, formatTimeSpent, getPerformanceTier } from '../../utils/Utils';
 import { BadgeToast } from '../../modals/BadgeToast';
 
 export const QuizResults: React.FC<QuizResultsProps> = ({quiz, result, fallbackCorrect, fallbackScore, timeSpentSeconds, userSubmissions, initialUserXp, initialUserLevel, onRetry, earnedToasts, setEarnedToasts }) => {
@@ -16,14 +16,8 @@ export const QuizResults: React.FC<QuizResultsProps> = ({quiz, result, fallbackC
   const nextLevelXp = calculateNextLevel(currentXp);
   const levelProgress = nextLevelXp > 0 ? Math.min(100, Math.round((currentXp / nextLevelXp) * 100)) : 0;
 
-  const getPerformanceTier = () => {
-    if (accuracy >= 90) return { title: 'Outstanding Mastery!', badge: '🏆 Gold Tier', className: styles.tierGold };
-    if (accuracy >= 70) return { title: 'Great Job!', badge: '🥈 Silver Tier', className: styles.tierSilver };
-    if (accuracy >= 50) return { title: 'Good Effort!', badge: '🥉 Bronze Tier', className: styles.tierBronze };
-    return { title: 'Keep Practicing!', badge: '📚 Learner', className: styles.tierPractice };
-  };
 
-  const tier = getPerformanceTier();
+  const tier = getPerformanceTier(styles,accuracy);
 
   return (
     <div className={styles.resultsWrapper}>
@@ -120,6 +114,12 @@ export const QuizResults: React.FC<QuizResultsProps> = ({quiz, result, fallbackC
                       <span className={styles.textCorrect}>{correctAnswer.answerText}</span>
                     </div>
                   )}
+
+                  {q.description && (
+        <div className={styles.descriptionSection}>
+          <p className={styles.descriptionText}>{q.description}</p>
+        </div>
+      )}
                 </div>
               </div>
             );

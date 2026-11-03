@@ -283,7 +283,6 @@ export const Quiz: React.FC<QuizComponentProps> = ({ sampleQuiz, onBack }) => {
           })}
         </div>
 
-        {/* --- MERGED EXPLANATION BOX FROM FIRST CODE --- */}
         {!isAnswering && selectedIdx !== -1 && !isChoiceCorrect(selectedIdx) && currentQuestion?.description && (
           <div className={styles.explanationBox} style={{ marginBottom: '1.5rem', padding: '12px 16px', backgroundColor: '#ffeef0', borderLeft: '4px solid #ff4d4f', borderRadius: '0 4px 4px 0', color: '#991b1b', fontSize: '0.95rem', lineHeight: '1.4' }}>
             <strong>Explanation:</strong> {currentQuestion.description}

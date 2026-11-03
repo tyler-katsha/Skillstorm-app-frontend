@@ -54,7 +54,6 @@ export const BadgeDetailModal: React.FC<BadgeDetailModalProps> = ({ badge, isAdm
 
     const handleDelete = async (id:number) => {
         
-        console.log(id);
         if (!isAdminOrEmployee) return;
 
         setIsDeleting(true);

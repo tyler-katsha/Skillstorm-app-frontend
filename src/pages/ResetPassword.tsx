@@ -3,29 +3,29 @@ import { useNavigate } from 'react-router-dom';
 import { PasswordRequirements } from '../components/auth/PasswordRequirements';
 import { CustomPopup } from '../modals/CustomPopup';
 import styles from '../module/Auth.module.css';
-import type { ToastResponse } from '../types/type';
 import { API } from '../utils/API';
+import { getIsGuest } from '../utils/Utils';
+import { DEFAULT_POPUP } from '../types/default';
 
 export const ResetPassword = () => {
 
-    const isGuest = localStorage.getItem('isGuest')
+    const isGuest = getIsGuest();
 
     const navigate = useNavigate();
     const redirectionPath = isGuest ? '/login' : '/profile'
+
     const queryParams = new URLSearchParams(window.location.search);
+
     const token = queryParams.get('token')
     const email = queryParams.get('email');
+
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('')
 
-    const [popupConfig, setPopupConfig] = useState({
-        isOpen: false,
-        type: 'success' as ToastResponse,
-        message: ''
-    });
+    const [popupConfig, setPopupConfig] = useState(DEFAULT_POPUP);
 
     const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
@@ -100,18 +100,18 @@ export const ResetPassword = () => {
             return;
         }
 
+        const payload = {
+            'email': email,
+            'password': password,
+            'token': token,
+        }
         try {
             const response = await fetch(`${API}/auth/forgot-password`, {
                 method: 'POST',
                 headers: {
                     'content-type': 'application/json'
                 },
-                body: JSON.stringify(
-                    {
-                        'email': email,
-                        'password': password,
-                        'token': token,
-                    })
+                body: JSON.stringify(payload)
             })
 
             if (!response.ok) {

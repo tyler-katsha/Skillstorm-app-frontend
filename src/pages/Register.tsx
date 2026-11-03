@@ -4,17 +4,14 @@ import { OAuthLogin } from '../components/auth/OAuthLogin';
 import { PasswordRequirements } from '../components/auth/PasswordRequirements';
 import { CustomPopup } from '../modals/CustomPopup';
 import styles from '../module/Auth.module.css';
-import { type ToastResponse } from '../types/type';
 import { API } from '../utils/API';
-import { destroyToken } from '../utils/Utils';
+import { destroyToken, trim } from '../utils/Utils';
 import type { RegisterPayload } from '../types/auth';
 import { emailRegex } from '../utils/regex';
+import { DEFAULT_POPUP, DEFAULT_REGISTER } from '../types/default';
 
 export const Register = () => {
 
-    useEffect(() => {
-        destroyToken();
-    }, []);
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -22,32 +19,28 @@ export const Register = () => {
     const [isChecking, setIsChecking] = useState(false);
     const [doesExistEmail, setDoesExistEmail] = useState<boolean | null>(null);
     const [isCheckingEmail, setIsCheckingEmail] = useState(false);
-    const [data, setData] = useState<RegisterPayload>({
-        email: '',
-        username: '',
-        password: '',
-        confirmPassword: '',
-    });
+    const [data, setData] = useState<RegisterPayload>(DEFAULT_REGISTER);
+    const [popupConfig, setPopupConfig] = useState(DEFAULT_POPUP);
+    
+    
 
-    const [popupConfig, setPopupConfig] = useState({
-        isOpen: false,
-        type: 'success' as ToastResponse,
-        message: ''
-    });
-    const togglePasswordVisibility = () => setShowPassword(!showPassword);
-
-    const toggleConfirmPasswordVisibility = () => setShowConfirmPassword(!showConfirmPassword)
+    
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setData((prev) => ({ ...prev, [name]: value }));
     };
 
+    const togglePasswordVisibility = () => setShowPassword(!showPassword);
+    const toggleConfirmPasswordVisibility = () => setShowConfirmPassword(!showConfirmPassword)
     const closePopup = () => setPopupConfig(prev => ({ ...prev, isOpen: false }))
 
 
     useEffect(() => {
-        const trimmedUsername = data.username.trim();
+        destroyToken();
+    }, []);
+    useEffect(() => {
+        const trimmedUsername = trim(data.username);
 
         if (trimmedUsername.length < 3) {
             setDoesExist(null);
@@ -91,7 +84,7 @@ export const Register = () => {
     }, [data.username]);
 
     useEffect(() => {
-        const trimmedEmail = data.email.trim();
+        const trimmedEmail = trim(data.email);
 
         if(!emailRegex.test(trimmedEmail)){
             setDoesExistEmail(null);
@@ -160,8 +153,8 @@ export const Register = () => {
         setLoading(true);
         try {
 
-            const trimmedEmail = data.email.trim();
-            const trimmedUsername = data.username.trim();
+            const trimmedEmail = trim(data.email);
+            const trimmedUsername = trim(data.username);
 
             const payload = {
                 ...data,

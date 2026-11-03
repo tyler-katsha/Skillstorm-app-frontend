@@ -10,13 +10,14 @@ import type { HomeSection } from "../types/home"
 import { HomeSkeleton } from "../skeletons/pages/HomeSkeleton"
 import { RedirectUser } from "../components/auth/RedirectUser"
 import { ErrorPage } from "./ErrorPage"
+import { ERROR_MESSAGES, type ErrorType } from "../types/error"
 
 export const Home = () => {
     const navigate = useNavigate();
     
     const [homeData, setHomeData] = useState<HomeSection | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
+    const [errorType, setErrorType] = useState<ErrorType | null>(null);
 
     useEffect(() => {
         const loadHomeData = async () => {
@@ -25,8 +26,7 @@ export const Home = () => {
                 const data = await findHomePageData();
                 setHomeData(data);
             } catch (err: any) {
-                console.error("Error loading home page:", err);
-                setError(err.message || "Something went wrong.");
+                setErrorType('LOAD_DATA_FAILED');
             } finally {
                 setIsLoading(false);
             }
@@ -39,8 +39,8 @@ export const Home = () => {
         return <HomeSkeleton />
     }
 
-    if (error) {
-        return <ErrorPage message={error}/>
+    if (errorType) {
+        return <ErrorPage {...ERROR_MESSAGES[errorType]}/>
     }
 
     if (!homeData) return <RedirectUser />;

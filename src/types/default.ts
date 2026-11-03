@@ -10,16 +10,23 @@ export const DEFAULT_LOGIN = {
 }
 
 export const DEFAULT_QUESTION: QuestionData = {
-  text: "",
-  correctOption: 0,
-  score: 10,
-  description: "",
-  options: emptyArrayOfStrings,
-  answers: []
+    text: "",
+    correctOption: 0,
+    score: 10,
+    description: "",
+    options: emptyArrayOfStrings,
+    answers: []
 };
 
 export const DEFAULT_POPUP = {
     isOpen: false,
     type: 'success' as ToastResponse,
     message: ''
+}
+
+export const DEFAULT_REGISTER = {
+    email: '',
+    username: '',
+    password: '',
+    confirmPassword: '',
 }

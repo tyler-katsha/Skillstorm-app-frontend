@@ -21,7 +21,7 @@ export const CreateQuiz: React.FC = () => {
   const [difficulty, setDifficulty] = useState("EASY");
   const [topicInput, setTopicInput] = useState<string>("");
   const [questionCount, setQuestionCount] = useState(1);
-  const [questions, setQuestions] = useState<QuestionData[]>([{ ...DEFAULT_QUESTION}]);
+  const [questions, setQuestions] = useState<QuestionData[]>([{...DEFAULT_QUESTION}]);
 
   const fetchQuiz = async () => {
     const token = getToken();

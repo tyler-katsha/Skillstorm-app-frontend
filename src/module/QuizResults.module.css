@@ -304,6 +304,43 @@
   font-weight: 600;
 }
 
+/* Existing styles (for context) */
+.questionCard {
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+  border: 1px solid #e0e0e0;
+}
+
+.cardIncorrect {
+  border-color: #fca5a5;
+  background-color: #fef2f2;
+}
+
+.descriptionSection {
+  margin-top: 16px;
+  padding: 12px;
+  border-radius: 6px;
+  background-color: #fee2e2; 
+  border-left: 4px solid #ef4444;
+}
+
+.descriptionLabel {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #991b1b;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.descriptionText {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #7f1d1d;
+  line-height: 1.5;
+}
 @keyframes popIn {
   from {
     opacity: 0;

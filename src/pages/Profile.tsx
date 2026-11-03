@@ -29,7 +29,7 @@ export const ProfilePage = () => {
             setTracker(data.userTrackerResponse); 
             setRank(data.rank);
 
-        } catch (err: any) {
+        } catch (err) {
             setErrorType("LOAD_DATA_FAILED");
         } finally {
             setIsLoading(false);
@@ -41,6 +41,10 @@ export const ProfilePage = () => {
     }, [fetchProfileData]);
     
 
+    if(!tracker) {
+        setErrorType('LOAD_DATA_FAILED');
+        return <RedirectUser />
+    }
     if (!user) {
         setErrorType('SESSION_EXPIRED');
         return <RedirectUser />;

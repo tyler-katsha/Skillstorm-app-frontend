@@ -1,5 +1,7 @@
 import styles from '../module/Popup.module.css'
 import type { CustomPopupProps } from '../types/popup';
+import { FailureLogo } from './FailureLogo';
+import { SuccessLogo } from './SuccessLogo';
 
 export const CustomPopup: React.FC<CustomPopupProps> = ({isOpen,type,title,message,onClose}) => {
 
@@ -12,15 +14,7 @@ export const CustomPopup: React.FC<CustomPopupProps> = ({isOpen,type,title,messa
             <div className={`${styles.popupContainer} ${isSuccess ? styles.successBorder : styles.errorBorder}`}>
                 
                 <div className={`${styles.iconContainer} ${isSuccess ? styles.successText : styles.errorText}`}>
-                    {isSuccess ? (
-                        <svg fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" width="48" height="48">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                    ) : (
-                        <svg fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" width="48" height="48">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                    )}
+                    {isSuccess ? <SuccessLogo /> : <FailureLogo />}
                 </div>
 
                 <h2 className={styles.title}>

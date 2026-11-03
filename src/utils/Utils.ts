@@ -1,4 +1,4 @@
-import { type AppRole, type AuthProvider } from "../types/type";
+import type { AppRole, AuthProvider } from "../types/type";
 
 export function splitFullName(name: string) {
     const nameParts = name.split(' ');
@@ -7,6 +7,17 @@ export function splitFullName(name: string) {
     const ln = nameParts.length > 1 ? nameParts[nameParts.length - 1] : ''
 
     return { firstName: fn, lastName: ln }
+}
+
+export function trim(data: string): string {
+    return data.trim();
+}
+
+export function getPerformanceTier(styles: any, accuracy: number) {
+    if (accuracy >= 90) return { title: 'Outstanding Mastery!', badge: '🏆 Gold Tier', className: styles.tierGold };
+    if (accuracy >= 70) return { title: 'Great Job!', badge: '🥈 Silver Tier', className: styles.tierSilver };
+    if (accuracy >= 50) return { title: 'Good Effort!', badge: '🥉 Bronze Tier', className: styles.tierBronze };
+    return { title: 'Keep Practicing!', badge: '📚 Learner', className: styles.tierPractice };
 }
 
 export function getYear(createdAt: string): number | null {
@@ -77,8 +88,8 @@ export function validAdmin(roles: AppRole[]): boolean {
 }
 
 export function removeAll() {
-    localStorage.removeItem('login-register-pages');
-    localStorage.removeItem('email')
+    destroyLoadingAndRegisterPageTrue();
+    destroyEmailTrue();
 }
 
 export function getToken(): string | null {
@@ -104,9 +115,42 @@ export function destroyToken(): void {
         localStorage.removeItem('jwt-token');
     }
 }
+export function destroyLoadingAndRegisterPageTrue(): void {
+    if(getLoadingAndRegisterPage() !== undefined) {
+        localStorage.removeItem('login-register-pages');
+    }
+}
+
+export function destroyEmailTrue(): void {
+    if(getEmailTrue() !== undefined) {
+        localStorage.removeItem('email');
+    }
+}
+
+export function getLoadingAndRegisterPage(): string | undefined | null { 
+    const loadingAndRegister = localStorage.getItem('login-register-pages');
+    if(loadingAndRegister === undefined || loadingAndRegister === null) return undefined;
+    return loadingAndRegister;
+}
 
 export function setUpLoginAndRegisterPage(): void {
     localStorage.setItem('login-register-pages', 'true')
+}
+
+export function setupEmailTrue(): void {
+    localStorage.setItem('email', 'true');
+}
+
+export function getIsGuest(): string | null{
+    const isGuest = localStorage.getItem('isGuest');
+    if(isGuest === null) return null;
+    return isGuest;
+}
+
+export function getEmailTrue(): string | null | undefined {
+    const emailTrue = localStorage.getItem('email');
+    if(emailTrue === undefined || emailTrue === null) return undefined;
+    return emailTrue;
 }
 /** 
  * Returns the empty string if n is equal to 1, else "s".

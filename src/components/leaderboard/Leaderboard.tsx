@@ -1,10 +1,10 @@
-import styles from '../module/Leaderboard.module.css';
-import { LeaderboardSkeleton } from '../skeletons/pages/LeaderboardSkeleton';
-import type { LeaderboardProps } from '../types/leaderboard';
+import { LeaderboardSkeleton } from '../../skeletons/pages/LeaderboardSkeleton';
+import type { LeaderboardProps } from '../../types/leaderboard';
+import styles from '../../module/Leaderboard.module.css';
 
 export const Leaderboard: React.FC<LeaderboardProps> = ({ title, users, isLoading, limit = 10, isBackground }) => {
 
-    if(isLoading) {
+    if (isLoading) {
         return <LeaderboardSkeleton />
     }
     return (

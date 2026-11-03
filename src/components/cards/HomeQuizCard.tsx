@@ -3,6 +3,7 @@ import type { HomeQuizCardProps } from '../../types/card'
 
 export const HomeQuizCard: React.FC<HomeQuizCardProps> = ({ quiz }) => {
     const difficultyClass = styles[quiz.difficulty.toLowerCase()] || styles.defaultBadge;
+    
     return (
         <div className={styles.cardContainer}>
             <div className={styles.contentWrapper}>

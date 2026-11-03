@@ -2,25 +2,24 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CustomPopup } from '../modals/CustomPopup';
 import styles from '../module/Auth.module.css';
-import type { ToastResponse } from '../types/type';
 import { API } from '../utils/API';
+import { setupEmailTrue } from '../utils/Utils';
+import { DEFAULT_POPUP } from '../types/default';
 
 export const ResetEmail = () => {
     const navigate = useNavigate();
 
-    const loginPage = () => navigate('/login');
     const [email, setEmail] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
-    const [popupConfig, setPopupConfig] = useState({
-        isOpen: false,
-        type: 'success' as ToastResponse,
-        message: ''
-    });
-    const closePopup = () => setPopupConfig(prev => ({ ...prev, isOpen: false }))
+    const [popupConfig, setPopupConfig] = useState(DEFAULT_POPUP);
+
+
+    const closePopup = () => setPopupConfig(prev => ({ ...prev, isOpen: false }));
+    const loginPage = () => navigate('/login');
 
     const handleFormEvent = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
-        localStorage.setItem('email', 'true');
+        setupEmailTrue()
         setLoading(true);
 
 
