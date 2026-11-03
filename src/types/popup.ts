@@ -1,3 +1,5 @@
+import type { ToastResponse } from "./type";
+
 export interface CustomPopupProps{
     isOpen:boolean;
     type: 'success' | 'error';

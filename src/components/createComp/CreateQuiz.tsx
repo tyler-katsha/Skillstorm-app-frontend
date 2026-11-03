@@ -50,6 +50,7 @@ export const CreateQuiz: React.FC = () => {
             questionId: q.questionId,
             text: q.text || "",
             score: q.score || 10,
+            description: q.description || "",
             options: q.answers?.map((a: any) => a.answerText) || emptyArrayOfStrings,
             correctOption: correctIndex !== -1 ? correctIndex : 0,
             answerIds: q.answers?.map((a: any) => a.answerId) || []
@@ -101,7 +102,7 @@ export const CreateQuiz: React.FC = () => {
     setQuestionCount(currentCount => Math.max(1, currentCount - 1));
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
 
@@ -110,12 +111,13 @@ export const CreateQuiz: React.FC = () => {
       .map(topic => topic.trim())
       .filter(Boolean);
 
-    // Map to exactly match the CreateQuestionRequest DTO
     const formattedQuestions = questions.map((q) => ({
-      ...(q.questionId && isEditMode ? { id: q.questionId } : {}), // Only include ID if updating
+      ...(q.questionId && isEditMode ? { id: q.questionId } : {}),
       text: q.text,
-      options: q.options || ["", "", "", ""],
-      correctOption: q.correctOption
+      options: q.options || emptyArrayOfStrings,
+      correctOption: q.correctOption,
+      description: q.description,
+      score: q.score || 10
     }));
 
     const quizPayload = {
