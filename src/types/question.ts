@@ -4,6 +4,7 @@ export interface QuestionPayload {
   questionId?: number | null;
   score: number;
   text: string;
+  description?: string;
   answers: Answer[];
 }
 
@@ -12,9 +13,9 @@ export interface QuestionData {
   text: string;
   score: number;
   correctOption: number;
+  answers: Answer[];
+  description?: string;
   options: string[];
-  answers?: Answer[]; 
-  answerIds?: number[];
 }
 
 export interface CreateQuestionProps {
@@ -23,10 +24,3 @@ export interface CreateQuestionProps {
   onChange: (question: QuestionData) => void;
   onRemove?: () => void;
 }
-
-export const DEFAULT_QUESTION: QuestionData = {
-  text: "",
-  correctOption: 0,
-  score: 10,
-  options: ["", "", "", ""],
-};

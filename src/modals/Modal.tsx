@@ -1,22 +1,9 @@
 import React, { useEffect } from "react";
 import { createPortal } from "react-dom";
 import styles from "../module/Modal.module.css";
+import type { ModalProps } from "../types/popup";
 
-interface ModalProps {
-    isOpen: boolean;
-    title: string;
-    children: React.ReactNode;
-    onClose: () => void;
-    footer?: React.ReactNode;
-}
-
-export const Modal: React.FC<ModalProps> = ({
-    isOpen,
-    title,
-    children,
-    onClose,
-    footer
-}) => {
+export const Modal: React.FC<ModalProps> = ({ isOpen, title, children, onClose, footer }) => {
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.key === "Escape") onClose();

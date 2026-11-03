@@ -105,7 +105,9 @@ export function destroyToken(): void {
     }
 }
 
-
+export function setUpLoginAndRegisterPage(): void {
+    localStorage.setItem('login-register-pages', 'true')
+}
 /** 
  * Returns the empty string if n is equal to 1, else "s".
  * Useful for adding a plural "s" ending to English words.  

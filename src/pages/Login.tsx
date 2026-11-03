@@ -4,32 +4,29 @@ import { OAuthLogin } from '../components/auth/OAuthLogin';
 import { useUser } from '../contexts/UserContext';
 import { CustomPopup } from '../modals/CustomPopup';
 import styles from '../module/Auth.module.css';
-import type { ToastResponse } from '../types/type';
 import { API } from '../utils/API';
-import { destroyToken, removeAll } from '../utils/Utils';
+import { destroyToken, removeAll, setUpLoginAndRegisterPage } from '../utils/Utils';
 import type { LoginPayload } from '../types/auth';
 import { ERROR_MESSAGES, type ErrorType } from '../types/error';
 import { ErrorPage } from './ErrorPage';
+import { DEFAULT_LOGIN, DEFAULT_POPUP } from '../types/default';
 
 export const Login = () => {
-    localStorage.setItem('login-register-pages', 'true')
+    setUpLoginAndRegisterPage();
+
     const navigate = useNavigate();
+
     const { fetchUser } = useUser();
+
     const [searchParams] = useSearchParams();
-    const [popupConfig, setPopupConfig] = useState({
-        isOpen: false,
-        type: 'success' as ToastResponse,
-        message: ''
-    });
+
+    const [popupConfig, setPopupConfig] = useState(DEFAULT_POPUP);
     const [errorType, setErrorType] = useState<ErrorType | null>(null);
-    const closePopup = () => setPopupConfig(prev => ({ ...prev, isOpen: false }))
     const [showPassword, setShowPassword] = useState(false);
+    const [data, setData] = useState<LoginPayload>(DEFAULT_LOGIN);
 
-    const [data, setData] = useState<LoginPayload>({
-        email: "",
-        password: ""
-    });
 
+    const closePopup = () => setPopupConfig(prev => ({ ...prev, isOpen: false }))
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);

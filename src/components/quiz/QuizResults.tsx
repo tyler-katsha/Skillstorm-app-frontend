@@ -6,7 +6,7 @@ import { BadgeToast } from '../../modals/BadgeToast';
 
 export const QuizResults: React.FC<QuizResultsProps> = ({quiz, result, fallbackCorrect, fallbackScore, timeSpentSeconds, userSubmissions, initialUserXp, initialUserLevel, onRetry, earnedToasts, setEarnedToasts }) => {
   const totalQuestions = result?.totalQuestions ?? quiz.questions?.length ?? 0;
-  const correctCount = result?.totalQuestions ?? (result as any)?.correctCount ?? fallbackCorrect;
+  const correctCount = result?.correctCount ?? fallbackCorrect ?? 0;
   const xpEarned = result?.scoreEarned ?? fallbackScore;
   const currentXp = result?.currentXp ?? (initialUserXp + xpEarned);
   const currentLevel = result?.currentLevel ?? initialUserLevel;

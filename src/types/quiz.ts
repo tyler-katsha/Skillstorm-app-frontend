@@ -2,7 +2,6 @@ import type { Dispatch, SetStateAction } from "react";
 import type { BadgeResponse } from "./badge";
 import type { QuestionData, QuestionPayload } from "./question";
 import type { DifficultyLevel } from "./type";
-import type { UserProps } from "./user";
 
 export interface QuizProps {
     id: number;
@@ -10,6 +9,17 @@ export interface QuizProps {
     difficulty: DifficultyLevel;
     topicNames: string[];
     questions: QuestionData[];
+}
+
+export interface QuizComponentProps {
+  sampleQuiz: QuizProps | any;
+  onBack: () => void;
+}
+
+export interface UncompletedQuizProps {
+    pct:number;
+    quiz: QuizData;
+    qId: number;
 }
 export interface SubmitButtonProps {
     label: string;
@@ -46,12 +56,6 @@ export interface UpdateQuizData extends Omit<QuizData, "questions">{
 export interface CreateQuizProps{
     onSubmit: (quiz:QuizData) => void;
     initialData?: QuizProps;
-}
-
-export interface QuizCompProps {
-  sampleQuiz: QuizProps;
-  sampleUser: UserProps | null;
-  onBack?: () => void;
 }
 
 export interface SubmissionResult {

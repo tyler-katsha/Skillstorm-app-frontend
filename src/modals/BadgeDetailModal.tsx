@@ -12,6 +12,7 @@ export const BadgeDetailModal: React.FC<BadgeDetailModalProps> = ({ badge, isAdm
         goal: badge.goal
     });
     const [isSaving, setIsSaving] = useState(false);
+    const [isDeleting,setIsDeleting] = useState(false);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
@@ -38,20 +39,48 @@ export const BadgeDetailModal: React.FC<BadgeDetailModalProps> = ({ badge, isAdm
                 })
             });
 
-            if (response.ok) {
-                onRefresh(); 
-                onClose(); 
-            } else {
-                const errorText = await response.text();
-                alert(`Failed to update: ${errorText}`);
-            }
+            if (!response.ok) {
+                throw new Error(await response.text());
+            } 
+
+            onRefresh(); 
+            onClose(); 
         } catch (error) {
             console.error("Error updating badge:", error);
-            alert("Network error.");
         } finally {
             setIsSaving(false);
         }
     };
+
+    const handleDelete = async (id:number) => {
+        
+        console.log(id);
+        if (!isAdminOrEmployee) return;
+
+        setIsDeleting(true);
+
+        const token = getToken();
+        try {
+            const response = await fetch(`${API}/badges/${id}`,{
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+            });
+
+            if(!response.ok) {
+                throw new Error('Unable to delete badge');
+            }
+
+            onRefresh(); 
+            onClose(); 
+        } catch(error) {
+            console.error('Network error occurred');
+        } finally {
+            setIsDeleting(false);
+        }
+    }
 
     return (
         <div className={styles.modalOverlay} onClick={onClose}>
@@ -146,9 +175,15 @@ export const BadgeDetailModal: React.FC<BadgeDetailModalProps> = ({ badge, isAdm
                             Close
                         </button>
                         {isAdminOrEmployee && (
-                            <button type="submit" className={styles.submitBtn} disabled={isSaving}>
+                            <>
+                                <button type="submit" className={styles.submitBtn} disabled={isSaving}>
                                 {isSaving ? 'Saving...' : 'Save Changes'}
                             </button>
+                                <button onClick={() => handleDelete(badge.id)} className={styles.deleteBtn} disabled={isDeleting}>
+                                {isDeleting ? 'Deleting...' : 'Delete'}
+                            </button>
+                            </>
+                            
                         )}
                     </div>
                 </form>

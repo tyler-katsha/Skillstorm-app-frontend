@@ -26,7 +26,6 @@ export const BadgeToast: React.FC<BadgeToastProps> = ({ badge, onClose }) => {
             <button onClick={onClose} className={styles.closeBtn} aria-label="Close">
                 ✕
             </button>
-            {/* The progress bar animation at the bottom */}
             <div className={styles.progressBar}></div>
         </div>
     );

@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
-import styles from '../module/Quiz.module.css';
-import type { ProgressbarsProps } from '../types/quiz';
-import { pluralS } from '../utils/Utils';
+import styles from '../../module/Quiz.module.css';
+import type { ProgressbarsProps } from '../../types/quiz';
+import { pluralS } from '../../utils/Utils';
 
 export const Progressbars: React.FC<ProgressbarsProps> = ({ answered, total, currentLevel, currentXp, nextLevelXp }) => {
   const quizProgress = total > 0 ? Math.min(100, Math.max(0, Math.round((answered / total) * 100))) : 0;

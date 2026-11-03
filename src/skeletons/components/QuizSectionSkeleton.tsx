@@ -1,12 +1,13 @@
 import { CardGrid } from "../../components/cards/CardGrid";
 import { HomeQuizCardSkeleton } from "./HomeQuizCardSkeleton";
+import { Skeleton } from "./Skeleton";
 
 export const QuizSectionSkeleton = () => {
 
     const skeletonQuiz = Array.from({length: 4});
     return (
         <>
-            <h2 style={{ margin: '3rem' }}>Featured Quizzes</h2>
+            <Skeleton width="35%" height="20px"/>
 
             <CardGrid>
                 {skeletonQuiz.map((_,index) => (

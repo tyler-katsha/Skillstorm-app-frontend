@@ -15,8 +15,6 @@ export interface UserProps {
 
 export interface ProfileCompProps {
     name: string;
-    profileImageUrl: string | undefined;
-    link?: boolean;
 }
 
 export interface QuestionOptionProps {

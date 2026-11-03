@@ -1,33 +1,8 @@
-import { useNavigate } from "react-router-dom";
 import styles from '../../module/ProfileImage.module.css';
 import { ColorUtil, getInitials } from "../../utils/Utils";
 import type { ProfileCompProps } from "../../types/user";
 
-export const Profile: React.FC<ProfileCompProps> = ({ name, profileImageUrl, link = true }) => {
+export const Profile: React.FC<ProfileCompProps> = ({ name }) => {
 
-    const navigate = useNavigate();
-
-    return (
-
-        <>
-            {link ? (
-                <a onClick={() => navigate("/profile")}>
-                    <div className={styles.container} style={{ backgroundColor: ColorUtil() }}>
-                        {profileImageUrl ? (
-                            <img src={profileImageUrl} alt={`${name} Image`} className={styles.image} />
-                        ) : (
-                            <span className={styles.initials}>{getInitials(name)}</span>
-                        )}
-                    </div>
-                </a>
-            ) : (
-                <div className={styles.container} style={{ backgroundColor: ColorUtil(), cursor: 'auto' }}>
-                    {profileImageUrl ? (<img src={profileImageUrl} alt={`${name} Image`} className={styles.image} />
-                    ) : (<span className={styles.initials}>{getInitials(name)}</span>)}
-                </div>
-            )}
-        </>
-
-
-    )
+    return <div className={styles.container} style={{ backgroundColor: ColorUtil(), cursor: 'auto' }}><span className={styles.initials}>{getInitials(name)}</span></div>
 }

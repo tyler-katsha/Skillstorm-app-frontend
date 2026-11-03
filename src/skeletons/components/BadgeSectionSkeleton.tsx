@@ -1,12 +1,13 @@
 import { CardGrid } from "../../components/cards/CardGrid";
 import { HomeBadgeCardSkeleton } from "./HomeBadgeCardSkeleton";
+import { Skeleton } from "./Skeleton";
 
 export const BadgeSectionSkeleton = () => {
 
     const skeletonBadge = Array.from({ length: 4 });
     return (
         <>
-            <h2 style={{ margin: '3rem' }}>Enable Badges</h2>
+            <Skeleton width="35%" height="20px"/>
 
             <CardGrid>
                 {skeletonBadge.map((_, index) => (

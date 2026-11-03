@@ -8,7 +8,7 @@ import { useUser } from "../contexts/UserContext";
 import styles from "../module/QuizPage.module.css";
 import type { QuizProps } from "../types/quiz";
 import { API } from "../utils/API";
-import { formatTopicNames, getToken } from "../utils/Utils";
+import { formatTopicNames, getToken, isPermitted } from "../utils/Utils";
 import { ERROR_MESSAGES, type ErrorType } from "../types/error";
 import { ErrorPage } from "./ErrorPage";
 
@@ -16,7 +16,7 @@ export const QuizPage = () => {
     const navigate = useNavigate();
     const [search, setSearch] = useState("");
     const [category, setCategory] = useState("All");
-    const [activeQuiz, setActiveQuiz] = useState<QuizProps | null>(null);
+    const [activeQuiz, setActiveQuiz] = useState<QuizProps | null>(null); 
     const [creatingQuiz, setCreatingQuiz] = useState(false);
     const [errorType, setErrorType] = useState<ErrorType | null>(null);
 
@@ -25,7 +25,7 @@ export const QuizPage = () => {
 
     if (!user) {
         setErrorType('SESSION_EXPIRED');
-        return <RedirectUser />
+        return <RedirectUser />;
     }
 
     const categories = useMemo(() => {
@@ -40,7 +40,6 @@ export const QuizPage = () => {
         return quizzes.filter((item: QuizProps) => {
             const matchesSearch = item.title.toLowerCase().includes(search.toLowerCase());
             const matchesCategory = category === "All" || item.topicNames.includes(category);
-
             return matchesSearch && matchesCategory;
         });
     }, [quizzes, search, category]);
@@ -51,7 +50,7 @@ export const QuizPage = () => {
 
     const updateQuiz = async (id: number) => {
         navigate(`/edit-quiz/${id}`);
-    }
+    };
 
     const deleteQuiz = async (id: number) => {
         const token = getToken();
@@ -72,10 +71,10 @@ export const QuizPage = () => {
         } catch (error) {
             setErrorType('LOAD_DATA_FAILED');
         }
-    }
+    };
 
-    if(errorType) {
-        return <ErrorPage {...ERROR_MESSAGES[errorType]}/>
+    if (errorType) {
+        return <ErrorPage {...ERROR_MESSAGES[errorType]} />
     }
 
     if (creatingQuiz) {
@@ -92,7 +91,7 @@ export const QuizPage = () => {
         );
     }
 
-    if (activeQuiz) return <Quiz sampleQuiz={activeQuiz} sampleUser={user} onBack={() => setActiveQuiz(null)} />
+    if (activeQuiz) return <Quiz sampleQuiz={activeQuiz} onBack={() => setActiveQuiz(null)} />
 
     return (
         <main className={styles.page}>
@@ -143,10 +142,8 @@ export const QuizPage = () => {
                 <div className={styles.empty}>
                     <p>Loading quizzes...</p>
                 </div>
-            ) : error ? (
-                <div className={styles.empty}>
-                    <p>Error loading quizzes: {error}</p>
-                </div>
+            ) : error && errorType ? (
+                <ErrorPage {...ERROR_MESSAGES[errorType]}/>
             ) : filteredQuizzes.length > 0 ? (
                 <section className={styles.quizGrid}>
                     {filteredQuizzes.map((item: QuizProps, index: number) => (
@@ -176,14 +173,18 @@ export const QuizPage = () => {
                                     Start Quiz →
                                 </button>
 
-                                <div className={styles.adminActions}>
-                                    <button className={styles.updateButton} onClick={() => updateQuiz(item.id)}>
-                                        Update Quiz
-                                    </button>
-                                    <button className={styles.deleteButton} onClick={() => deleteQuiz(item.id)}>
-                                        Delete Quiz
-                                    </button>
-                                </div>
+                                {isPermitted(user.roles) && (
+                                <>
+                                    <div className={styles.adminActions}>
+                                        <button className={styles.updateButton} onClick={() => updateQuiz(item.id)}>
+                                            Update Quiz
+                                        </button>
+                                        <button className={styles.deleteButton} onClick={() => deleteQuiz(item.id)}>
+                                            Delete Quiz
+                                        </button>
+                                    </div>
+                                </>
+                                )}
                             </div>
                         </article>
                     ))}

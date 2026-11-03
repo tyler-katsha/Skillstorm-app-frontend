@@ -1,19 +1,19 @@
-import { useNavigate } from 'react-router-dom';
 import { Profile } from '../components/image/ProfileImageHolder';
 import { useUser } from '../contexts/UserContext';
 import styles from '../module/ProfilePage.module.css';
 import { formatDuration, getYear } from '../utils/Utils';
 import { fetchUserTrackerHistory, getSavedQuizPercentage } from '../utils/services/trackerService'; // Removed fetchUserTrackerHistory
-import type { QuizData } from '../types/quiz';
 import { RedirectUser } from '../components/auth/RedirectUser';
 import { ErrorPage } from './ErrorPage';
 import { ERROR_MESSAGES, type ErrorType } from '../types/error';
 import { useCallback, useEffect, useState } from 'react';
 import type { UserTrackerResponse, ProfileTrackerAPIResponse } from '../types/tracker';
+import { UncompletedQuiz } from '../components/quiz/UncompletedQuizz';
+import { Divider } from '../components/common/Divider';
+import { AttemptRecord } from '../components/attempt/AttemptRecord';
 
 export const ProfilePage = () => {
     const { user } = useUser();
-    const navigate = useNavigate();
 
     const [tracker, setTracker] = useState<UserTrackerResponse | null>(null);
     const [rank, setRank] = useState<number | null>(null);
@@ -66,14 +66,6 @@ export const ProfilePage = () => {
         ? (tracker.accuracyRate <= 1 ? tracker.accuracyRate * 100 : tracker.accuracyRate).toFixed(1)
         : (tracker?.totalQuestionsAnswered ?? 0) > 0 ? (((tracker?.totalCorrectAnswers ?? 0) / (tracker?.totalQuestionsAnswered ?? 1)) * 100).toFixed(1) : '0.0';
 
-    const handleResumeQuiz = (quizId: number, quizData: QuizData) => {
-        navigate(`/quizzes/${quizId}`, {
-            state: {
-                resumeData: quizData,
-                isResuming: true
-            }
-        });
-    };
     return (
         <div className={styles.pageWrapper}>
             <h1 className={styles.title}>My Profile</h1>
@@ -84,7 +76,7 @@ export const ProfilePage = () => {
 
             <div className={styles.profileContainer}>
                 <div className={styles.leftContainer}>
-                    <Profile name={user.username} profileImageUrl={undefined} />
+                    <Profile name={user.username} />
 
                     <div className={styles.statsGrid}>
                         <div className={styles.statsCard}>{quizzesTaken} Quizzes</div>
@@ -123,22 +115,7 @@ export const ProfilePage = () => {
                         <div className={styles.attemptList}>
                             {isLoading ? (<p className={styles.emptyText}>Loading history...</p>) : tracker?.attemptRecords && tracker.attemptRecords.length > 0 ? (
                                 tracker.attemptRecords.slice(0, 5).map((attempt: any, idx: number) => (
-                                    <div key={idx} className={styles.attemptRow}>
-                                        <div className={styles.attemptInfo}>
-                                            <span className={styles.attemptTitle}>
-                                                {attempt.quizTitle || `Quiz #${attempt.quizId}`} (Try #{attempt.attemptNumber})
-                                            </span>
-                                            <span className={styles.attemptMeta}>
-                                                {attempt.correctAnswers}/{attempt.questionsAnswered} correct • +{attempt.gainedXp} XP
-                                            </span>
-                                        </div>
-                                        <span
-                                            className={`${styles.attemptStatus} ${attempt.isPerfectQuiz ? styles.statusPerfect : attempt.isQuizWon ? styles.statusWon : styles.statusLost
-                                                }`}
-                                        >
-                                            {attempt.isPerfectQuiz ? 'Perfect' : attempt.isQuizWon ? 'Won' : 'Lost'}
-                                        </span>
-                                    </div>
+                                    <AttemptRecord key={idx} attempt={attempt}/>
                                 ))
                             ) : (
                                 <p className={styles.emptyText}>No attempts recorded yet</p>
@@ -156,7 +133,7 @@ export const ProfilePage = () => {
 
                     <div className={styles.statsCardData}>
                         <h2>Ranking</h2>
-                        <hr className={styles.divider} />
+                        <Divider />
                         <p className={styles.ranking}>#{rank ?? 'Unranked'} Global</p>
                         <p className={styles.points}>{totalXp} pts</p>
                         <p className={styles.winRate}>{calculatedWinRate}% win rate</p>
@@ -164,34 +141,14 @@ export const ProfilePage = () => {
 
                     <div className={styles.statsCardData}>
                         <h2>Challenges (Uncompleted)</h2>
-                        <hr className={styles.divider} />
+                        <Divider />
                         <div className={styles.quizRowsContainer}>
                             {tracker?.uncompletedQuizzes && tracker.uncompletedQuizzes.length > 0 ? (
                                 tracker.uncompletedQuizzes.map((quiz: any, index: number) => {
-                                    const qId = quiz.quizId ?? quiz.id ?? 0;
+                                    const qId = quiz.id ?? 0;
                                     const pct = getSavedQuizPercentage(qId);
                                     return (
-                                        <div key={qId || index} className={styles.bubbleChallenge}>
-                                            <div className={styles.challengeRow}>
-                                                <div className={styles.challengeDetails}>
-                                                    <span className={styles.challengeTitle}>{quiz.title}</span>
-                                                    <span className={styles.challengePercent}>{pct}% completed</span>
-                                                </div>
-                                                <button
-                                                    type="button"
-                                                    onClick={() => handleResumeQuiz(qId, quiz)}
-                                                    className={styles.resumeBtn}
-                                                >
-                                                    Resume
-                                                </button>
-                                            </div>
-                                            <div className={styles.progressTrack}>
-                                                <div
-                                                    className={styles.progressFill}
-                                                    style={{ width: `${pct}%` }}
-                                                />
-                                            </div>
-                                        </div>
+                                        <UncompletedQuiz key={qId | index} pct={pct} quiz={quiz} qId={qId}/>
                                     );
                                 })
                             ) : (

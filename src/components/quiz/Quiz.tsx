@@ -1,25 +1,30 @@
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useUser } from '../../contexts/UserContext';
-import type { QuizCompProps, QuizSubmissionPayload, SubmissionResult, UserAnswerSubmission } from '../../types/quiz';
+import type { QuizComponentProps, QuizSubmissionPayload, SubmissionResult, UserAnswerSubmission } from '../../types/quiz';
 import { API } from '../../utils/API';
 import { saveUncompletedQuizProgress } from '../../utils/services/trackerService';
 import { calculateLevel, calculateNextLevel, getToken, OptionState } from '../../utils/Utils';
 import { RedirectUser } from '../auth/RedirectUser';
 import { SubmitButton } from '../buttons/SubmitButton';
 import styles from '../../module/Quiz.module.css';
-import { Progressbars } from '../Progressbars';
+import { Progressbars } from '../helperComp/Progressbars';
 import { QuestionOption } from '../question/QuestionOption';
 import { QuestionTextbox } from '../question/QuestionTextbox';
 import { QuizResults } from './QuizResults';
 import type { BadgeResponse } from '../../types/badge';
 
-export const Quiz: React.FC<QuizCompProps> = ({ sampleQuiz, sampleUser, onBack }) => {
-  const { updateUserStats } = useUser();
+export const Quiz: React.FC<QuizComponentProps> = ({ sampleQuiz, onBack }) => {
+  const { updateUserStats, user } = useUser();
+
+  if (!user) {
+    return <RedirectUser />;
+  }
+
   const location = useLocation();
 
   const startTimerRef = useRef<number>(Date.now());
-  const initialXpRef = useRef<number>(sampleUser?.xp ?? 0);
+  const initialXpRef = useRef<number>(user.xp ?? 0);
 
   const { resumeData, isResuming } = (location.state as any) || {};
 
@@ -47,11 +52,7 @@ export const Quiz: React.FC<QuizCompProps> = ({ sampleQuiz, sampleUser, onBack }
     }
   }, [sampleQuiz, questionIdx]);
 
-  if (!sampleUser) {
-    return <RedirectUser />;
-  }
-
-  const quickSelect = Boolean(sampleUser.options?.quick_select);
+  const quickSelect = Boolean(user.options?.quick_select);
   const currentQuestion = sampleQuiz?.questions?.[questionIdx];
   const answers = currentQuestion?.answers ?? [];
 
@@ -85,8 +86,6 @@ export const Quiz: React.FC<QuizCompProps> = ({ sampleQuiz, sampleUser, onBack }
     const completedCount = questionIdx;
     const totalCount = sampleQuiz?.questions?.length || 1;
 
-
-
     if (quizId) {
       try {
         await saveUncompletedQuizProgress(quizId, completedCount, totalCount, finalAnswers);
@@ -112,17 +111,15 @@ export const Quiz: React.FC<QuizCompProps> = ({ sampleQuiz, sampleUser, onBack }
     };
 
     try {
-
       const preRes = await fetch(`${API}/badges`, {
-          headers: {
+        headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
-        });
+      });
 
-        const preBadges: BadgeResponse[] = await preRes.json();
-
-        const previouslyEarnedIds = preBadges.filter(b => b.earned).map(b => b.id);
+      const preBadges: BadgeResponse[] = await preRes.json();
+      const previouslyEarnedIds = preBadges.filter(b => b.earned).map(b => b.id);
 
       const response = await fetch(`${API}/quizzes/${sampleQuiz.id}/submit`, {
         method: 'POST',
@@ -148,29 +145,25 @@ export const Quiz: React.FC<QuizCompProps> = ({ sampleQuiz, sampleUser, onBack }
 
       setTimeout(async () => {
         try {
-
-          
           const res = await fetch(`${API}/badges`, {
-          headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        });
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`,
+            },
+          });
 
-        if(!res.ok) throw new Error('Falied to fetch updated badges');
-        const updatedBadges: BadgeResponse[] = await res.json();
+          if (!res.ok) throw new Error('Failed to fetch updated badges');
+          const updatedBadges: BadgeResponse[] = await res.json();
 
-        const newlyEarnedBadges = updatedBadges.filter(b => b.earned && !previouslyEarnedIds.includes(b.id));
+          const newlyEarnedBadges = updatedBadges.filter(b => b.earned && !previouslyEarnedIds.includes(b.id));
 
-        if(newlyEarnedBadges.length > 0) {
-          setEarnedToasts(newlyEarnedBadges);
-        }
-        } catch(err) {
+          if (newlyEarnedBadges.length > 0) {
+            setEarnedToasts(newlyEarnedBadges);
+          }
+        } catch (err) {
           console.error('Error fetching updated badges: ', err);
         }
-
-
-      },5000)
+      }, 5000);
     } catch (error) {
       console.error('Error submitting quiz payload:', error);
     } finally {
@@ -239,8 +232,8 @@ export const Quiz: React.FC<QuizCompProps> = ({ sampleQuiz, sampleUser, onBack }
             fallbackScore={score}
             timeSpentSeconds={finalTimeSeconds}
             userSubmissions={userSubmissions}
-            initialUserXp={sampleUser.xp}
-            initialUserLevel={calculateLevel(sampleUser.xp)}
+            initialUserXp={user.xp}
+            initialUserLevel={calculateLevel(user.xp)}
             onRetry={handleRetryQuiz}
             earnedToasts={earnedToasts}
             setEarnedToasts={setEarnedToasts}
@@ -266,14 +259,14 @@ export const Quiz: React.FC<QuizCompProps> = ({ sampleQuiz, sampleUser, onBack }
         <Progressbars
           answered={questionIdx + 1}
           total={sampleQuiz.questions.length}
-          currentLevel={calculateLevel(sampleUser.xp)}
-          currentXp={sampleUser.xp}
-          nextLevelXp={calculateNextLevel(sampleUser.xp)}
+          currentLevel={calculateLevel(user.xp)}
+          currentXp={user.xp}
+          nextLevelXp={calculateNextLevel(user.xp)}
         />
 
         <QuestionTextbox content={currentQuestion?.text} />
 
-        <div className={styles.optionsList}>
+        <div className={styles.optionsList} style={{ marginBottom: (!isAnswering && selectedIdx !== -1 && !isChoiceCorrect(selectedIdx) && currentQuestion?.description) ? '1rem' : '2rem' }}>
           {answers.map((answer: any, i: number) => {
             const labelText = typeof answer === 'string' ? answer : (answer.answerText ?? answer.text ?? "");
             return (
@@ -289,6 +282,13 @@ export const Quiz: React.FC<QuizCompProps> = ({ sampleQuiz, sampleUser, onBack }
             );
           })}
         </div>
+
+        {/* --- MERGED EXPLANATION BOX FROM FIRST CODE --- */}
+        {!isAnswering && selectedIdx !== -1 && !isChoiceCorrect(selectedIdx) && currentQuestion?.description && (
+          <div className={styles.explanationBox} style={{ marginBottom: '1.5rem', padding: '12px 16px', backgroundColor: '#ffeef0', borderLeft: '4px solid #ff4d4f', borderRadius: '0 4px 4px 0', color: '#991b1b', fontSize: '0.95rem', lineHeight: '1.4' }}>
+            <strong>Explanation:</strong> {currentQuestion.description}
+          </div>
+        )}
 
         {quickSelect ? (
           !isAnswering && (

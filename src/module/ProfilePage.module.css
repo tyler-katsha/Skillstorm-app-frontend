@@ -37,7 +37,6 @@
   align-items: stretch;
 }
 
-/* ==================== LEFT PROFILE CARD ==================== */
 .leftContainer {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
@@ -127,13 +126,7 @@
   color: var(--text-main);
 }
 
-.divider {
-  border: none;
-  border-top: 1px solid var(--border-color);
-  margin: 0 0 16px 0;
-}
 
-/* Ranking inline metrics */
 .ranking,
 .points,
 .winRate {
@@ -151,7 +144,6 @@
   color: var(--border-color);
 }
 
-/* ==================== CHALLENGES & PVP ==================== */
 .quizRowsContainer {
   display: flex;
   flex-direction: column;
@@ -159,7 +151,6 @@
 }
 
 .bubbleChallenge {
-    /* Your existing styles... */
     background-color: #ffffff;
     border-radius: 12px;
     padding: 16px;
@@ -258,7 +249,6 @@
   box-shadow: 0 0 0 2px rgba(0, 229, 255, 0.2);
 }
 
-/* ==================== HISTORY SECTION ==================== */
 .historySection {
   margin-top: 1.5rem;
   padding: 1.5rem;
@@ -426,7 +416,7 @@
 
 .progressFill {
   height: 100%;
-  background: linear-gradient(90deg, var(--primary), var(--accent));
+  background: linear-gradient(90deg,#00e5ff, #b026ff);
   border-radius: 999px;
   box-shadow: 0 0 10px rgba(0, 229, 255, 0.4);
   transition: width 0.4s ease-out;
@@ -450,7 +440,6 @@
   text-align: center;
 }
 
-/* ==================== RESPONSIVE ==================== */
 @media (max-width: 768px) {
   .profileContainer {
     flex-direction: column;

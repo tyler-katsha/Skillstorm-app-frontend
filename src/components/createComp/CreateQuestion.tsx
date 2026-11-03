@@ -1,6 +1,7 @@
 import React from 'react';
-import { DEFAULT_QUESTION, type CreateQuestionProps, type QuestionData } from "../../types/question";
+import type { CreateQuestionProps, QuestionData } from "../../types/question";
 import styles from '../../module/CreateQuestion.module.css';
+import { DEFAULT_QUESTION } from '../../types/default';
 
 export const CreateQuestion: React.FC<CreateQuestionProps> = ({ questionNumber, initialData, onChange, onRemove }) => {
   const question: QuestionData = {
@@ -29,6 +30,10 @@ export const CreateQuestion: React.FC<CreateQuestionProps> = ({ questionNumber, 
   const handleCorrectOptionChange = (index: number) => {
     onChange({ ...question, correctOption: index });
   };
+
+  const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+    onChange({...question,description: e.target.value});
+  }
 
   return (
     <div className={styles.question}>
@@ -84,6 +89,17 @@ export const CreateQuestion: React.FC<CreateQuestionProps> = ({ questionNumber, 
             />
           </div>
         ))}
+      </div>
+
+      <div className={styles.field}>
+        <label>Explanation (Optional)</label>
+        <textarea
+          value={question.description || ''}
+          onChange={handleDescriptionChange}
+          placeholder="Add a description/reason for the answer for the question"
+          rows={3}
+          style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc', resize: 'vertical' }}
+        />
       </div>
     </div>
   );

@@ -6,3 +6,7 @@ export interface Attempt {
     quiz: QuizProps;
     time: string;
 }
+
+export interface AttemptRecordProps{
+    attempt:any;
+}

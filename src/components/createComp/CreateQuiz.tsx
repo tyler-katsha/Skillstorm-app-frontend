@@ -1,11 +1,12 @@
 import { useEffect, useState, type ChangeEvent } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { DEFAULT_QUESTION, type QuestionData } from '../../types/question';
-import type { UpdateQuizData } from '../../types/quiz';
+import type { QuestionData } from '../../types/question';
 import { API } from "../../utils/API";
 import { getToken } from '../../utils/Utils';
 import styles from '../../module/CreateQuiz.module.css';
 import { CreateQuestion } from './CreateQuestion';
+import { emptyArrayOfStrings } from '../../types/array';
+import { DEFAULT_QUESTION } from '../../types/default';
 
 export const CreateQuiz: React.FC = () => {
   const { id } = useParams();
@@ -20,7 +21,7 @@ export const CreateQuiz: React.FC = () => {
   const [difficulty, setDifficulty] = useState("EASY");
   const [topicInput, setTopicInput] = useState<string>("");
   const [questionCount, setQuestionCount] = useState(1);
-  const [questions, setQuestions] = useState<QuestionData[]>([{ ...DEFAULT_QUESTION }]);
+  const [questions, setQuestions] = useState<QuestionData[]>([{ ...DEFAULT_QUESTION}]);
 
   const fetchQuiz = async () => {
     const token = getToken();
@@ -44,13 +45,12 @@ export const CreateQuiz: React.FC = () => {
 
       const fetchedQuestions: QuestionData[] = data.questions && data.questions.length > 0
         ? data.questions.map((q: any) => {
-          // Check both isCorrect and correct flags
           const correctIndex = q.answers?.findIndex((a: any) => Boolean(a.isCorrect ?? a.correct));
           return {
             questionId: q.questionId,
             text: q.text || "",
             score: q.score || 10,
-            options: q.answers?.map((a: any) => a.answerText) || ["", "", "", ""],
+            options: q.answers?.map((a: any) => a.answerText) || emptyArrayOfStrings,
             correctOption: correctIndex !== -1 ? correctIndex : 0,
             answerIds: q.answers?.map((a: any) => a.answerId) || []
           };
@@ -73,10 +73,7 @@ export const CreateQuiz: React.FC = () => {
     }
   }, [id, isEditMode]);
 
-  const createEmptyQuestion = (): QuestionData => ({
-    ...DEFAULT_QUESTION,
-    options: ["", "", "", ""]
-  });
+  const createEmptyQuestion = (): QuestionData => (DEFAULT_QUESTION);
 
   const handleQuestionCountChange = (e: ChangeEvent<HTMLSelectElement>) => {
     const count = Number(e.target.value);
@@ -104,7 +101,7 @@ export const CreateQuiz: React.FC = () => {
     setQuestionCount(currentCount => Math.max(1, currentCount - 1));
   };
 
-  const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
 
@@ -113,41 +110,26 @@ export const CreateQuiz: React.FC = () => {
       .map(topic => topic.trim())
       .filter(Boolean);
 
-    // Map question options back to the answers array structure
-    const formattedQuestions = questions.map((q) => {
+    // Map to exactly match the CreateQuestionRequest DTO
+    const formattedQuestions = questions.map((q) => ({
+      ...(q.questionId && isEditMode ? { id: q.questionId } : {}), // Only include ID if updating
+      text: q.text,
+      options: q.options || ["", "", "", ""],
+      correctOption: q.correctOption
+    }));
 
-      const answersPayload = (q.options || []).map((optionText, index) => {
-        const isThisCorrect = index === q.correctOption;
-        return {
-          answerId: q.answerIds?.[index] ?? null,
-          answerText: optionText,
-          correct: isThisCorrect,
-          isCorrect: isThisCorrect
-        };
-      });
-
-      return {
-        questionId: q.questionId || null,
-        text: q.text,
-        score: q.score,
-        answers: answersPayload,
-        correctOption: q.correctOption
-      };
-    });
-
-    const quiz: UpdateQuizData = {
-      id: qId,
+    const quizPayload = {
+      ...(isEditMode && qId ? { id: qId } : {}),
       title: title,
       difficulty: difficulty,
-      topics: topics,
-      questions: formattedQuestions as any,
+      topicNames: topics,
+      questions: formattedQuestions,
     };
 
     const url = isEditMode ? `${API}/quizzes/${id}` : `${API}/quizzes`;
     const token = getToken();
     const method = isEditMode ? 'PUT' : 'POST';
 
-    console.log(quiz);
     try {
       const response = await fetch(url, {
         method: method,
@@ -155,11 +137,11 @@ export const CreateQuiz: React.FC = () => {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify(quiz)
+        body: JSON.stringify(quizPayload)
       });
 
       if (!response.ok) {
-        throw new Error("Failed to save the quiz.");
+        throw new Error(`Failed to save the quiz: Status ${response.status}`);
       }
 
       navigate('/quizzes');

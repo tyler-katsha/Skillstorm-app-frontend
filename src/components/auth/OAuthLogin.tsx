@@ -1,16 +1,12 @@
 import { useState } from 'react';
 import googleIcon from '../../assets/google-icon.png';
 import styles from '../../module/Auth.module.css';
-import type { ToastResponse } from '../../types/type';
 import { OAUTH_API } from '../../utils/API';
 import { removeAll } from '../../utils/Utils';
+import { DEFAULT_POPUP } from '../../types/default';
 
 export const OAuthLogin = () => {
-    const [_popupConfig, setPopupConfig] = useState({
-        isOpen: false,
-        type: 'success' as ToastResponse,
-        message: ''
-    });
+    const [_popupConfig, setPopupConfig] = useState(DEFAULT_POPUP);
 
     const handleOAuth2Login = (provider: string) => {
         removeAll();

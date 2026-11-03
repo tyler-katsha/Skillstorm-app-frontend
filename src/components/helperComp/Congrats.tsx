@@ -1,5 +1,5 @@
-import styles from '../module/Quiz.module.css';
-import type { CongratsProps } from '../types/quiz';
+import type { CongratsProps } from '../../types/quiz';
+import styles from '../../module/Quiz.module.css';
 
 export const Congrats: React.FC<CongratsProps> = ({ correct, total, xpGained }) => {
   const percentage = total > 0 ? Math.round((correct / total) * 100) : 0;

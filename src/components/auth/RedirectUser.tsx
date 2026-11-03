@@ -1,9 +1,10 @@
 import { Navigate } from "react-router-dom"
+import { DefaultSkeleton } from "../../skeletons/pages/DefaultSkeleton"
 
 export const RedirectUser = () => {
     return(
         <>
-        <div style={{ textAlign: "center", marginTop: "50px" }}>Redirecting to login...</div>
+        <DefaultSkeleton />
         <Navigate to='/login' replace/>
         </>
     )
