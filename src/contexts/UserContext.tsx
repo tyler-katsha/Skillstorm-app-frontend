@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 import type { UserContextType, UserProps } from '../types/user'; // Adjust import to your user type
-import { getToken, removeAll } from '../utils/Utils';
+import { getEmailTrue, getLoadingAndRegisterPage, getToken, removeAll, T } from '../utils/Utils';
 import { API } from '../utils/API';
 import { HomeSkeleton } from '../skeletons/pages/HomeSkeleton';
 
@@ -30,7 +30,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, [user]);
 
   const fetchUser = async () => {
-    if (localStorage.getItem('login-register-pages') === 'true' || localStorage.getItem('email') === 'true') {
+    if (getLoadingAndRegisterPage() === T || getEmailTrue() === T) {
       setIsLoading(false);
       return;
     }

@@ -14,7 +14,6 @@ export const UncompletedQuiz:React.FC<UncompletedQuizProps> = ({pct,quiz, qId}) 
             }
         });
     };
-    console.log(pct);
     return (
         <div className={styles.bubbleChallenge}>
             <div className={styles.challengeRow}>

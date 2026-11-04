@@ -1,7 +1,7 @@
 import { Profile } from '../components/image/ProfileImageHolder';
 import { useUser } from '../contexts/UserContext';
 import styles from '../module/ProfilePage.module.css';
-import { formatDuration, getYear } from '../utils/Utils';
+import { formatDuration, getYear, isLocal } from '../utils/Utils';
 import { fetchUserTrackerHistory, getSavedQuizPercentage } from '../utils/services/trackerService'; // Removed fetchUserTrackerHistory
 import { RedirectUser } from '../components/auth/RedirectUser';
 import { ErrorPage } from './ErrorPage';
@@ -11,14 +11,25 @@ import type { UserTrackerResponse, ProfileTrackerAPIResponse } from '../types/tr
 import { UncompletedQuiz } from '../components/quiz/UncompletedQuizz';
 import { Divider } from '../components/common/Divider';
 import { AttemptRecord } from '../components/attempt/AttemptRecord';
+import { useNavigate } from 'react-router-dom';
+import { ProfileSkeleton } from '../skeletons/pages/ProfileSkeleton';
 
 export const ProfilePage = () => {
+
+    const navigate = useNavigate();
     const { user } = useUser();
 
     const [tracker, setTracker] = useState<UserTrackerResponse | null>(null);
     const [rank, setRank] = useState<number | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [errorType, setErrorType] = useState<ErrorType | null>(null);
+
+    
+    if(!user) return <RedirectUser />
+    
+    const handleForgotPassword = () => {
+        navigate(`/reset-password?email=${user.email}`)
+    }
 
     const fetchProfileData = useCallback(async () => {
         setIsLoading(true);
@@ -28,6 +39,8 @@ export const ProfilePage = () => {
     
             setTracker(data.userTrackerResponse); 
             setRank(data.rank);
+
+            console.log(data);
 
         } catch (err) {
             setErrorType("LOAD_DATA_FAILED");
@@ -40,19 +53,24 @@ export const ProfilePage = () => {
         fetchProfileData();
     }, [fetchProfileData]);
     
-
-    if(!tracker) {
-        setErrorType('LOAD_DATA_FAILED');
-        return <RedirectUser />
-    }
     if (!user) {
-        setErrorType('SESSION_EXPIRED');
         return <RedirectUser />;
+    }
+
+    if(isLoading) {
+        return <ProfileSkeleton/>
     }
 
     if (errorType) {
         return <ErrorPage {...ERROR_MESSAGES[errorType]} />
     }
+
+    if(!tracker) {
+        return <RedirectUser />
+    }
+
+    console.log(tracker);
+    console.log(rank)
 
     const quizzesTaken = tracker?.quizzesTaken ?? 0;
     const quizzesWon = tracker?.quizzesWon ?? 0;
@@ -159,6 +177,24 @@ export const ProfilePage = () => {
                                 <p className={styles.emptyText}>No uncompleted quizzes</p>
                             )}
                         </div>
+
+                        {isLocal(user.authProvider) && (
+                            <>
+                                <Divider/>
+
+                                <div className={styles.profileSection}>
+                                    <h3 className={styles.sectionTitle}>Security</h3>
+                                    <div className={styles.settingRow}>
+                                        <div className={styles.settingMeta}>
+                                            <h4>Account Password</h4>
+                                            <p>Update your password regularly to maintain a secure account environment.</p>
+                                        </div>
+                                        <button className={styles.passwordBtn} onClick={handleForgotPassword}>
+                                            Change Password
+                                        </button>
+                                    </div>
+                                </div>
+                            </>)}
                     </div>
                 </div>
             </div>

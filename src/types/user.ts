@@ -1,4 +1,4 @@
-import type { AppRole } from "./type";
+import type { AppRole, AuthProvider } from "./type";
 import type { OptionStateT } from "../utils/Utils";
 import type { Attempt } from "./attempt";
 import type { Dispatch, SetStateAction } from "react";
@@ -7,10 +7,12 @@ export interface UserProps {
     username: string;
     email: string;
     xp: number;
+    level: number;
     roles: AppRole[];
     options: UserOptions;
     attempts?: Attempt[];
     createdAt: string;
+    authProvider:AuthProvider;
 }
 
 export interface ProfileCompProps {
@@ -47,4 +49,5 @@ export interface UserProfile {
     level: number;
     xp: number;
     roles: string[];
+    authProvider: string;
 }

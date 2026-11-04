@@ -1,5 +1,5 @@
 import { useEffect, useState, type ChangeEvent } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { OAuthLogin } from '../components/auth/OAuthLogin';
 import { PasswordRequirements } from '../components/auth/PasswordRequirements';
 import { CustomPopup } from '../modals/CustomPopup';
@@ -12,6 +12,7 @@ import { DEFAULT_POPUP, DEFAULT_REGISTER } from '../types/default';
 
 export const Register = () => {
 
+    const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -185,6 +186,7 @@ export const Register = () => {
                 type: 'success',
                 message: 'Registration Successful'
             });
+            navigate('/login')
 
         } catch (error) {
             setPopupConfig({

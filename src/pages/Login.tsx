@@ -5,7 +5,7 @@ import { useUser } from '../contexts/UserContext';
 import { CustomPopup } from '../modals/CustomPopup';
 import styles from '../module/Auth.module.css';
 import { API } from '../utils/API';
-import { destroyToken, removeAll, setUpLoginAndRegisterPage } from '../utils/Utils';
+import { destroyToken, removeAll, setJwt, setUpLoginAndRegisterPage } from '../utils/Utils';
 import type { LoginPayload } from '../types/auth';
 import { ERROR_MESSAGES, type ErrorType } from '../types/error';
 import { ErrorPage } from './ErrorPage';
@@ -78,7 +78,7 @@ export const Login = () => {
             }
 
             const token = await response.text();
-            localStorage.setItem('jwt-token', token);
+            setJwt(token);
 
             await fetchUser();
 
@@ -88,7 +88,7 @@ export const Login = () => {
                 message: 'Login Successful!'
             });
 
-            navigate('/login')
+            navigate('/')
 
         } catch (error) {
             setPopupConfig({

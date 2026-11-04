@@ -1,5 +1,13 @@
 import type { AppRole, AuthProvider } from "../types/type";
 
+export const JWT = 'jwt-token';
+export const LOGIN_REGISTER = 'login-register-pages';
+export const T = 'true';
+export const MAIL = 'email';
+export const IS_GUEST = 'isGuest';
+
+
+
 export function splitFullName(name: string) {
     const nameParts = name.split(' ');
     const fn = nameParts[0];
@@ -92,8 +100,11 @@ export function removeAll() {
     destroyEmailTrue();
 }
 
+export function setJwt(data: any): void {
+    localStorage.setItem(JWT, data);
+}
 export function getToken(): string | null {
-    const token = localStorage.getItem('jwt-token');
+    const token = localStorage.getItem(JWT);
     try {
 
         if (token === null) {
@@ -112,43 +123,43 @@ export function isLocal(authProvider: AuthProvider): boolean {
 
 export function destroyToken(): void {
     if (getToken() !== null) {
-        localStorage.removeItem('jwt-token');
+        localStorage.removeItem(JWT);
     }
 }
 export function destroyLoadingAndRegisterPageTrue(): void {
     if(getLoadingAndRegisterPage() !== undefined) {
-        localStorage.removeItem('login-register-pages');
+        localStorage.removeItem(LOGIN_REGISTER);
     }
 }
 
 export function destroyEmailTrue(): void {
     if(getEmailTrue() !== undefined) {
-        localStorage.removeItem('email');
+        localStorage.removeItem(MAIL);
     }
 }
 
 export function getLoadingAndRegisterPage(): string | undefined | null { 
-    const loadingAndRegister = localStorage.getItem('login-register-pages');
+    const loadingAndRegister = localStorage.getItem(LOGIN_REGISTER);
     if(loadingAndRegister === undefined || loadingAndRegister === null) return undefined;
     return loadingAndRegister;
 }
 
 export function setUpLoginAndRegisterPage(): void {
-    localStorage.setItem('login-register-pages', 'true')
+    localStorage.setItem(LOGIN_REGISTER, T)
 }
 
 export function setupEmailTrue(): void {
-    localStorage.setItem('email', 'true');
+    localStorage.setItem(MAIL, T);
 }
 
 export function getIsGuest(): string | null{
-    const isGuest = localStorage.getItem('isGuest');
+    const isGuest = localStorage.getItem(IS_GUEST);
     if(isGuest === null) return null;
     return isGuest;
 }
 
 export function getEmailTrue(): string | null | undefined {
-    const emailTrue = localStorage.getItem('email');
+    const emailTrue = localStorage.getItem(MAIL);
     if(emailTrue === undefined || emailTrue === null) return undefined;
     return emailTrue;
 }
@@ -210,7 +221,7 @@ export type OptionStateT = (typeof OptionState)[keyof typeof OptionState];
 export const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export function calculateNextLevel(xp: number): number {
-    if (xp < 0) {
+    if (xp <= 0) {
         return 0;
     }
 
@@ -218,7 +229,7 @@ export function calculateNextLevel(xp: number): number {
     return currentLevel * 50;
 }
 export function calculateLevel(xp: number): number {
-    if (xp < 0) {
+    if (xp <= 0) {
         return 0;
     }
 
