@@ -88,7 +88,7 @@ export const Login = () => {
                 message: 'Login Successful!'
             });
 
-            navigate('/')
+            navigate('/login')
 
         } catch (error) {
             setPopupConfig({
