@@ -1,7 +1,7 @@
 import { Profile } from '../components/image/ProfileImageHolder';
 import { useUser } from '../contexts/UserContext';
 import styles from '../module/ProfilePage.module.css';
-import { formatDuration, getYear, isLocal } from '../utils/Utils';
+import { formatDuration, getToken, getYear, isLocal } from '../utils/Utils';
 import { fetchUserTrackerHistory, getSavedQuizPercentage } from '../utils/services/trackerService'; // Removed fetchUserTrackerHistory
 import { RedirectUser } from '../components/auth/RedirectUser';
 import { ErrorPage } from './ErrorPage';
@@ -40,8 +40,6 @@ export const ProfilePage = () => {
             setTracker(data.userTrackerResponse); 
             setRank(data.rank);
 
-            console.log(data);
-
         } catch (err) {
             setErrorType("LOAD_DATA_FAILED");
         } finally {
@@ -69,8 +67,7 @@ export const ProfilePage = () => {
         return <RedirectUser />
     }
 
-    console.log(tracker);
-    console.log(rank)
+    console.log(getToken());
 
     const quizzesTaken = tracker?.quizzesTaken ?? 0;
     const quizzesWon = tracker?.quizzesWon ?? 0;

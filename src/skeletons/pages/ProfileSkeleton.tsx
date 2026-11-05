@@ -11,6 +11,7 @@ export const ProfileSkeleton = () => {
     const skeletonAttemptProfile = Array.from({length: 5});
     const skeletonUncompletedProfile = Array.from({length: 10});
     const skeletonMetricItems = Array.from({length: 4});
+    
     return (
         <div className={styles.pageWrapper}>
             <Skeleton width='15%' height='30px'/>

@@ -13,6 +13,7 @@ import { QuestionOption } from '../question/QuestionOption';
 import { QuestionTextbox } from '../question/QuestionTextbox';
 import { QuizResults } from './QuizResults';
 import type { BadgeResponse } from '../../types/badge';
+import { QuizResultSkeleton } from '../../skeletons/pages/QuizResultSkeleton';
 
 export const Quiz: React.FC<QuizComponentProps> = ({ sampleQuiz, onBack }) => {
   const { updateUserStats, user } = useUser();
@@ -215,15 +216,15 @@ export const Quiz: React.FC<QuizComponentProps> = ({ sampleQuiz, onBack }) => {
     return <div className={styles.pageRoot}>Loading quiz...</div>;
   }
 
+  if(isSubmitting) {
+    return <QuizResultSkeleton/>
+  }
   if (questionIdx >= sampleQuiz.questions.length || submissionResult) {
     return (
       <div className={styles.pageRoot}>
         <div className={styles.quizPageBg} aria-hidden="true" />
         {isSubmitting ? (
-          <div className={styles.quizContainer} style={{ textAlign: 'center', padding: '4rem 1rem' }}>
-            <h2>Calculating your results...</h2>
-            <p>Updating your XP and saving your quiz history.</p>
-          </div>
+          <QuizResultSkeleton />
         ) : (
           <QuizResults
             quiz={sampleQuiz}
