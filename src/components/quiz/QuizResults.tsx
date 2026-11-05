@@ -4,7 +4,7 @@ import type { QuizResultsProps } from '../../types/quiz';
 import { calculateNextLevel, formatTimeSpent, getPerformanceTier } from '../../utils/Utils';
 import { BadgeToast } from '../../modals/BadgeToast';
 
-export const QuizResults: React.FC<QuizResultsProps> = ({quiz, result, fallbackCorrect, fallbackScore, timeSpentSeconds, userSubmissions, initialUserXp, initialUserLevel, onRetry, onBack, earnedToasts, setEarnedToasts }) => {
+export const QuizResults: React.FC<QuizResultsProps> = ({ quiz, result, fallbackCorrect, fallbackScore, timeSpentSeconds, userSubmissions, initialUserXp, initialUserLevel, onRetry, onBack, earnedToasts, setEarnedToasts }) => {
   const totalQuestions = result?.totalQuestions ?? quiz.questions?.length ?? 0;
   const correctCount = result?.correctCount ?? fallbackCorrect ?? 0;
   const xpEarned = result?.scoreEarned ?? fallbackScore;
@@ -17,7 +17,7 @@ export const QuizResults: React.FC<QuizResultsProps> = ({quiz, result, fallbackC
   const levelProgress = nextLevelXp > 0 ? Math.min(100, Math.round((currentXp / nextLevelXp) * 100)) : 0;
 
 
-  const tier = getPerformanceTier(styles,accuracy);
+  const tier = getPerformanceTier(styles, accuracy);
 
   return (
     <div className={styles.resultsWrapper}>
@@ -91,10 +91,7 @@ export const QuizResults: React.FC<QuizResultsProps> = ({quiz, result, fallbackC
             const isCorrect = Boolean((selectedAnswer as any)?.isCorrect ?? (selectedAnswer as any)?.correct);
 
             return (
-              <div
-                key={q.questionId ?? index}
-                className={`${styles.questionCard} ${isCorrect ? styles.cardCorrect : styles.cardIncorrect}`}
-              >
+              <div key={q.questionId ?? index} className={`${styles.questionCard} ${isCorrect ? styles.cardCorrect : styles.cardIncorrect}`}>
                 <div className={styles.questionCardHeader}>
                   <span className={styles.questionNum}>Question {index + 1}</span>
                   <span className={isCorrect ? styles.statusPass : styles.statusFail}>
@@ -120,18 +117,18 @@ export const QuizResults: React.FC<QuizResultsProps> = ({quiz, result, fallbackC
                   )}
 
                   {q.description && (
-        <div className={styles.descriptionSection}>
-          <p className={styles.descriptionText}>{q.description}</p>
-        </div>
-      )}
+                    <div className={styles.descriptionSection}>
+                      <p className={styles.descriptionText}>{q.description}</p>
+                    </div>
+                  )}
                 </div>
               </div>
             );
           })}
         </div>
-          {earnedToasts.map((badge) => (
-            <BadgeToast key={badge.id} badge={badge} onClose={() => setEarnedToasts(prev => prev.filter(b => b.id !== badge.id))}/>
-          ))}
+        {earnedToasts.map((badge) => (
+          <BadgeToast key={badge.id} badge={badge} onClose={() => setEarnedToasts(prev => prev.filter(b => b.id !== badge.id))} />
+        ))}
       </div>
     </div>
   );

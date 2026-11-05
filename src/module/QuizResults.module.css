@@ -325,8 +325,8 @@
 }
 
 .cardIncorrect {
-  border-color: #fca5a5;
-  background-color: #fef2f2;
+    border-color: #dc2626;
+    background-color: #7f1d1d;
 }
 
 .descriptionSection {
