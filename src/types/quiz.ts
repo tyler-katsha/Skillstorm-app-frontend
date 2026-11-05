@@ -91,6 +91,7 @@ export interface QuizResultsProps {
   initialUserXp: number;
   initialUserLevel: number;
   onRetry: () => void;
+  onBack: () => void;
   earnedToasts: BadgeResponse[];
   setEarnedToasts: Dispatch<SetStateAction<BadgeResponse[]>>
 }

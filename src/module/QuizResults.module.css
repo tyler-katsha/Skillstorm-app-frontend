@@ -195,20 +195,33 @@
   background: #2563eb;
 }
 
-.deleteButton {
-  background: transparent;
-  color: #ef4444;
-  border: 1px solid rgba(239, 68, 68, 0.5);
-  padding: 0.75rem 1.5rem;
+.backButton {
+  background: #ffffff;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+  padding: 0.85rem 1.75rem;
   border-radius: 8px;
   font-weight: 600;
   font-size: 0.95rem;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
 }
 
-.deleteButton:hover {
-  background: rgba(239, 68, 68, 0.15);
+.backButton:hover {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+  color: #0f172a;
+  transform: translateY(-2px);
+}
+
+.backButton:active {
+  transform: translateY(0);
+}
+
+.retryButton:focus-visible,
+.backButton:focus-visible {
+  outline: 3px solid rgba(59, 130, 246, 0.35);
+  outline-offset: 3px;
 }
 
 .breakdownSection {
@@ -304,7 +317,6 @@
   font-weight: 600;
 }
 
-/* Existing styles (for context) */
 .questionCard {
   border-radius: 8px;
   padding: 16px;
@@ -349,5 +361,17 @@
   to {
     opacity: 1;
     transform: scale(1);
+  }
+}
+
+@media (max-width: 480px) {
+  .actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .retryButton,
+  .backButton {
+    width: 100%;
   }
 }

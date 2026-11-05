@@ -82,6 +82,9 @@ export const Quiz: React.FC<QuizComponentProps> = ({ sampleQuiz, onBack }) => {
     setIsAnswering(false);
   };
 
+  const handleBackQuiz = () => {
+    window.location.reload();
+  }
   const handleBackToQuizzes = async (finalAnswers: UserAnswerSubmission[]) => {
     const quizId = Number(sampleQuiz?.id);
     const completedCount = questionIdx;
@@ -236,6 +239,7 @@ export const Quiz: React.FC<QuizComponentProps> = ({ sampleQuiz, onBack }) => {
             initialUserXp={user.xp}
             initialUserLevel={calculateLevel(user.xp)}
             onRetry={handleRetryQuiz}
+            onBack={handleBackQuiz}
             earnedToasts={earnedToasts}
             setEarnedToasts={setEarnedToasts}
           />
