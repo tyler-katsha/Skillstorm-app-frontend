@@ -17,6 +17,9 @@ export interface ModalProps {
     footer?: React.ReactNode;
 }
 
+export interface ToastContextType {
+  showToast: (message:string, type:ToastResponse) => void;
+}
 export interface ToastProps {
   message: string;
   type: ToastResponse;

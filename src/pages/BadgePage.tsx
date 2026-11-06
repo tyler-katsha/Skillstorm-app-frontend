@@ -11,9 +11,11 @@ import { useUser } from "../contexts/UserContext"
 import { BadgeSkeleton } from "../skeletons/pages/BadgeSkeleton"
 import { ERROR_MESSAGES, type ErrorType } from "../types/error"
 import { ErrorPage } from "./ErrorPage"
+import { useToast } from "../contexts/ToastContext"
 
 export const BadgePage: React.FC = () => {
     const { user } = useUser();
+    const { showToast } = useToast();
 
     if (!user) return null;
 
@@ -29,7 +31,7 @@ export const BadgePage: React.FC = () => {
 
     const fetchBadges = useCallback(async (isBackgroundRefresh = false) => {
         const token = getToken();
-        console.log(token)
+
         if (!isBackgroundRefresh) setIsLoadingBadges(true);
         else setIsRefreshing(true);
 
@@ -40,7 +42,10 @@ export const BadgePage: React.FC = () => {
                     'Authorization': `Bearer ${token}`
                 }
             })
-            if (!response.ok) throw new Error('Failed to fetch badges')
+            if (!response.ok) {
+                showToast('Failed to fetch badges','error');
+                return;
+            }
 
             const data = await response.json()
             setBadges(data)

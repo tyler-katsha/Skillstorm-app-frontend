@@ -18,6 +18,8 @@ import { QuizPage } from './pages/Quizzes';
 import { Register } from './pages/Register';
 import { ResetEmail } from './pages/ResetEmail';
 import { ResetPassword } from './pages/ResetPassword';
+import { DefaultSkeleton } from './skeletons/pages/DefaultSkeleton';
+import { ToastProvider } from './contexts/ToastContext';
 
 function App() {
 
@@ -27,7 +29,7 @@ function App() {
   }, []);
 
   if (isLoading) {
-    return <div>Loading your session...</div>;
+    return <DefaultSkeleton />;
   }
 
   const router = createBrowserRouter([
@@ -125,7 +127,9 @@ function App() {
   return (
     <UserProvider>
       <QuizProvider>
+        <ToastProvider >
           <RouterProvider router={router} />
+        </ToastProvider>
       </QuizProvider>
     </UserProvider>
   )

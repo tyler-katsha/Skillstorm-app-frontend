@@ -3,8 +3,11 @@ import styles from '../module/CreateBadge.module.css';
 import { getToken } from '../utils/Utils';
 import { API } from '../utils/API';
 import type { BadgeDetailModalProps } from '../types/badge';
+import { useToast } from '../contexts/ToastContext';
 
 export const BadgeDetailModal: React.FC<BadgeDetailModalProps> = ({ badge, isAdminOrEmployee, onClose, onRefresh }) => {
+
+    const {showToast} = useToast();
     const [formData, setFormData] = useState({
         title: badge.title,
         description: badge.description,
@@ -71,13 +74,14 @@ export const BadgeDetailModal: React.FC<BadgeDetailModalProps> = ({ badge, isAdm
             });
 
             if(!response.ok) {
-                throw new Error('Unable to delete badge');
+                showToast('Unable to delete badge','success');
+                return;
             }
 
             onRefresh(); 
             onClose(); 
         } catch(error) {
-            console.error('Network error occurred');
+            showToast('Network error occurred','error');
         } finally {
             setIsDeleting(false);
         }

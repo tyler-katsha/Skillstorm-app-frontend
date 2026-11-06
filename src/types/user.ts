@@ -51,3 +51,8 @@ export interface UserProfile {
     roles: string[];
     authProvider: string;
 }
+
+export interface ProfileDetailsModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+}

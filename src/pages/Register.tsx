@@ -23,10 +23,6 @@ export const Register = () => {
     const [data, setData] = useState<RegisterPayload>(DEFAULT_REGISTER);
     const [popupConfig, setPopupConfig] = useState(DEFAULT_POPUP);
     
-    
-
-    
-
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setData((prev) => ({ ...prev, [name]: value }));

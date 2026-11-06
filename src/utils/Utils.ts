@@ -98,10 +98,11 @@ export function validAdmin(roles: AppRole[]): boolean {
 export function removeAll() {
     destroyLoadingAndRegisterPageTrue();
     destroyEmailTrue();
+    destroyIsGuest();
 }
 
-export function isAdminOrEmployee(roles:AppRole[]): boolean {
-    if(!roles) return false;
+export function isAdminOrEmployee(roles: AppRole[]): boolean {
+    if (!roles) return false;
     return roles.includes('ADMIN') || roles.includes('EMPLOYEE');
 }
 export function setJwt(data: any): void {
@@ -130,21 +131,27 @@ export function destroyToken(): void {
         localStorage.removeItem(JWT);
     }
 }
+
+export function destroyIsGuest(): void {
+    if(getIsGuest() !== null) {
+        localStorage.removeItem(IS_GUEST);
+    }
+}
 export function destroyLoadingAndRegisterPageTrue(): void {
-    if(getLoadingAndRegisterPage() !== undefined) {
+    if (getLoadingAndRegisterPage() !== undefined) {
         localStorage.removeItem(LOGIN_REGISTER);
     }
 }
 
 export function destroyEmailTrue(): void {
-    if(getEmailTrue() !== undefined) {
+    if (getEmailTrue() !== undefined) {
         localStorage.removeItem(MAIL);
     }
 }
 
-export function getLoadingAndRegisterPage(): string | undefined | null { 
+export function getLoadingAndRegisterPage(): string | undefined | null {
     const loadingAndRegister = localStorage.getItem(LOGIN_REGISTER);
-    if(loadingAndRegister === undefined || loadingAndRegister === null) return undefined;
+    if (loadingAndRegister === undefined || loadingAndRegister === null) return undefined;
     return loadingAndRegister;
 }
 
@@ -155,16 +162,18 @@ export function setUpLoginAndRegisterPage(): void {
 export function setupEmailTrue(): void {
     localStorage.setItem(MAIL, T);
 }
-
-export function getIsGuest(): string | null{
+export function setupIsGuest(): void {
+    localStorage.setItem(IS_GUEST, T);
+}
+export function getIsGuest(): string | null {
     const isGuest = localStorage.getItem(IS_GUEST);
-    if(isGuest === null) return null;
+    if (isGuest === null) return null;
     return isGuest;
 }
 
 export function getEmailTrue(): string | null | undefined {
     const emailTrue = localStorage.getItem(MAIL);
-    if(emailTrue === undefined || emailTrue === null) return undefined;
+    if (emailTrue === undefined || emailTrue === null) return undefined;
     return emailTrue;
 }
 /** 

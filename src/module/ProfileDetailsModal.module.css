@@ -1,0 +1,248 @@
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(15, 23, 42, 0.6); 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(4px);
+}
+
+.modalContent {
+    background-color: var(--bg-card);
+    border-radius: var(--radius-md);
+    padding: 32px; 
+    width: 90%;
+    max-width: 550px; 
+    box-shadow: var(--shadow-float);
+    animation: slideUp var(--transition);
+}
+
+.modalHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px; 
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 16px; 
+}
+
+.modalHeader h2 {
+    color: var(--text-main);
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.closeButton {
+    background: transparent;
+    border: none;
+    font-size: 1.75rem; 
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: color var(--transition);
+    line-height: 1;
+    padding: 6px; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.closeButton:hover {
+    color: var(--danger);
+}
+
+.detailsList {
+    display: flex;
+    flex-direction: column;
+    gap: 16px; 
+}
+
+.detailItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px; 
+    background-color: var(--bg-main);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-color);
+    transition: background-color var(--transition);
+}
+
+.detailItem:hover {
+    background-color: var(--surface-hover);
+}
+
+.detailLabel {
+    color: var(--text-muted);
+    font-weight: 500;
+    font-size: 1rem;
+}
+
+.detailValue {
+    color: var(--text-main);
+    font-weight: 600;
+    font-size: 1.05rem; 
+}
+
+.rolesContainer {
+    display: flex;
+    gap: 8px;
+}
+
+.roleBadge {
+    background-color: var(--primary-blue);
+    color: #ffffff;
+    padding: 4px 10px; 
+    border-radius: 6px; 
+    font-size: 0.85rem; 
+    text-transform: capitalize;
+    font-weight: 600;
+    letter-spacing: 0.3px; 
+}
+
+.valueActionGroup {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.editBtn {
+    background: transparent;
+    border: none;
+    color: var(--primary);
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 4px;
+    transition: background-color var(--transition);
+}
+
+.editBtn:hover {
+    background-color: var(--surface-hover);
+    text-decoration: underline;
+}
+
+.editActionGroup {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.usernameInput {
+    padding: 6px 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 1rem;
+    color: var(--text-main);
+    background-color: var(--bg-card);
+    outline: none;
+    width: 160px; 
+    transition: border-color var(--transition);
+}
+
+.usernameInput:focus {
+    border-color: var(--primary);
+}
+
+.saveBtn {
+    background-color: var(--primary);
+    color: #ffffff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color var(--transition);
+}
+
+.saveBtn:hover:not(:disabled) {
+    background-color: var(--primary-hover);
+}
+
+.saveBtn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.cancelBtn {
+    background-color: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--border-color);
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition);
+}
+
+.cancelBtn:hover:not(:disabled) {
+    background-color: var(--surface-hover);
+    color: var(--text-main);
+}
+
+.cancelBtn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px); 
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 500px) {
+    .modalContent {
+        padding: 20px; 
+    }
+
+    .modalHeader h2 {
+        font-size: 1.25rem;
+    }
+
+    .detailItem {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 16px;
+    }
+
+    .valueActionGroup {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .editActionGroup {
+        width: 100%;
+        flex-wrap: wrap; 
+        gap: 12px;
+    }
+
+    .usernameInput {
+        width: 100%;
+    }
+
+    .saveBtn, 
+    .cancelBtn {
+        flex: 1; 
+        text-align: center;
+        padding: 10px;
+    }
+
+    .rolesContainer {
+        flex-wrap: wrap;
+    }
+}

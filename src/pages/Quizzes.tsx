@@ -8,7 +8,7 @@ import { useUser } from "../contexts/UserContext";
 import styles from "../module/QuizPage.module.css";
 import type { QuizProps } from "../types/quiz";
 import { API } from "../utils/API";
-import { formatTopicNames, getToken, isPermitted } from "../utils/Utils";
+import { formatTopicNames, getToken, isAdminOrEmployee, isPermitted } from "../utils/Utils";
 import { ERROR_MESSAGES, type ErrorType } from "../types/error";
 import { ErrorPage } from "./ErrorPage";
 
@@ -101,9 +101,9 @@ export const QuizPage = () => {
                     <p>Explore quizzes, test your knowledge, and challenge yourself.</p>
                 </div>
 
-                <button className={styles.createButton} onClick={() => setCreatingQuiz(true)}>
+                {isAdminOrEmployee(user.roles) && (<button className={styles.createButton} onClick={() => setCreatingQuiz(true)}>
                     + Create Quiz
-                </button>
+                </button>)}
             </div>
 
             <section className={styles.filters}>

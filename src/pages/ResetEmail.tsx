@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { CustomPopup } from '../modals/CustomPopup';
 import styles from '../module/Auth.module.css';
 import { API } from '../utils/API';
-import { setupEmailTrue } from '../utils/Utils';
+import { setupEmailTrue, setupIsGuest } from '../utils/Utils';
 import { DEFAULT_POPUP } from '../types/default';
 
 export const ResetEmail = () => {
@@ -20,14 +20,14 @@ export const ResetEmail = () => {
     const handleFormEvent = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
         setupEmailTrue()
+        setupIsGuest();
         setLoading(true);
 
 
         try {
-            const response = await fetch(`${API}/auth/forgot-password`, {
+            const response = await fetch(`${API}/auth/email?email=${email}`, {
                 method: "POST",
                 headers: { 'content-type': 'application/json' },
-                body: JSON.stringify({ email: email })
             })
 
             if (!response.ok) {

@@ -97,7 +97,6 @@
   word-break: break-all;
 }
 
-/* ==================== RIGHT PANEL ==================== */
 .rightContainer {
   flex: 1;
   display: flex;
@@ -159,7 +158,6 @@
     cursor: default;
 }
 
-/* Hover effect: lifts the card slightly and increases shadow */
 .bubbleChallenge:hover {
     transform: translateY(-4px);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
@@ -505,6 +503,112 @@
   background: var(--primary);
   color: var(--surface);
   box-shadow: var(--shadow-sm);
+}
+
+.profileSection {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+
+.sectionTitle {
+  font-size: 1.25rem;
+  color: var(--text-main);
+  margin: 0 0 8px 0;
+  font-weight: 600;
+}
+
+/* Individual Setting Row Container */
+.settingRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background-color: var(--bg-main);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  gap: 24px;
+  transition: background-color var(--transition), box-shadow var(--transition);
+}
+
+.settingRow:hover {
+  background-color: var(--surface-hover);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Text Container inside Setting Row */
+.settingMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1; /* Ensures the text takes up available space without squishing the button */
+}
+
+.settingMeta h4 {
+  margin: 0;
+  color: var(--text-main);
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.settingMeta p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.passwordBtn {
+  background-color: transparent;
+  color: var(--primary);
+  border: 2px solid var(--primary);
+  padding: 10px 20px;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all var(--transition);
+}
+
+.passwordBtn:hover {
+  background-color: var(--primary);
+  color: #ffffff;
+}
+
+.deleteBtn {
+  background-color: transparent;
+  color: var(--danger);
+  border: 2px solid var(--danger);
+  padding: 10px 20px;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all var(--transition);
+}
+
+.deleteBtn:hover {
+  background-color: var(--danger);
+  color: #ffffff;
+}
+
+@media (max-width: 600px) {
+  .settingRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 16px;
+  }
+  
+  .passwordBtn, 
+  .deleteBtn {
+    width: 100%;
+    text-align: center;
+  }
 }
 
 @media (max-width: 768px) {

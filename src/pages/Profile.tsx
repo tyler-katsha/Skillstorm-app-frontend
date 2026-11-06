@@ -13,31 +13,60 @@ import { Divider } from '../components/common/Divider';
 import { AttemptRecord } from '../components/attempt/AttemptRecord';
 import { useNavigate } from 'react-router-dom';
 import { ProfileSkeleton } from '../skeletons/pages/ProfileSkeleton';
-
+import { API } from '../utils/API';
+import { ProfileDetailsModal } from '../modals/ProfileDetailsModal';
+import { useToast } from '../contexts/ToastContext';
 export const ProfilePage = () => {
 
     const navigate = useNavigate();
     const { user } = useUser();
+    const { showToast } = useToast();
 
     const [tracker, setTracker] = useState<UserTrackerResponse | null>(null);
     const [rank, setRank] = useState<number | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [isDetailsModalOpen,setIsDetailsModalOpen] = useState(false);
     const [errorType, setErrorType] = useState<ErrorType | null>(null);
 
-    
-    if(!user) return <RedirectUser />
-    
+
+    if (!user) return <RedirectUser />
+
     const handleForgotPassword = () => {
         navigate(`/reset-password?email=${user.email}`)
     }
 
+    const handleDeleteAccount = async () => {
+
+        setIsLoading(true);
+        const token = getToken();
+        try {
+            const response = await fetch(`${API}/users`,{
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                }
+            })
+
+            if(!response.ok) {
+                showToast('Unable to delete account','error');
+                return;
+            }
+
+            
+        } catch(error) {
+            showToast('Network error occurred','error');
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
     const fetchProfileData = useCallback(async () => {
         setIsLoading(true);
-        
+
         try {
             const data: ProfileTrackerAPIResponse = await fetchUserTrackerHistory();
-    
-            setTracker(data.userTrackerResponse); 
+
+            setTracker(data.userTrackerResponse);
             setRank(data.rank);
 
         } catch (err) {
@@ -50,22 +79,12 @@ export const ProfilePage = () => {
     useEffect(() => {
         fetchProfileData();
     }, [fetchProfileData]);
+
+    if (!user) return <RedirectUser />;
+    if (isLoading) return <ProfileSkeleton />
+    if (errorType) return <ErrorPage {...ERROR_MESSAGES[errorType]} />
+    if (!tracker) return <RedirectUser />
     
-    if (!user) {
-        return <RedirectUser />;
-    }
-
-    if(isLoading) {
-        return <ProfileSkeleton/>
-    }
-
-    if (errorType) {
-        return <ErrorPage {...ERROR_MESSAGES[errorType]} />
-    }
-
-    if(!tracker) {
-        return <RedirectUser />
-    }
 
     console.log(getToken());
 
@@ -134,7 +153,7 @@ export const ProfilePage = () => {
                         <div className={styles.attemptList}>
                             {isLoading ? (<p className={styles.emptyText}>Loading history...</p>) : tracker?.attemptRecords && tracker.attemptRecords.length > 0 ? (
                                 tracker.attemptRecords.slice(0, 5).map((attempt: any, idx: number) => (
-                                    <AttemptRecord key={idx} attempt={attempt}/>
+                                    <AttemptRecord key={idx} attempt={attempt} />
                                 ))
                             ) : (
                                 <p className={styles.emptyText}>No attempts recorded yet</p>
@@ -167,7 +186,7 @@ export const ProfilePage = () => {
                                     const qId = quiz.id ?? 0;
                                     const pct = getSavedQuizPercentage(qId);
                                     return (
-                                        <UncompletedQuiz key={qId | index} pct={pct} quiz={quiz} qId={qId}/>
+                                        <UncompletedQuiz key={qId | index} pct={pct} quiz={quiz} qId={qId} />
                                     );
                                 })
                             ) : (
@@ -175,28 +194,60 @@ export const ProfilePage = () => {
                             )}
                         </div>
 
-                        {isLocal(user.authProvider) && (
-                            <>
-                                <Divider/>
-
-                                <div className={styles.profileSection}>
-                                    <h3 className={styles.sectionTitle}>Security</h3>
-                                    <div className={styles.settingRow}>
-                                        <div className={styles.settingMeta}>
-                                            <h4>Account Password</h4>
-                                            <p>Update your password regularly to maintain a secure account environment.</p>
-                                        </div>
-                                        <button className={styles.passwordBtn} onClick={handleForgotPassword}>
-                                            Change Password
-                                        </button>
-                                    </div>
+                        <Divider />
+                        <div className={styles.profileSection}>
+                            <h3 className={styles.sectionTitle}>Account Details</h3>
+                            <div className={styles.settingRow}>
+                                <div className={styles.settingMeta}>
+                                    <h4>Profile Information</h4>
+                                    <p>View your underlying account details, roles, and statistics.</p>
                                 </div>
-                            </>)}
+                                <button 
+                                    className={styles.passwordBtn} 
+                                    onClick={() => setIsDetailsModalOpen(true)}
+                                >
+                                    View Details
+                                </button>
+                            </div>
+                        </div>
+                        <Divider />
+
+                        {isLocal(user.authProvider) && (<div className={styles.profileSection}>
+                            <h3 className={styles.sectionTitle}>Security</h3>
+                            <div className={styles.settingRow}>
+                                <div className={styles.settingMeta}>
+                                    <h4>Account Password</h4>
+                                    <p>Update your password regularly to maintain a secure account environment.</p>
+                                </div>
+                                <button className={styles.passwordBtn} onClick={handleForgotPassword}>
+                                    Change Password
+                                </button>
+                            </div>
+                        </div>)}
+
+                        <div className={styles.settingRow}>
+                            <div className={styles.settingMeta}>
+                                <h4 style={{ color: 'var(--danger-color, #dc3545)' }}>Delete Account</h4>
+                                <p>Are you sure you want to permanently delete your account? Once removed, your account cannot be recovered.</p>
+                            </div>
+                            <button
+                                className={styles.deleteBtn} 
+                                onClick={handleDeleteAccount} 
+                            >
+                                Delete Account
+                            </button>
+                        </div>
+
                     </div>
                 </div>
             </div>
 
             <p className={styles.bottomDescription}>SkillStorm - Compete, Earn, Conquer</p>
+
+            <ProfileDetailsModal 
+                isOpen={isDetailsModalOpen} 
+                onClose={() => setIsDetailsModalOpen(false)} 
+            />
         </div>
     );
 };
