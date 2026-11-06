@@ -100,6 +100,10 @@ export function removeAll() {
     destroyEmailTrue();
 }
 
+export function isAdminOrEmployee(roles:AppRole[]): boolean {
+    if(!roles) return false;
+    return roles.includes('ADMIN') || roles.includes('EMPLOYEE');
+}
 export function setJwt(data: any): void {
     localStorage.setItem(JWT, data);
 }

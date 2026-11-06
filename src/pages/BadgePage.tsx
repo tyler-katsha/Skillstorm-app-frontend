@@ -6,7 +6,7 @@ import type { BadgeResponse } from "../types/badge"
 import { CreateBadge } from "../components/createComp/CreateBadge"
 import { BadgeDetailModal } from "../modals/BadgeDetailModal"
 import { API } from "../utils/API"
-import { getToken } from "../utils/Utils"
+import { getToken, isAdminOrEmployee } from "../utils/Utils"
 import { useUser } from "../contexts/UserContext"
 import { BadgeSkeleton } from "../skeletons/pages/BadgeSkeleton"
 import { ERROR_MESSAGES, type ErrorType } from "../types/error"
@@ -17,7 +17,7 @@ export const BadgePage: React.FC = () => {
 
     if (!user) return null;
 
-    const isAdminOrEmployee = user.roles.includes('ADMIN') || user.roles.includes('EMPLOYEE');
+  
     
     const [isCreateBadgeOpen, setIsCreateBadgeOpen] = useState(false)
     const [selectedBadge, setSelectedBadge] = useState<BadgeResponse | null>(null)
@@ -96,7 +96,7 @@ export const BadgePage: React.FC = () => {
                         {isRefreshing ? '↻...' : '↻ Refresh List'}
                     </button>
 
-                    {isAdminOrEmployee && (
+                    {isAdminOrEmployee(user.roles) && (
                         <button
                             type="button"
                             className={styles.createBtn}
@@ -200,7 +200,7 @@ export const BadgePage: React.FC = () => {
             {selectedBadge && (
                 <BadgeDetailModal
                     badge={selectedBadge}
-                    isAdminOrEmployee={isAdminOrEmployee}
+                    isAdminOrEmployee={isAdminOrEmployee(user.roles)}
                     onClose={() => setSelectedBadge(null)}
                     onRefresh={() => fetchBadges(true)}
                 />

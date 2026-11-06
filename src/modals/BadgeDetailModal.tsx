@@ -40,7 +40,7 @@ export const BadgeDetailModal: React.FC<BadgeDetailModalProps> = ({ badge, isAdm
             });
 
             if (!response.ok) {
-                throw new Error(await response.text());
+                throw new Error(`Unable to update badge ${badge.id}`);
             } 
 
             onRefresh(); 
@@ -55,6 +55,8 @@ export const BadgeDetailModal: React.FC<BadgeDetailModalProps> = ({ badge, isAdm
     const handleDelete = async (id:number) => {
         
         if (!isAdminOrEmployee) return;
+
+        console.log(badge);
 
         setIsDeleting(true);
 

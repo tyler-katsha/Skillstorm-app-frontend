@@ -14,6 +14,7 @@ import { QuestionTextbox } from '../question/QuestionTextbox';
 import { QuizResults } from './QuizResults';
 import type { BadgeResponse } from '../../types/badge';
 import { QuizResultSkeleton } from '../../skeletons/pages/QuizResultSkeleton';
+import { onLeaderboardRefresh } from '../../utils/services/LeaderboardApi';
 
 export const Quiz: React.FC<QuizComponentProps> = ({ sampleQuiz, onBack }) => {
   const { updateUserStats, user } = useUser();
@@ -136,6 +137,7 @@ export const Quiz: React.FC<QuizComponentProps> = ({ sampleQuiz, onBack }) => {
 
       if (!response.ok) throw new Error('Failed to submit quiz results.');
 
+      await onLeaderboardRefresh();
       const result: SubmissionResult = await response.json();
       setSubmissionResult(result);
 

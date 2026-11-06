@@ -22,7 +22,6 @@ export const CreateBadge: React.FC<CreateBadgeProps> = ({ onClose, onRefresh }) 
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Submitting new badge:", formData);
 
     try {
         const token = getToken();
@@ -40,7 +39,6 @@ export const CreateBadge: React.FC<CreateBadgeProps> = ({ onClose, onRefresh }) 
             throw new Error(`Error: ${errorText}`);
         } 
         onClose(); 
-
         onRefresh();
     } catch (error) {
         console.error("Failed to connect to the server.");
