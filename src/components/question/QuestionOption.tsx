@@ -1,7 +1,7 @@
 import { OptionState } from "../../utils/Utils";
 import styles from '../../module/Quiz.module.css';
 import type { QuestionOptionProps } from "../../types/user";
-export const QuestionOption: React.FC<QuestionOptionProps> = ({ label, selected, state, myOnClick }) => {
+export const QuestionOption: React.FC<QuestionOptionProps> = ({ label, selected, state, myOnClick,disabled = false }) => {
   const getStateClass = () => {
     switch (state) {
       case OptionState.CORRECT:
@@ -29,7 +29,11 @@ export const QuestionOption: React.FC<QuestionOptionProps> = ({ label, selected,
       type="button"
       className={`${styles.quizOptionButton} ${getStateClass()}`}
       onClick={myOnClick}
-      disabled={isAnswerChecked}
+      disabled={isAnswerChecked || disabled}
+      style={{
+        opacity: disabled ? 0.5 : 1,
+        cursor: disabled ? 'not-allowed' : 'pointer'
+      }}
     >
       <span>{label}</span>
       {renderIndicator() && (

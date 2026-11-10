@@ -341,7 +341,7 @@
   display: block;
   font-size: 0.875rem;
   font-weight: 600;
-  color: #991b1b;
+  color: #0369a1;
   margin-bottom: 4px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -350,8 +350,35 @@
 .descriptionText {
   margin: 0;
   font-size: 0.95rem;
-  color: #7f1d1d;
+  color: #0c4a6e; 
   line-height: 1.5;
+}
+
+.toastContainer {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  display: flex;
+  flex-direction: column; 
+  gap: 12px;
+  z-index: 9999;
+  pointer-events: none; 
+}
+
+.toastContainer > * {
+  pointer-events: auto;
+  animation: slideInUp 0.3s ease-out forwards;
+}
+
+@keyframes slideInUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 @keyframes popIn {
   from {

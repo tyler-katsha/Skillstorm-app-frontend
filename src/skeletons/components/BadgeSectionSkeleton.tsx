@@ -8,6 +8,7 @@ export const BadgeSectionSkeleton = () => {
     return (
         <>
             <Skeleton width="35%" height="20px"/>
+            
 
             <CardGrid>
                 {skeletonBadge.map((_, index) => (

@@ -117,8 +117,8 @@ export const QuizResults: React.FC<QuizResultsProps> = ({ quiz, result, fallback
                   )}
 
                   {q.description && (
-                    <div className={styles.descriptionSection}>
-                      <p className={styles.descriptionText}>{q.description}</p>
+                    <div className={styles.explanationBox} style={{ marginBottom: '1.5rem', padding: '12px 16px', backgroundColor: '#e9f5fe', borderLeft: '4px solid #007bff', borderRadius: '0 4px 4px 0', color: '#004085', fontSize: '0.95rem', lineHeight: '1.4' }}>
+                      <strong>Explanation:</strong> {q.description}
                     </div>
                   )}
                 </div>
@@ -126,10 +126,16 @@ export const QuizResults: React.FC<QuizResultsProps> = ({ quiz, result, fallback
             );
           })}
         </div>
-        {earnedToasts.map((badge) => (
-          <BadgeToast key={badge.id} badge={badge} onClose={() => setEarnedToasts(prev => prev.filter(b => b.id !== badge.id))} />
-        ))}
+        <div className={styles.toastContainer}>
+          {earnedToasts.map((badge) => (
+            <BadgeToast
+              key={badge.id}
+              badge={badge}
+              onClose={() => setEarnedToasts(prev => prev.filter(b => b.id !== badge.id))}
+            />
+          ))}
+        </div>
       </div>
-    </div>
-  );
+      </div>
+      );
 };

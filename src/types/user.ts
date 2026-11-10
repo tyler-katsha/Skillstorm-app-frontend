@@ -24,6 +24,7 @@ export interface QuestionOptionProps {
     selected: boolean;
     state: OptionStateT;
     myOnClick: () => void;
+    disabled?: boolean;
 }
 
 export interface UserOptions {

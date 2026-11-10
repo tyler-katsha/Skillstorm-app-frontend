@@ -84,6 +84,8 @@ export const Home = () => {
 
             <h2 style={{ margin: '3rem' }}>Featured Quizzes</h2>
             {renderQuizzes()}
+
+            <div style={{height: '100px'}}/>
         </>
     )
 }

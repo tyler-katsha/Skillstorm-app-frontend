@@ -4,8 +4,14 @@ import type { Kind } from '../../types/type';
 import type { BadgeRequest, CreateBadgeProps } from '../../types/badge';
 import { getToken } from '../../utils/Utils';
 import { API } from '../../utils/API';
+import { useNavigate } from 'react-router-dom';
+import { handleHttpErrors } from '../../utils/httpUtils';
+import { useToast } from '../../contexts/ToastContext';
 
 export const CreateBadge: React.FC<CreateBadgeProps> = ({ onClose, onRefresh }) => {
+
+    const navigate = useNavigate();
+    const { showToast } = useToast();
     const [formData, setFormData] = useState<BadgeRequest>({
         definitionId: '',
         title: '',
@@ -33,6 +39,8 @@ export const CreateBadge: React.FC<CreateBadgeProps> = ({ onClose, onRefresh }) 
             },
             body: JSON.stringify(formData)
         });
+
+        if(handleHttpErrors(response.status,navigate,showToast)) return;
 
         if (!response.ok) {
             const errorText = await response.text(); 

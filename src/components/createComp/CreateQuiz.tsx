@@ -7,9 +7,12 @@ import styles from '../../module/CreateQuiz.module.css';
 import { CreateQuestion } from './CreateQuestion';
 import { emptyArrayOfStrings } from '../../types/array';
 import { DEFAULT_QUESTION } from '../../types/default';
+import { useToast } from '../../contexts/ToastContext';
+import { handleHttpErrors } from '../../utils/httpUtils';
 
 export const CreateQuiz: React.FC = () => {
   const { id } = useParams();
+  const { showToast } = useToast();
   const navigate = useNavigate();
   const isEditMode = Boolean(id);
 
@@ -33,9 +36,12 @@ export const CreateQuiz: React.FC = () => {
         }
       });
 
+      if(handleHttpErrors(response.status,navigate,showToast)) return;
+
       if (!response.ok) {
         throw new Error("Failed to fetch quiz data.");
       }
+
       const data: any = await response.json();
       setQid(data.id || 0);
       setTitle(data.title || "");
@@ -62,7 +68,7 @@ export const CreateQuiz: React.FC = () => {
       setQuestionCount(fetchedQuestions.length);
 
     } catch (error) {
-      console.error("Failed to fetch quiz data", error);
+      showToast("Failed to fetch quiz data",'error');
     } finally {
       setIsLoading(false);
     }
@@ -106,6 +112,12 @@ export const CreateQuiz: React.FC = () => {
     e.preventDefault();
     setLoading(true);
 
+    const hasEmptyOptions = questions.some(q => !q.options || q.options.length === 0 || q.options.some(opt => !opt || opt.trim() === ""));
+
+    if(hasEmptyOptions) {
+      setLoading(false);
+      return;
+    }
     const topics = topicInput
       .split(",")
       .map(topic => topic.trim())
@@ -146,9 +158,9 @@ export const CreateQuiz: React.FC = () => {
         throw new Error(`Failed to save the quiz: Status ${response.status}`);
       }
 
-      navigate('/quizzes');
+      window.location.reload();
     } catch (error) {
-      console.error("Error submitting quiz:", error);
+      showToast("Error submitting quiz",'error');
     } finally {
       setLoading(false);
     }

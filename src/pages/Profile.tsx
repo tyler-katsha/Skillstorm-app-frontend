@@ -4,10 +4,8 @@ import styles from '../module/ProfilePage.module.css';
 import { formatDuration, getToken, getYear, isLocal } from '../utils/Utils';
 import { fetchUserTrackerHistory, getSavedQuizPercentage } from '../utils/services/trackerService'; // Removed fetchUserTrackerHistory
 import { RedirectUser } from '../components/auth/RedirectUser';
-import { ErrorPage } from './ErrorPage';
-import { ERROR_MESSAGES, type ErrorType } from '../types/error';
 import { useCallback, useEffect, useState } from 'react';
-import type { UserTrackerResponse, ProfileTrackerAPIResponse } from '../types/tracker';
+import type { ProfileTrackerAPIResponse, UserTrackerResponse } from '../types/tracker';
 import { UncompletedQuiz } from '../components/quiz/UncompletedQuizz';
 import { Divider } from '../components/common/Divider';
 import { AttemptRecord } from '../components/attempt/AttemptRecord';
@@ -29,9 +27,7 @@ export const ProfilePage = () => {
     const [isDeleting,setIsDeleting] = useState<boolean>(false);
     const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
     const [isDeleteModalOpen,setIsDeleteModalOpen] = useState(false);
-    const [errorType, setErrorType] = useState<ErrorType | null>(null);
     
-
 
     if (!user) return <RedirectUser />
 
@@ -75,7 +71,7 @@ export const ProfilePage = () => {
 
 
         } catch (err) {
-            setErrorType("LOAD_DATA_FAILED");
+            console.error(err);
         } finally {
             setIsLoading(false);
         }
@@ -87,7 +83,6 @@ export const ProfilePage = () => {
 
     if (!user) return <RedirectUser />;
     if (isLoading) return <ProfileSkeleton />
-    if (errorType) return <ErrorPage {...ERROR_MESSAGES[errorType]} />
     if (!tracker) return <RedirectUser />
 
 

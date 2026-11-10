@@ -14,6 +14,7 @@ export const fetchUserTrackerHistory = async (): Promise<ProfileTrackerAPIRespon
         },
     });
 
+
     if (!response.ok) {
         throw new Error('Failed to fetch user tracker history');
     }

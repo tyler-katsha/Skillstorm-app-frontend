@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect, useRef, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useUser } from '../../contexts/UserContext';
-import type { QuizComponentProps, QuizSubmissionPayload, SubmissionResult, UserAnswerSubmission } from '../../types/quiz';
+import type { QuizComponentProps, QuizLocationState, QuizSubmissionPayload, SubmissionResult, UserAnswerSubmission } from '../../types/quiz';
 import { API } from '../../utils/API';
 import { saveUncompletedQuizProgress } from '../../utils/services/trackerService';
 import { calculateLevel, calculateNextLevel, getToken, OptionState } from '../../utils/Utils';
@@ -15,9 +15,13 @@ import { QuizResults } from './QuizResults';
 import type { BadgeResponse } from '../../types/badge';
 import { QuizResultSkeleton } from '../../skeletons/pages/QuizResultSkeleton';
 import { onLeaderboardRefresh } from '../../utils/services/LeaderboardApi';
+import { useToast } from '../../contexts/ToastContext';
+import { handleHttpErrors } from '../../utils/httpUtils';
 
 export const Quiz: React.FC<QuizComponentProps> = ({ sampleQuiz, onBack }) => {
   const { updateUserStats, user } = useUser();
+  const { showToast } = useToast();
+  const navigate = useNavigate();
 
   if (!user) {
     return <RedirectUser />;
@@ -28,7 +32,7 @@ export const Quiz: React.FC<QuizComponentProps> = ({ sampleQuiz, onBack }) => {
   const startTimerRef = useRef<number>(Date.now());
   const initialXpRef = useRef<number>(user.xp ?? 0);
 
-  const { resumeData, isResuming } = (location.state as any) || {};
+  const { resumeData, isResuming } = (location.state as QuizLocationState) || {};
 
   const [questionIdx, setQuestionIdx] = useState(() => {
     if (isResuming && resumeData?.completedCount) {
@@ -48,6 +52,7 @@ export const Quiz: React.FC<QuizComponentProps> = ({ sampleQuiz, onBack }) => {
   const [submissionResult, setSubmissionResult] = useState<SubmissionResult | null>(null);
   const [finalTimeSeconds, setFinalTimeSeconds] = useState<number>(0);
 
+  console.log(resumeData)
   useEffect(() => {
     if (sampleQuiz?.questions?.length && questionIdx >= sampleQuiz.questions.length) {
       setQuestionIdx(Math.max(0, sampleQuiz.questions.length - 1));
@@ -86,6 +91,7 @@ export const Quiz: React.FC<QuizComponentProps> = ({ sampleQuiz, onBack }) => {
   const handleBackQuiz = () => {
     window.location.reload();
   }
+
   const handleBackToQuizzes = async (finalAnswers: UserAnswerSubmission[]) => {
     const quizId = Number(sampleQuiz?.id);
     const completedCount = questionIdx;
@@ -95,7 +101,7 @@ export const Quiz: React.FC<QuizComponentProps> = ({ sampleQuiz, onBack }) => {
       try {
         await saveUncompletedQuizProgress(quizId, completedCount, totalCount, finalAnswers);
       } catch (err) {
-        console.error('Could not save uncompleted quiz progress:', err);
+        showToast('Could not save uncompleted quiz progress', 'error');
       }
     }
 
@@ -123,6 +129,7 @@ export const Quiz: React.FC<QuizComponentProps> = ({ sampleQuiz, onBack }) => {
         },
       });
 
+      if(handleHttpErrors(preRes.status,navigate,showToast)) return;
       const preBadges: BadgeResponse[] = await preRes.json();
       const previouslyEarnedIds = preBadges.filter(b => b.earned).map(b => b.id);
 
@@ -134,6 +141,8 @@ export const Quiz: React.FC<QuizComponentProps> = ({ sampleQuiz, onBack }) => {
         },
         body: JSON.stringify(payload),
       });
+
+      if(handleHttpErrors(response.status,navigate,showToast)) return;
 
       if (!response.ok) throw new Error('Failed to submit quiz results.');
 
@@ -151,12 +160,14 @@ export const Quiz: React.FC<QuizComponentProps> = ({ sampleQuiz, onBack }) => {
 
       setTimeout(async () => {
         try {
-          const res = await fetch(`${API}/badges`, {
+          const res = await fetch(`${API}/badges/user`, {
             headers: {
               'Content-Type': 'application/json',
               'Authorization': `Bearer ${token}`,
             },
           });
+
+          if(handleHttpErrors(res.status,navigate,showToast)) return;
 
           if (!res.ok) throw new Error('Failed to fetch updated badges');
           const updatedBadges: BadgeResponse[] = await res.json();
@@ -167,11 +178,11 @@ export const Quiz: React.FC<QuizComponentProps> = ({ sampleQuiz, onBack }) => {
             setEarnedToasts(newlyEarnedBadges);
           }
         } catch (err) {
-          console.error('Error fetching updated badges: ', err);
+          showToast('Error fetching updated badges', 'error');
         }
       }, 5000);
     } catch (error) {
-      console.error('Error submitting quiz payload:', error);
+      showToast('Error submitting quiz payload', 'error');
     } finally {
       setIsSubmitting(false);
     }
@@ -221,8 +232,8 @@ export const Quiz: React.FC<QuizComponentProps> = ({ sampleQuiz, onBack }) => {
     return <div className={styles.pageRoot}>Loading quiz...</div>;
   }
 
-  if(isSubmitting) {
-    return <QuizResultSkeleton/>
+  if (isSubmitting) {
+    return <QuizResultSkeleton />
   }
   if (questionIdx >= sampleQuiz.questions.length || submissionResult) {
     return (
@@ -274,27 +285,29 @@ export const Quiz: React.FC<QuizComponentProps> = ({ sampleQuiz, onBack }) => {
         <QuestionTextbox content={currentQuestion?.text} />
 
         <div className={styles.optionsList} style={{ marginBottom: (!isAnswering && selectedIdx !== -1 && !isChoiceCorrect(selectedIdx) && currentQuestion?.description) ? '1rem' : '2rem' }}>
-          {answers.map((answer: any, i: number) => {
-            const labelText = typeof answer === 'string' ? answer : (answer.answerText ?? answer.text ?? "");
-            return (
-              <Fragment key={answer.answerId ?? i}>
-                <QuestionOption
-                  label={labelText}
-                  selected={selectedIdx === i}
-                  state={getBtnState(i)}
-                  myOnClick={() => handleSelectOption(i)}
-                />
-                {i < answers.length - 1 && <hr className={styles.divider} />}
-              </Fragment>
-            );
-          })}
-        </div>
+          {answers
+            .map((answer: any, i: number) => {
+              const rawText = typeof answer === 'string' ? answer : (answer.answerText ?? answer.text ?? "");
+              return { answer, originalIndex: i, labelText: rawText.trim() };
+            })
+            .filter((item: any) => item.labelText !== '')
+            .map((item: any, mappedIndex: number, validArray: any[]) => {
+              const { answer, originalIndex, labelText } = item;
 
-        {!isAnswering && selectedIdx !== -1 && !isChoiceCorrect(selectedIdx) && currentQuestion?.description && (
-          <div className={styles.explanationBox} style={{ marginBottom: '1.5rem', padding: '12px 16px', backgroundColor: '#ffeef0', borderLeft: '4px solid #ff4d4f', borderRadius: '0 4px 4px 0', color: '#991b1b', fontSize: '0.95rem', lineHeight: '1.4' }}>
-            <strong>Explanation:</strong> {currentQuestion.description}
-          </div>
-        )}
+              return (
+                <Fragment key={answer.answerId ?? originalIndex}>
+                  <QuestionOption
+                    label={labelText}
+                    selected={selectedIdx === originalIndex}
+                    state={getBtnState(originalIndex)}
+                    myOnClick={() => handleSelectOption(originalIndex)}
+                  />
+                  {mappedIndex < validArray.length - 1 && <hr className={styles.divider} />}
+                </Fragment>
+              );
+            })
+          }
+        </div>
 
         {quickSelect ? (
           !isAnswering && (
@@ -310,6 +323,12 @@ export const Quiz: React.FC<QuizComponentProps> = ({ sampleQuiz, onBack }) => {
             disabled={selectedIdx === -1}
             myOnClick={isAnswering ? () => handleCheckAnswer(selectedIdx) : handleNextQuestion}
           />
+        )}
+
+        {!isAnswering && selectedIdx !== -1 && currentQuestion?.description && (
+          <div className={styles.explanationBox} style={{ marginBottom: '1.5rem', padding: '12px 16px', backgroundColor: '#e9f5fe', borderLeft: '4px solid #007bff', borderRadius: '0 4px 4px 0', color: '#004085', fontSize: '0.95rem', lineHeight: '1.4' }}>
+            <strong>Explanation:</strong> {currentQuestion.description}
+          </div>
         )}
       </div>
     </div>

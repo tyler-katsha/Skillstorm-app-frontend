@@ -18,9 +18,6 @@ export const BadgePage: React.FC = () => {
     const { showToast } = useToast();
 
     if (!user) return null;
-
-  
-    
     const [isCreateBadgeOpen, setIsCreateBadgeOpen] = useState(false)
     const [selectedBadge, setSelectedBadge] = useState<BadgeResponse | null>(null)
     const [badges, setBadges] = useState<BadgeResponse[]>([])

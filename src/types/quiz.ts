@@ -35,6 +35,10 @@ export interface ProgressbarsProps {
     nextLevelXp: number;
 }
 
+export interface QuizLocationState {
+    resumeData?:any;
+    isResuming?: boolean;
+}
 export interface CongratsProps {
     correct: number;
     total: number;
