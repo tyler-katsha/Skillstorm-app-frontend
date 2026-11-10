@@ -68,11 +68,11 @@ export const Login = () => {
                 return;
             }
             if (!response.ok) {
-
+                const errMsg = await response.text()
                 setPopupConfig({
                     isOpen: true,
                     type: 'error',
-                    message: 'Invalid credentials'
+                    message: errMsg
                 });
                 return;
             }

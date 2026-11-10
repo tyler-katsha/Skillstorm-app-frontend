@@ -16,6 +16,7 @@ import { ProfileSkeleton } from '../skeletons/pages/ProfileSkeleton';
 import { API } from '../utils/API';
 import { ProfileDetailsModal } from '../modals/ProfileDetailsModal';
 import { useToast } from '../contexts/ToastContext';
+import { ConfirmDeleteModal } from '../modals/ConfirmDeleteModal';
 export const ProfilePage = () => {
 
     const navigate = useNavigate();
@@ -25,8 +26,11 @@ export const ProfilePage = () => {
     const [tracker, setTracker] = useState<UserTrackerResponse | null>(null);
     const [rank, setRank] = useState<number | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [isDetailsModalOpen,setIsDetailsModalOpen] = useState(false);
+    const [isDeleting,setIsDeleting] = useState<boolean>(false);
+    const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+    const [isDeleteModalOpen,setIsDeleteModalOpen] = useState(false);
     const [errorType, setErrorType] = useState<ErrorType | null>(null);
+    
 
 
     if (!user) return <RedirectUser />
@@ -37,26 +41,26 @@ export const ProfilePage = () => {
 
     const handleDeleteAccount = async () => {
 
-        setIsLoading(true);
+        setIsDeleting(true);
         const token = getToken();
         try {
-            const response = await fetch(`${API}/users`,{
+            const response = await fetch(`${API}/users`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 }
             })
 
-            if(!response.ok) {
-                showToast('Unable to delete account','error');
+            if (!response.ok) {
+                showToast('Unable to delete account', 'error');
                 return;
             }
 
-            
-        } catch(error) {
-            showToast('Network error occurred','error');
+            navigate("/login")
+        } catch (error) {
+            showToast('Network error occurred', 'error');
         } finally {
-            setIsLoading(false);
+            setIsDeleting(false);
         }
     }
 
@@ -68,6 +72,7 @@ export const ProfilePage = () => {
 
             setTracker(data.userTrackerResponse);
             setRank(data.rank);
+
 
         } catch (err) {
             setErrorType("LOAD_DATA_FAILED");
@@ -84,9 +89,7 @@ export const ProfilePage = () => {
     if (isLoading) return <ProfileSkeleton />
     if (errorType) return <ErrorPage {...ERROR_MESSAGES[errorType]} />
     if (!tracker) return <RedirectUser />
-    
 
-    console.log(getToken());
 
     const quizzesTaken = tracker?.quizzesTaken ?? 0;
     const quizzesWon = tracker?.quizzesWon ?? 0;
@@ -202,8 +205,8 @@ export const ProfilePage = () => {
                                     <h4>Profile Information</h4>
                                     <p>View your underlying account details, roles, and statistics.</p>
                                 </div>
-                                <button 
-                                    className={styles.passwordBtn} 
+                                <button
+                                    className={styles.passwordBtn}
                                     onClick={() => setIsDetailsModalOpen(true)}
                                 >
                                     View Details
@@ -231,8 +234,8 @@ export const ProfilePage = () => {
                                 <p>Are you sure you want to permanently delete your account? Once removed, your account cannot be recovered.</p>
                             </div>
                             <button
-                                className={styles.deleteBtn} 
-                                onClick={handleDeleteAccount} 
+                                className={styles.deleteBtn}
+                                onClick={() => setIsDeleteModalOpen(true)}
                             >
                                 Delete Account
                             </button>
@@ -244,9 +247,18 @@ export const ProfilePage = () => {
 
             <p className={styles.bottomDescription}>SkillStorm - Compete, Earn, Conquer</p>
 
-            <ProfileDetailsModal 
-                isOpen={isDetailsModalOpen} 
-                onClose={() => setIsDetailsModalOpen(false)} 
+            <ProfileDetailsModal
+                isOpen={isDetailsModalOpen}
+                onClose={() => setIsDetailsModalOpen(false)}
+            />
+
+            <ConfirmDeleteModal
+                isOpen={isDeleteModalOpen}
+                onClose={() => setIsDeleteModalOpen(false)} 
+                onConfirm={handleDeleteAccount}
+                title="Delete Account"
+                message="Are you sure you want to delete this? All of your quiz history and progress will be permanently removed."
+                isLoading={isDeleting}
             />
         </div>
     );

@@ -30,12 +30,14 @@ export const ResetEmail = () => {
                 headers: { 'content-type': 'application/json' },
             })
 
+
             if (!response.ok) {
                 setPopupConfig({
                     isOpen: true,
                     type: 'error',
                     message: 'Unable to send email'
                 })
+                return;
             }
 
             setPopupConfig({
@@ -43,6 +45,8 @@ export const ResetEmail = () => {
                 type: 'success',
                 message: 'Successfully sent email. Please check your inbox.'
             })
+
+            navigate('/login')
 
 
         } catch (err) {

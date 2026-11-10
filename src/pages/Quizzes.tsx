@@ -11,6 +11,7 @@ import { API } from "../utils/API";
 import { formatTopicNames, getToken, isAdminOrEmployee, isPermitted } from "../utils/Utils";
 import { ERROR_MESSAGES, type ErrorType } from "../types/error";
 import { ErrorPage } from "./ErrorPage";
+import { QuizSkeleton } from "../skeletons/pages/QuizSkeleton";
 
 export const QuizPage = () => {
     const navigate = useNavigate();
@@ -93,6 +94,7 @@ export const QuizPage = () => {
 
     if (activeQuiz) return <Quiz sampleQuiz={activeQuiz} onBack={() => setActiveQuiz(null)} />
 
+    if(loading) return <QuizSkeleton />
     return (
         <main className={styles.page}>
             <div className={styles.header}>
@@ -195,6 +197,7 @@ export const QuizPage = () => {
                     <p>Try changing your search or selecting another category.</p>
                 </div>
             )}
+            
         </main>
     );
 };
