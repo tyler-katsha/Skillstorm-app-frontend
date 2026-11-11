@@ -4,7 +4,7 @@ import type { LeaderBoardUser } from "../types/leaderboard";
 import { findAllLeadingUsers } from "../utils/services/LeaderboardApi";
 
 
-export const LeaderboardPage = ({ limit = 100000, isBackground = true, title = 'Global Leaderboard - Global Stormers' }) => {
+export const LeaderboardPage = ({ limit = 100000, isBackground = true, title = 'Global Leaderboard' }) => {
     const [leadingUsers, setLeadingUsers] = useState<LeaderBoardUser[]>([]);
     const [isLoading, setIsLoading] = useState(false);
 

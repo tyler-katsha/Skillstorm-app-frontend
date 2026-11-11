@@ -71,7 +71,7 @@ export const ProfilePage = () => {
 
 
         } catch (err) {
-            console.error(err);
+            showToast('Network error occurred', 'error');
         } finally {
             setIsLoading(false);
         }

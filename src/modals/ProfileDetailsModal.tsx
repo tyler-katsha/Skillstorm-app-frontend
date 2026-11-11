@@ -38,7 +38,10 @@ export const ProfileDetailsModal: React.FC<ProfileDetailsModalProps> = ({ isOpen
 
             if (!response.ok) {
             const errorData = await response.text(); 
-            throw new Error(errorData ?? 'Failed to update on server');
+
+            showToast(errorData ?? 'Failed to update on server','error');
+            setNewUsername(user.username);
+            return;
         }
             setIsEditingUsername(false);
 
@@ -47,7 +50,7 @@ export const ProfileDetailsModal: React.FC<ProfileDetailsModalProps> = ({ isOpen
             }
             showToast("Username updated successfully!", "success");
         } catch(err) {
-            showToast('Failed to update username.','error');
+            showToast('Network Error occurred','error');
             setNewUsername(user.username);
         } finally {
             setIsUpdating(false);

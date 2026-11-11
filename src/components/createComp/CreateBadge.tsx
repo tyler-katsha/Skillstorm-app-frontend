@@ -44,12 +44,13 @@ export const CreateBadge: React.FC<CreateBadgeProps> = ({ onClose, onRefresh }) 
 
         if (!response.ok) {
             const errorText = await response.text(); 
-            throw new Error(`Error: ${errorText}`);
+            showToast(errorText,'error');
+            return;
         } 
         onClose(); 
         onRefresh();
     } catch (error) {
-        console.error("Failed to connect to the server.");
+        showToast('Network error occurred','error');
     }
 };
 

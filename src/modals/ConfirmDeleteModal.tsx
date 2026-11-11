@@ -12,11 +12,11 @@ export const ConfirmDeleteModal: React.FC<ConfirmDeleteModalProps> = ({isOpen,on
         <p className={styles.message}>{message}</p>
         
         <div className={styles.buttonGroup}>
-          <button  className={styles.noButton}  onClick={onClose}  disabled={isLoading}>
-            No
-          </button>
           <button  className={styles.yesButton}  onClick={onConfirm} disabled={isLoading}>
             {isLoading ? "Deleting..." : "Yes"}
+          </button>
+          <button  className={styles.noButton}  onClick={onClose}  disabled={isLoading}>
+            No
           </button>
         </div>
       </div>
